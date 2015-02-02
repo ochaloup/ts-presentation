@@ -1,0 +1,8 @@
+# get rid off the compiled classes
+target/
+# eclispe and other project clases
+.forge_settings
+.project
+.settings/
+.checkstyle
+.classpath
