@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jboss.qa.tspresentation</groupId>
+  <artifactId>ts-presentation-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>Java transactions presentation - examples</name>
+
+  <properties>
+    <version.arquillian.core>1.1.4.Final</version.arquillian.core>
+    <version.checkstyle.plugin>2.10</version.checkstyle.plugin>
+    <version.commons.cli>1.2</version.commons.cli>
+    <version.javaee.spec>1.0.0.Final</version.javaee.spec>
+    <version.jboss.logging>3.2.1.Final</version.jboss.logging>
+    <version.junit>4.11</version.junit>
+    <version.maven.surefire>2.17</version.maven.surefire>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-7.0</artifactId>
+        <version>1.0.0.Final</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>${version.arquillian.core}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>${version.jboss.logging}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>JBOSS_NEXUS</id>
+      <url>http://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        
+        <!-- Compile with java 1.7 -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.7</source>
+            <target>1.7</target>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        
+        <!-- We want to check style of development :) -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${version.checkstyle.plugin}</version>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <executions>
+            <execution>
+                <id>check-style</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>checkstyle</goal>
+                </goals>
+                <configuration>
+                  <configLocation>build-tools/checkstyle.xml</configLocation>
+                  <consoleOutput>true</consoleOutput>
+                  <failsOnError>true</failsOnError>
+                <useFile />
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
