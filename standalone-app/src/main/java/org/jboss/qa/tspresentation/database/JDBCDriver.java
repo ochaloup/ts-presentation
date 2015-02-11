@@ -20,7 +20,7 @@ public class JDBCDriver {
     /**
      * Registering JDBC driver based on information from system properties
      */
-    public void registerDriver() {
+    public static void registerDriver() {
         synchronized (JDBCDriver.class) {
             if(isRegistered) {
                 return;

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,26 +22,24 @@ public class JdbcTest {
     private static final String TABLE_NAME = "test";
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (id int, text varchar(255))";
     private static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME;
+    private static final String DELETE_TABLE = "DELETE FROM " + TABLE_NAME;
     private static final String INSERT = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?)";
     private static final String SELECT = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
 
     @BeforeClass
-    public static void loadDriver() throws SQLException {
-        JDBCDriver jdbcDriver = new JDBCDriver();
-        jdbcDriver.registerDriver();
-        try (Connection conn = jdbcDriver.getConnection()) {
-            Statement st = conn.createStatement();
-            st.executeUpdate(CREATE_TABLE);
-        }
+    public static void registerDriver() throws SQLException {
+        JDBCDriver.registerDriver();
+        runSQL(CREATE_TABLE);
     }
 
     @AfterClass
     public static void dropTable() throws SQLException {
-        JDBCDriver jdbcDriver = new JDBCDriver();
-        try (Connection conn = jdbcDriver.getConnection()) {
-            Statement st = conn.createStatement();
-            st.executeUpdate(DROP_TABLE);
-        }
+        runSQL(DROP_TABLE);
+    }
+
+    @After
+    public void cleanTable() throws SQLException {
+        runSQL(DELETE_TABLE);
     }
 
     @Test
@@ -72,13 +71,14 @@ public class JdbcTest {
         String text = "text"; // text to be set
 
         try (Connection conn = jdbcDriver.getConnection()) {
-            // saying that I will manage transaction on the connection
-            conn.setAutoCommit(false);
-
             // get command for data insertion
             PreparedStatement ps = conn.prepareStatement(INSERT);
             ps.setInt(1, id);
             ps.setString(2, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+
             // execute
             ps.executeUpdate();
 
@@ -103,6 +103,14 @@ public class JdbcTest {
             } else {
                 return null;
             }
+        }
+    }
+
+    private static boolean runSQL(final String sql) throws SQLException {
+        JDBCDriver jdbcDriver = new JDBCDriver();
+        try (Connection conn = jdbcDriver.getConnection()) {
+            Statement st = conn.createStatement();
+            return st.execute(sql);
         }
     }
 }
