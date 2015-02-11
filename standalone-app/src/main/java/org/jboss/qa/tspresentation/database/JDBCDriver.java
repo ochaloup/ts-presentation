@@ -1,29 +1,61 @@
 package org.jboss.qa.tspresentation.database;
 
-import java.net.URL;
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import org.jboss.logging.Logger;
 import org.jboss.qa.tspresentation.utils.FileLoader;
-import org.jboss.qa.tspresentation.utils.PropertiesLoader;
+import org.jboss.qa.tspresentation.utils.ProjectProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class JDBCDriver {
-    private static final Logger log = Logger.getLogger(JDBCDriver.class);
+    private static final Logger log = LoggerFactory.getLogger(JDBCDriver.class);
 
-    public void loadProperties() {
-        Properties properties = PropertiesLoader.loadProperties();
-        StringBuffer buf = new StringBuffer();
-        for(String key : properties.stringPropertyNames()) {
-            String value = properties.getProperty(key);
-            buf.append(key).append(" => ").append(value).append("\n");
+    // saying if driver based on project properties was already registered or not
+    private static volatile boolean isRegistered = false;
+
+    /**
+     * Registering JDBC driver based on information from system properties
+     */
+    public void registerDriver() {
+        synchronized (JDBCDriver.class) {
+            if(isRegistered) {
+                return;
+            }
+
+            ClassLoader classLoader = FileLoader.loadJar(ProjectProperties.get("db.driver"));
+            try {
+                Class.forName(ProjectProperties.get("db.jdbc_class"), true, classLoader);
+                @SuppressWarnings("unchecked")
+                Class<Driver> driverClazz = (Class<Driver>) classLoader.loadClass(ProjectProperties.get("db.jdbc_class"));
+                // trouble with class loading - see http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
+                DriverDelegation driverDelegation = new DriverDelegation(driverClazz.newInstance());
+                DriverManager.registerDriver(driverDelegation);
+            } catch (ClassNotFoundException cnfe) {
+                throw new RuntimeException("Can't load class " + ProjectProperties.get("db.jdbc_class") + " from jarfile " +
+                        ProjectProperties.get("db.driver") + " by classloader " + classLoader, cnfe);
+            } catch (InstantiationException | IllegalAccessException iae) {
+                throw new RuntimeException("Can't instantiate new instance of class '" + ProjectProperties.get("db.jdbc_class") + "'", iae);
+            } catch (IllegalStateException ise) {
+                throw new RuntimeException("Something illegal happens during our classloading", ise);
+            } catch (SQLException sqle) {
+                throw new RuntimeException("Can't register driver to driver manager", sqle);
+            }
         }
-        // log.info(buf.toString());
+    }
 
-        URL url = ClassLoader.getSystemClassLoader().getResource("resource.properties");
-//        log.info("loaded resource as: " + url);
-
-        log.info(FileLoader.getFileURL("abc"));
-        log.info(FileLoader.getFileURL("file:/resource.properties"));
-        log.info(FileLoader.getFileURL("file:///resource.properties"));
+    public Connection getConnection() {
+        Connection connection;
+        try {
+            connection = DriverManager.getConnection(ProjectProperties.get("db.jdbc_url"),
+                    ProjectProperties.get("db.username"), ProjectProperties.get("db.password"));
+            log.info("Newly created connection: '{}'", connection);
+            return connection;
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Can't get SQL conection", sqle);
+        }
     }
 }

@@ -1,9 +1,7 @@
 package org.jboss.qa.tspresentation.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -13,51 +11,29 @@ import java.net.URLClassLoader;
 public class FileLoader {
 
     /**
-     * Loading a jar.
+     * Loading a jar to class loader.
      *
-     * @param jarName  it could be absolute path to file or the file could be on
-     *                 class path or at lib folder to be loaded from
+     * @param pathToJar  it could be absolute path to jar file, or it could be file name residing
+     *                   on class path or in lib folder
      * @return  class loader where the jar is loaded in
      */
-    public static ClassLoader loadJar(final String jarName) {
-        URL url = getFileURL("file:foo.jar");
+    public static ClassLoader loadJar(final String pathToJar) {
+        URL url = getFileURL(pathToJar);
         final URLClassLoader loader = new URLClassLoader (new URL[] {url});
-        // Class cl = Class.forName ("Foo", true, loader);
-        // Runnable foo = (Runnable) cl.newInstance();
-
-        // adding shutdown hook to close loader kindly
-        Runtime.getRuntime().addShutdownHook(new Thread("Class-loader-close") {
-            @Override
-            public void run() {
-                try {
-                    loader.close();
-                } catch (IOException ignore) {
-                }
-            }
-        });
-
         return loader;
     }
 
-    private static File urlToFile(final URL url) {
-        File file;
-        try {
-          file = new File(url.toURI());
-        } catch(URISyntaxException e) {
-          file = new File(url.getPath());
-        }
-        return file;
-    }
-
     /**
-     * Searching for file
+     * Searching for file (you could provide filename in form of file URL - it means file:/...)
      * 1. as absolute path
      * 2. as resource of class loader
      * 3. at {@link ProjectProperties#JAR_LIBRARY} path
      */
-    public static URL getFileURL(final String fileName) {
+    public static File getFile(final String fileName) {
+        // Consult absolute path
         File file = new File(fileName);
 
+        // Working with URLs inside of try block
         try {
             // if url then convert to file
             if(!file.exists() && fileName.startsWith("file:")) {
@@ -73,16 +49,30 @@ public class FileLoader {
             }
             // try to load from jar library path
             if(!file.exists()) {
-                file = new File(ProjectProperties.GLOBAL_PROPERTIES.getProperty(ProjectProperties.JAR_LIBRARY), fileName);
+                file = new File(ProjectProperties.get(ProjectProperties.JAR_LIBRARY), file.getPath());
             }
-
-/*            if(!file.exists()) {
+            // not able to find file neither at classloader path nor library path - exception
+            if(!file.exists()) {
                 throw new IllegalStateException("Can't load file " + fileName);
             }
-*/
-            return file.toURI().toURL();
         } catch (MalformedURLException mue) {
             throw new RuntimeException(mue);
         }
+        return file;
+    }
+
+    /**
+     * See {@link #getFile(String)}.
+     */
+    public static URL getFileURL(final String fileName) {
+        try {
+            return getFile(fileName).toURI().toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static File urlToFile(final URL url) {
+        return new File(url.getFile());
     }
 }
