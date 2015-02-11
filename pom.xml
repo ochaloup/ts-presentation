@@ -10,6 +10,12 @@
   <name>Java transactions presentation - examples</name>
 
   <properties>
+    <!-- Directories -->
+    <project.root.dir>${basedir}</project.root.dir>
+    <!-- library folder where jars could be located in -->
+    <jar.library>${project.root.dir}/lib</jar.library>
+
+    <!-- Versions -->
     <version.arquillian.core>1.1.4.Final</version.arquillian.core>
     <version.checkstyle.plugin>2.10</version.checkstyle.plugin>
     <version.commons.cli>1.2</version.commons.cli>
@@ -18,9 +24,6 @@
     <version.logback>1.1.2</version.logback>
     <version.maven.surefire>2.17</version.maven.surefire>
     <version.slf4j>1.7.10</version.slf4j>
-
-    <!-- library folder where jars could be located in -->
-    <jar.library>${basedir}/lib</jar.library>
   </properties>
 
   <dependencyManagement>

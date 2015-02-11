@@ -13,6 +13,8 @@
   <artifactId>ts-presentation-standalone</artifactId>
 
   <properties>
+    <!-- Directories -->
+    <project.root.dir>${basedir}/..</project.root.dir>
   </properties>
 
   <dependencies>

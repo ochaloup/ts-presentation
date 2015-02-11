@@ -13,6 +13,10 @@
   <artifactId>ts-presentation-jboss</artifactId>
 
   <properties>
+        <!-- Directories -->
+        <project.root.dir>${basedir}/..</project.root.dir>
+
+        <!-- Versions -->
         <version.arquillian.wildfly>8.1.0.CR2</version.arquillian.wildfly>
   </properties>
 
