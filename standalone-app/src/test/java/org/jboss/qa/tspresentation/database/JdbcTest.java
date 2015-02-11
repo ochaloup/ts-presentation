@@ -72,13 +72,16 @@ public class JdbcTest {
         String text = "text"; // text to be set
 
         try (Connection conn = jdbcDriver.getConnection()) {
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+
+            // get command for data insertion
             PreparedStatement ps = conn.prepareStatement(INSERT);
             ps.setInt(1, id);
             ps.setString(2, text);
+            // execute
             ps.executeUpdate();
 
-            // saying that I will manage transaction on the connection
-            conn.setAutoCommit(false);
             // not commited - null expected
             Assert.assertNull(selectById(id));
             // commit provided
