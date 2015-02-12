@@ -63,8 +63,12 @@ public class JdbcTest {
             // conn.setAutoCommit(true); // this is by default
             ps.executeUpdate();
 
-            // not commited - null expected
+            ps = getInsert(conn, id + 1, text);
+            ps.executeUpdate();
+
+            // commit expected as it's autocommiting
             Assert.assertEquals(text, selectById(id));
+            Assert.assertEquals(text, selectById(id + 1));
             try {
                 conn.commit();
                 Assert.fail("Exception is expected as autoCommit is enabled");
@@ -88,8 +92,13 @@ public class JdbcTest {
             // execute
             ps.executeUpdate();
 
+            // execute #2
+            ps = getInsert(conn, id + 1, text);
+            ps.executeUpdate();
+
             // not commited - null expected
             Assert.assertNull(selectById(id));
+            Assert.assertNull(selectById(id + 1));
             // commit provided
             conn.commit();
             // commited - text is in db
