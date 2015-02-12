@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +22,20 @@ public class JdbcTest {
     private JDBCDriver jdbcDriver = new JDBCDriver();
 
     private static final String TABLE_NAME = "test";
-    private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (id int, text varchar(255))";
-    private static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME;
-    private static final String DELETE_TABLE = "DELETE FROM " + TABLE_NAME;
+    private static final String CREATE_TABLE_PATTERN = "CREATE TABLE %s (id int, text varchar(255))";
+    private static final String CREATE_TABLE = String.format(CREATE_TABLE_PATTERN, TABLE_NAME);
+    private static final String DROP_TABLE_PATTERN = "DROP TABLE %s";
+    private static final String DROP_TABLE =  String.format(DROP_TABLE_PATTERN, TABLE_NAME);
+    private static final String DELETE_TABLE_PATTERN = "DELETE FROM %s";
+    private static final String DELETE_TABLE = String.format(DELETE_TABLE_PATTERN, TABLE_NAME);
     private static final String INSERT = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?)";
-    private static final String SELECT = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
+    private static final String UPDATE = "UPDATE " + TABLE_NAME + " SET id = ?, text = ? WHERE id = ?";
+    private static final String SELECT_PATTERN = "SELECT * FROM %s";
+    private static final String SELECT_WHERE = String.format(SELECT_PATTERN + " WHERE id = ?", TABLE_NAME);
+
+    private int id = 1;
+    private String text = "testing text";
+    private String newText = "different " + text;
 
     @BeforeClass
     public static void registerDriver() throws SQLException {
@@ -42,16 +53,14 @@ public class JdbcTest {
         runSQL(DELETE_TABLE);
     }
 
+    /**
+     * Transaction is commited immediatelly after each statement execution.
+     */
     @Test
     public void autocommitTrue() throws SQLException {
-        int id = 1; // id to be set
-        String text = "text"; // text to be set
-
         try (Connection conn = jdbcDriver.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(INSERT);
+            PreparedStatement ps = getInsert(conn, id, text);
             // conn.setAutoCommit(true); // this is by default
-            ps.setInt(1, id);
-            ps.setString(2, text);
             ps.executeUpdate();
 
             // not commited - null expected
@@ -65,16 +74,13 @@ public class JdbcTest {
         }
     }
 
+    /**
+     * Transaction is commited when Connection.commit is called
+     */
     @Test
     public void autocommitFalse() throws SQLException {
-        int id = 1; // id to be set
-        String text = "text"; // text to be set
-
         try (Connection conn = jdbcDriver.getConnection()) {
-            // get command for data insertion
-            PreparedStatement ps = conn.prepareStatement(INSERT);
-            ps.setInt(1, id);
-            ps.setString(2, text);
+            PreparedStatement ps = getInsert(conn, id, text);
 
             // saying that I will manage transaction on the connection
             conn.setAutoCommit(false);
@@ -91,17 +97,256 @@ public class JdbcTest {
         }
     }
 
-    public String selectById(final int id) throws SQLException {
+    /**
+     * Transaction is not commited when Connection.rollback is called
+     */
+    @Test
+    public void autocommitFalseWithRollback() throws SQLException {
         try (Connection conn = jdbcDriver.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(SELECT);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                String text = rs.getString("text");
-                log.debug("Result of the query is {}", text);
-                return text;
-            } else {
-                return null;
+            PreparedStatement ps = getInsert(conn, id, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+
+            // execute
+            ps.executeUpdate();
+
+            // not commited - null expected
+            Assert.assertNull(selectById(id));
+            // commit provided
+            conn.rollback();
+            // no data as rollback called
+            Assert.assertNull(selectById(id));
+        }
+    }
+
+    /**
+     * When close is called prior of calling commit on connection
+     * then rollback is done.
+     */
+    @Test
+    public void closingConnectionMeansRollback() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            PreparedStatement ps = getInsert(conn, id, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+
+            // execute
+            ps.executeUpdate();
+
+            // not commited - null expected
+            Assert.assertNull(selectById(id));
+            // commit provided
+            conn.close();
+            // no data as rollback called
+            Assert.assertNull(selectById(id));
+        }
+    }
+
+    /**
+     * Updating the same row inside of transaction.
+     * When transaction commits then obviously there will be updated value.
+     */
+    @Test
+    public void doubleChangeInTransaction() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+
+            PreparedStatement ps = getInsert(conn, id, text);
+            // execute
+            ps.executeUpdate();
+            // not commited - null expected - checked from the different connection/transaction
+            Assert.assertNull(selectById(id));
+            // checking from the same connection
+            Assert.assertEquals(text, selectById(id, conn));
+
+            // writing a new value to database to the same row
+            String differentText = "absolutely different text in comparision with " + text;
+            PreparedStatement ps2 = getUpdate(conn, id, differentText);
+            ps2.executeUpdate();
+            Assert.assertEquals(differentText, selectById(id, conn));
+
+            // commit on the connection itself
+            conn.commit();
+            // updated data available
+            Assert.assertEquals(differentText, selectById(id));
+        }
+    }
+
+    /**
+     * Define a safepoint as a way how to use nested transaction in scope
+     * of the resource manager transaction.
+     */
+    @Test
+    public void safePointCommit() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            PreparedStatement ps = getInsert(conn, id, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            // execute
+            ps.executeUpdate();
+            // not commited - null expected
+            Assert.assertNull(selectById(id));
+            // selected from the same transaction
+            Assert.assertEquals(text, selectById(id, conn));
+
+            Savepoint savePoint = conn.setSavepoint();
+            getUpdate(conn, 1, newText).executeUpdate();
+            Assert.assertEquals(newText, selectById(id, conn));
+            // release meaning a kind of commit on the nested transaction
+            conn.releaseSavepoint(savePoint);
+
+            // commit on the connection itself
+            conn.commit();
+            // no data as rollback called
+            Assert.assertEquals(newText, selectById(id));
+        }
+    }
+
+    /**
+     * Rollbacking safepoint.
+     */
+    @Test
+    public void safePointRollback() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            // get command for data insertion
+            PreparedStatement ps = getInsert(conn, 1, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            // execute
+            ps.executeUpdate();
+            // not commited - null expected
+            Assert.assertNull(selectById(id));
+
+            // specifying save point as a point where transaction will be nested
+            Savepoint savePoint = conn.setSavepoint();
+            getUpdate(conn, 1, newText).executeUpdate();
+            conn.rollback(savePoint);
+
+            // commit on the connection itself
+            conn.commit();
+            // inserted data (NOT updated) as rollback was called
+            Assert.assertEquals(text, selectById(id));
+        }
+    }
+
+    /**
+     * Nested transaction inside of other nested transaction.
+     */
+    @Test
+    public void safePointDoubleRollback() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            // execute
+            getInsert(conn, 1, text).executeUpdate();
+
+            // specifying save point as a point where transaction will be nested
+            Savepoint savePoint = conn.setSavepoint();
+            getUpdate(conn, 1, newText).executeUpdate();
+            // second safepoint
+            @SuppressWarnings("unused")
+            Savepoint savePoint2 = conn.setSavepoint();
+            getUpdate(conn, 1, newText + "a").executeUpdate();
+            // from the same transaction we can see the updated text
+            Assert.assertEquals(newText + "a", selectById(id, conn));
+
+            // rollbacking both safepoints
+            conn.rollback(savePoint);
+
+            // after rollback of safepoints we can see the inserted text
+            // from the same transaction
+            Assert.assertEquals(text, selectById(id, conn));
+
+            // commit on the connection itself
+            conn.commit();
+            // inserted data (NOT updated) as rollback was called
+            Assert.assertEquals(text, selectById(id));
+        }
+    }
+
+    /**
+     * Using batch of prepare statement.
+     * (Nothing much with transaction management :)
+     */
+    @Test
+    public void runBatch() throws SQLException {
+        int id2 = 2;
+
+        try (Connection conn = jdbcDriver.getConnection()) {
+            // saying that I will manage transaction on the connection
+            // it's needed for batch as well - otherwise each batch item
+            // will be executed in its own transaction
+            conn.setAutoCommit(false);
+
+            PreparedStatement ps = getInsert(conn, 1, text);
+            ps.addBatch();
+
+            ps.setInt(1, id2);
+            ps.setString(2, newText);
+            ps.addBatch();
+
+            ps.executeBatch();
+
+            Assert.assertNull(selectById(id));
+            Assert.assertNull(selectById(id2));
+
+            conn.commit();
+
+            Assert.assertEquals(text, selectById(id));
+            Assert.assertEquals(newText, selectById(id2));
+        }
+    }
+
+    /**
+     * DDL commands behaves differently for different vendors.
+     * https://wiki.postgresql.org/wiki/Transactional_DDL_in_PostgreSQL:_A_Competitive_Analysis
+     *
+     * For PostgreSQL the DDL commands are transactional but e.g. for Oracle they are not
+     * and DDL commands means commits the previous transaction as first step.
+     */
+    @Test
+    @Ignore
+    public void runDDL() throws SQLException {
+        String tableName = "RUN_DDL_TEST_TABLE";
+        String selectTableSQL = String.format(SELECT_PATTERN, tableName);
+        String dropTableSQL = String.format(DROP_TABLE_PATTERN, tableName);
+
+        try {
+            // no table should exist
+            runSQL(selectTableSQL);
+            log.debug("Table {} does exist - dropping it", tableName);
+            runSQL(dropTableSQL);
+        } catch (Exception e) {
+            // ignore - expecting that table does not exist
+        }
+
+        try (Connection conn = jdbcDriver.getConnection()) {
+            // starting transaction
+            conn.setAutoCommit(false);
+            // doing ddl command
+            String createTableSQL = String.format(CREATE_TABLE_PATTERN, tableName);
+            Statement st = conn.createStatement();
+            st.execute(createTableSQL);
+
+            // table was created but as DDL is not part of transaction
+            // we are able to see it from scope outside of this transaction
+            runSQL(selectTableSQL);
+
+            conn.commit();
+        } catch (Exception e) {
+            log.error("ERROR: {}", e);
+            Assert.fail("Can't finish the test. Cause: " + e.getMessage());
+        } finally {
+            try (Connection conn = jdbcDriver.getConnection()) {
+                Statement st = conn.createStatement();
+                st.executeQuery(dropTableSQL);
+            } catch (Exception e) {
+                log.warn("Can't drop table {}: {}", tableName, e);
             }
         }
     }
@@ -112,5 +357,44 @@ public class JdbcTest {
             Statement st = conn.createStatement();
             return st.execute(sql);
         }
+    }
+
+    private String selectById(final int id, final Connection conn) throws SQLException {
+        return selectById(id, TABLE_NAME, conn);
+    }
+
+    private String selectById(final int id, final String tableName, final Connection conn) throws SQLException {
+        String selectClause = String.format(SELECT_WHERE, tableName);
+        PreparedStatement ps = conn.prepareStatement(selectClause);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            String text = rs.getString("text");
+            log.debug("Result of the query '{}' is '{}'", ps.toString(), text);
+            return text;
+        } else {
+            return null;
+        }
+    }
+
+    private String selectById(final int id) throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            return selectById(id, conn);
+        }
+    }
+
+    private PreparedStatement getInsert(final Connection conn, final int prepId, final String prepText) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(INSERT);
+        ps.setInt(1, prepId);
+        ps.setString(2, prepText);
+        return ps;
+    }
+
+    private PreparedStatement getUpdate(final Connection conn, final int prepId, final String prepText) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement(UPDATE);
+        ps.setInt(1, prepId);
+        ps.setString(2, prepText);
+        ps.setInt(3, prepId);
+        return ps;
     }
 }
