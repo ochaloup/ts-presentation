@@ -360,6 +360,105 @@ public class JdbcTest {
         }
     }
 
+    /**
+     * PostgreSQL e.g. not support isolation level 0:
+     * org.postgresql.util.PSQLException: Transaction isolation level 0 not supported.
+     */
+    @Test
+    @Ignore
+    public void transactionIsolationTRANSACTION_NONE() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            conn.setTransactionIsolation(Connection.TRANSACTION_NONE);
+            PreparedStatement ps = getInsert(conn, id, text);
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            // execute
+            ps.executeUpdate();
+            // not commited - but running without transaction here
+            Assert.assertEquals(text, selectById(id));
+            // commit provided
+            conn.commit();
+        }
+    }
+
+    /**
+     * In PostgreSQL READ UNCOMMITTED is treated as READ COMMITTED, while REPEATABLE READ is treated as SERIALIZABLE.
+     */
+    @Test
+    @Ignore
+    public void transactionIsolationTRANSACTION_READ_UNCOMMITED() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            PreparedStatement ps = getInsert(conn, id, text);
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            // execute
+            ps.executeUpdate();
+            // not commited - but running without transaction here
+            Assert.assertEquals(text, selectById(id));
+            // commit provided
+            conn.commit();
+        }
+    }
+
+    @Test
+    public void transactionIsolationTRANSACTION_READ_COMMITED() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            getInsert(conn, id, text).executeUpdate();
+        }
+
+        try (Connection conn = jdbcDriver.getConnection()) {
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            conn.setAutoCommit(false);
+
+            // not commited - but running without transaction here
+            String takenText = selectById(id, conn);
+
+            try (Connection connAnother = jdbcDriver.getConnection()) {
+                connAnother.setAutoCommit(false);
+                // update in different transaction
+                getUpdate(connAnother, 1, newText).executeUpdate();
+                connAnother.commit();
+            }
+
+            // as non-repeatable reads are permitted then the texts will be different
+            // as meanwhile update was executed
+            Assert.assertNotEquals(takenText, selectById(id, conn));
+            Assert.assertEquals(newText, selectById(id, conn));
+            Assert.assertEquals(newText, selectById(id));
+            // commit provided
+            conn.commit();
+        }
+    }
+
+    @Test
+    public void transactionIsolationTRANSACTION_REPEATABLE_READ() throws SQLException {
+        try (Connection conn = jdbcDriver.getConnection()) {
+            getInsert(conn, id, text).executeUpdate();
+        }
+
+        try (Connection conn = jdbcDriver.getConnection()) {
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            conn.setAutoCommit(false);
+
+            // not commited - but running without transaction here
+            String takenText = selectById(id, conn);
+
+            try (Connection connAnother = jdbcDriver.getConnection()) {
+                connAnother.setAutoCommit(false);
+                // update in different transaction
+                getUpdate(connAnother, 1, newText).executeUpdate();
+                connAnother.commit();
+            }
+
+            // non-repeatable reads are not permitted so we will see the text as at time of first read
+            Assert.assertEquals(takenText, selectById(id, conn));
+            Assert.assertEquals(newText, selectById(id));
+            // commit provided
+            conn.commit();
+        }
+    }
+
     private static boolean runSQL(final String sql) throws SQLException {
         JDBCDriver jdbcDriver = new JDBCDriver();
         try (Connection conn = jdbcDriver.getConnection()) {
