@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="ResourceLocalJTAPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+
+        <!-- All classes should be scan for being entity and the class element should not be needed -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>org.jboss.qa.tspresentation.jpa.TestEntity</class>
+
+        <properties>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/crashrec?loglevel=2"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.username" value="crashrec"/>
+            <property name="hibernate.connection.password" value="crashrec"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+
+            <!-- Scan for annotated classes and Hibernate mapping XML files -->
+            <!-- Needed for exclude-unlisted-classes would work (http://stackoverflow.com/q/17951297/187035) -->
+            <property name="hibernate.archive.autodetection" value="class, hbm" />
+
+            <!-- This should not be needed as dialect will be autodetected from jdbc driver -->
+            <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>  -->
+        </properties>
+    </persistence-unit>
+</persistence>

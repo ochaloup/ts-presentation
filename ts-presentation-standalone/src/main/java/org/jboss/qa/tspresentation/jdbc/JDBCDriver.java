@@ -1,4 +1,4 @@
-package org.jboss.qa.tspresentation.database;
+package org.jboss.qa.tspresentation.jdbc;
 
 import java.sql.Connection;
 import java.sql.Driver;
