@@ -26,6 +26,15 @@
       <artifactId>hibernate-core</artifactId>
       <version>${version.hibernate}</version>
     </dependency>
+    <!-- 
+      javax.persistence.PersistenceException: No Persistence provider for EntityManager named
+      for getting rid of it we need to have entitymanger as dependency (+META-INF/persistence.xml file) 
+    -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${version.hibernate}</version>
+    </dependency>
   </dependencies>
 
 </project>

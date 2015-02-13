@@ -16,6 +16,7 @@ public class JDBCDriver {
 
     // saying if driver based on project properties was already registered or not
     private static volatile boolean isRegistered = false;
+    private static ClassLoader driverClassLoader;
 
     /**
      * Registering JDBC driver based on information from system properties
@@ -26,17 +27,17 @@ public class JDBCDriver {
                 return;
             }
 
-            ClassLoader classLoader = FileLoader.loadJar(ProjectProperties.get("db.driver"));
+            driverClassLoader = FileLoader.loadJar(ProjectProperties.get("db.driver"));
             try {
-                Class.forName(ProjectProperties.get("db.jdbc_class"), true, classLoader);
+                Class.forName(ProjectProperties.get("db.jdbc_class"), true, driverClassLoader);
                 @SuppressWarnings("unchecked")
-                Class<Driver> driverClazz = (Class<Driver>) classLoader.loadClass(ProjectProperties.get("db.jdbc_class"));
+                Class<Driver> driverClazz = (Class<Driver>) driverClassLoader.loadClass(ProjectProperties.get("db.jdbc_class"));
                 // trouble with class loading - see http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
                 DriverDelegation driverDelegation = new DriverDelegation(driverClazz.newInstance());
                 DriverManager.registerDriver(driverDelegation);
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException("Can't load class " + ProjectProperties.get("db.jdbc_class") + " from jarfile " +
-                        ProjectProperties.get("db.driver") + " by classloader " + classLoader, cnfe);
+                        ProjectProperties.get("db.driver") + " by classloader " + driverClassLoader, cnfe);
             } catch (InstantiationException | IllegalAccessException iae) {
                 throw new RuntimeException("Can't instantiate new instance of class '" + ProjectProperties.get("db.jdbc_class") + "'", iae);
             } catch (IllegalStateException ise) {
@@ -44,6 +45,20 @@ public class JDBCDriver {
             } catch (SQLException sqle) {
                 throw new RuntimeException("Can't register driver to driver manager", sqle);
             }
+            // ok, now we have driver loaded
+            isRegistered = true;
+        }
+    }
+
+    /**
+     * Rerturning classloader used during registration of the jdbc driver.
+     */
+    public static ClassLoader getDriverClassLoader() {
+        synchronized (JDBCDriver.class) {
+            if(!isRegistered) {
+                throw new IllegalStateException("Driver was not registered - no class loader exist");
+            }
+            return driverClassLoader;
         }
     }
 

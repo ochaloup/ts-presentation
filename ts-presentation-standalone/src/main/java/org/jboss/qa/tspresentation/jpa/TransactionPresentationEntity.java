@@ -1,21 +1,19 @@
 package org.jboss.qa.tspresentation.jpa;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class TestEntity {
+public class TransactionPresentationEntity {
     @Id
+    @GeneratedValue
     int id;
 
     String name;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
     }
 
     public String getName() {

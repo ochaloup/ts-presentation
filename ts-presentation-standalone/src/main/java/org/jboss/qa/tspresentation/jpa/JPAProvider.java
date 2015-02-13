@@ -1,19 +1,21 @@
 package org.jboss.qa.tspresentation.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class JPAProvider {
     public void doWork() {
-        EntityManagerFactory emf;
-        emf = Persistence.createEntityManagerFactory("ResourceLocalJTAPersistenceUnit");
+        Map<String, String> jpaConfiguration = new HashMap<String, String>();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ResourceLocalJTAPersistenceUnit", jpaConfiguration);
         EntityManager entityManager = (EntityManager) emf.createEntityManager();
 
         entityManager.getTransaction().begin();
 
-        TestEntity entity = new TestEntity();
-        entity.setId(2);
+        TransactionPresentationEntity entity = new TransactionPresentationEntity();
         entity.setName("Franta");
 
         entityManager.persist(entity);

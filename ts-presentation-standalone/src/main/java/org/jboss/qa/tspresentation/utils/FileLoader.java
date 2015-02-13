@@ -19,7 +19,7 @@ public class FileLoader {
      */
     public static ClassLoader loadJar(final String pathToJar) {
         URL url = getFileURL(pathToJar);
-        final URLClassLoader loader = new URLClassLoader (new URL[] {url});
+        final URLClassLoader loader = new URLClassLoader (new URL[] {url}, Thread.currentThread().getContextClassLoader());
         return loader;
     }
 
