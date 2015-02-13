@@ -23,6 +23,7 @@
     <version.logback>1.1.2</version.logback>
     <version.maven.surefire>2.17</version.maven.surefire>
     <version.slf4j>1.7.10</version.slf4j>
+    <version.surefire>2.18.1</version.surefire>
   </properties>
 
   <dependencyManagement>
@@ -53,7 +54,7 @@
     <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
+        <version>${version.logback}</version>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
@@ -91,6 +92,18 @@
           </configuration>
         </plugin>
         
+        <!-- Surefire defines properties as environmental -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.surefire}</version>
+          <configuration>
+            <systemPropertyVariables combine.children="append">
+              <jar.library>${jar.library}</jar.library>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        
         <!-- We want to check style of development :) -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -112,7 +125,7 @@
             </execution>
           </executions>
         </plugin>
-        
+
       </plugins>
     </pluginManagement>
   </build>
