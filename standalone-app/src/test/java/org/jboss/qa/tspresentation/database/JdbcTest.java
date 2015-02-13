@@ -132,6 +132,9 @@ public class JdbcTest {
     /**
      * When close is called prior of calling commit on connection
      * then rollback is done.
+     *
+     * According to the javadoc, you should try to either commit or roll back before calling the close method. The results otherwise are implementation-defined.
+     * (http://stackoverflow.com/questions/218350/does-java-connection-close-rollback)
      */
     @Test
     public void closingConnectionMeansRollback() throws SQLException {
@@ -456,6 +459,43 @@ public class JdbcTest {
             Assert.assertEquals(newText, selectById(id));
             // commit provided
             conn.commit();
+        }
+    }
+
+    /**
+     * This is a kind of documentation test which shows standard idiom based on answer from Stackoverflow
+     * http://stackoverflow.com/questions/3160756/in-jdbc-when-autocommit-is-false-and-no-explicit-savepoints-have-been-set-is-i
+     */
+    @Test
+    public void standardRollbackIdiom() throws SQLException {
+        Connection connection = null;
+        try {
+            connection = jdbcDriver.getConnection();
+            connection.setAutoCommit(false);
+
+            // transactional queries here
+            getInsert(connection, id, text).executeUpdate();
+
+            connection.commit();
+        } catch (SQLException e) {
+            // Rollback throws SQLException as well.
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException exceptionIgnore) {
+                    // ignore
+                }
+            }
+            throw e; // You don't want to suppress the main exception.
+        } finally {
+            // Closing should happen in finally.
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException exceptionIgnore) {
+                    // ignore
+                }
+            }
         }
     }
 
