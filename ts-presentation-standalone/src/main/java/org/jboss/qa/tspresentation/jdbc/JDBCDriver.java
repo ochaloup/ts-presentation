@@ -27,19 +27,19 @@ public class JDBCDriver {
                 return;
             }
 
-            driverClassLoader = FileLoader.loadJar(ProjectProperties.get("db.driver"));
+            driverClassLoader = FileLoader.loadJar(ProjectProperties.get(ProjectProperties.JDBC_DRIVER_FILEPATH));
             try {
-                Class.forName(ProjectProperties.get("db.jdbc_class"), true, driverClassLoader);
+                Class.forName(ProjectProperties.get(ProjectProperties.JDBC_CLASS), true, driverClassLoader);
                 @SuppressWarnings("unchecked")
-                Class<Driver> driverClazz = (Class<Driver>) driverClassLoader.loadClass(ProjectProperties.get("db.jdbc_class"));
+                Class<Driver> driverClazz = (Class<Driver>) driverClassLoader.loadClass(ProjectProperties.get(ProjectProperties.JDBC_CLASS));
                 // trouble with class loading - see http://www.kfu.com/~nsayer/Java/dyn-jdbc.html
                 DriverDelegation driverDelegation = new DriverDelegation(driverClazz.newInstance());
                 DriverManager.registerDriver(driverDelegation);
             } catch (ClassNotFoundException cnfe) {
-                throw new RuntimeException("Can't load class " + ProjectProperties.get("db.jdbc_class") + " from jarfile " +
-                        ProjectProperties.get("db.driver") + " by classloader " + driverClassLoader, cnfe);
+                throw new RuntimeException("Can't load class " + ProjectProperties.get(ProjectProperties.JDBC_CLASS) + " from jarfile " +
+                        ProjectProperties.get(ProjectProperties.JDBC_DRIVER_FILEPATH) + " by classloader " + driverClassLoader, cnfe);
             } catch (InstantiationException | IllegalAccessException iae) {
-                throw new RuntimeException("Can't instantiate new instance of class '" + ProjectProperties.get("db.jdbc_class") + "'", iae);
+                throw new RuntimeException("Can't instantiate new instance of class '" + ProjectProperties.get(ProjectProperties.JDBC_CLASS) + "'", iae);
             } catch (IllegalStateException ise) {
                 throw new RuntimeException("Something illegal happens during our classloading", ise);
             } catch (SQLException sqle) {
@@ -65,8 +65,10 @@ public class JDBCDriver {
     public Connection getConnection() {
         Connection connection;
         try {
-            connection = DriverManager.getConnection(ProjectProperties.get("db.jdbc_url"),
-                    ProjectProperties.get("db.username"), ProjectProperties.get("db.password"));
+            connection = DriverManager.getConnection(
+                    ProjectProperties.get(ProjectProperties.DB_URL),
+                    ProjectProperties.get(ProjectProperties.DB_USERNAME),
+                    ProjectProperties.get(ProjectProperties.DB_PASSWORD));
             log.info("Newly created connection: '{}'", connection);
             return connection;
         } catch (SQLException sqle) {

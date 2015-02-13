@@ -7,18 +7,36 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jboss.qa.tspresentation.utils.ProjectProperties;
+
 public class JPAProvider {
-    public void doWork() {
+
+    private EntityManagerFactory emf;
+
+    /**
+     * Creating {@link EntityManagerFactory}
+     */
+    public JPAProvider(final String persistenceUnitName) {
         Map<String, String> jpaConfiguration = new HashMap<String, String>();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ResourceLocalJTAPersistenceUnit", jpaConfiguration);
-        EntityManager entityManager = (EntityManager) emf.createEntityManager();
+        jpaConfiguration.put("hibernate.connection.url", ProjectProperties.get(ProjectProperties.DB_URL));
+        jpaConfiguration.put("hibernate.connection.driver_class", ProjectProperties.get(ProjectProperties.JDBC_CLASS));
+        jpaConfiguration.put("hibernate.connection.username", ProjectProperties.get(ProjectProperties.DB_USERNAME));
+        jpaConfiguration.put("hibernate.connection.password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+        emf = Persistence.createEntityManagerFactory(persistenceUnitName, jpaConfiguration);
+    }
 
-        entityManager.getTransaction().begin();
+    public JPAProvider() {
+        this("ResourceLocalJTAPersistenceUnit");
+    }
 
-        TransactionPresentationEntity entity = new TransactionPresentationEntity();
-        entity.setName("Franta");
+    public EntityManager getEntityManager() {
+        return (EntityManager) emf.createEntityManager();
+    }
 
-        entityManager.persist(entity);
-        entityManager.getTransaction().commit();
+    /**
+     * Closing {@link EntityManagerFactory}
+     */
+    public void close() {
+        emf.close();
     }
 }

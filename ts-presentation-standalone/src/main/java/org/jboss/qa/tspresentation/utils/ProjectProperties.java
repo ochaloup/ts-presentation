@@ -13,7 +13,18 @@ public class ProjectProperties {
     // Property to specify folder where library jar files will be searched in
     public static final String JAR_LIBRARY = "jar.library";
 
-    // Properties - merged from file and from system
+
+    // Connection configuration properties
+    public static final String JDBC_DRIVER_FILEPATH = "db.jdbc_driver";
+    public static final String JDBC_CLASS = "db.jdbc_class";
+    public static final String DB_URL = "db.jdbc_url";
+    public static final String DB_PASSWORD = "db.password";
+    public static final String DB_USERNAME = "db.username";
+    public static final String XA_DATASOURCE_CLASS = "datasource.class.xa";
+
+    // -----------------------------
+    // ----- LOADED PROPERTIES -----
+    // -----------------------------
     private static final Properties GLOBAL_PROPERTIES = PropertiesLoader.loadProperties();
 
     public static Properties getAllProperties() {
