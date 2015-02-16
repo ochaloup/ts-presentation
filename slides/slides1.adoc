@@ -1,12 +1,13 @@
 :source-highlighter: highlight.js
 :revealjs_theme: redhat
 :revealjs_controls: false
+:revealjs_center: false
 
 :images: ./misc
 
 
 = Transactions in Java
-Ondra Chaloupka
+Ondra Chaloupka / ochaloup@redhat.com
 
 == Transactions in Java ?
 [ source, language="java" ]
@@ -19,12 +20,97 @@ public class TestBean {
         // do something
     }
 }
----- 
+----
 
 == Transactions in Java !?
 image:{images}/tagcloud.png[]
+
+== Agenda
+ * Terminology
+ * Resource local transaction in Java SE
+ ** Database
+ ** JMS
+ * Global transaction in Java SE
+ ** Java Transaction API (JTA)
+ ** Narayana implementation
+ * Transactions in Java EE
+ ** Bean managed transactions (BMT)
+ ** Container managed transactions (CMT)
+
+== A transaction
+A transaction is a group of business logic statements with certain shared properties.
+
+One or more of:
+
+Atomic, Consistent, Isolated, Durable
+
+[NOTE.speaker]
+--
+The statement above stolen from presentation of Michael Musgrove for Brno JBug, January 2015
+From user point of view a transaction is an atomic unit of the work where everything or nothing is finished.
+--
+
+== Terminology corner
+ * ACID and "his brothers" BASE, BA...
+ * Transaction management
+ ** Resource local
+ ** Global transaction
+ ** Distributed transaction
+ * JTA vs. JTS
+
+[NOTE.speaker]
+--
+BASE
+ * connected with the movement of NoSQL
+ * tighly coupled with CAP theorem - system could satisfy just two of these three requirements: Consistency, Availability, Parition Tolerance
+ * one of the way how to handle CAP "trouble" is relaxing consistency which is where BASE goes
+ ** Basic Availability -  spread data across many storage systems with a high degree of replication
+ ** Soft State. - data consistency is the developer's problem and should not be handled by the database, consistency is not a goal here
+ ** Eventual Consistency - system will eventually become consistent once it stops receiving input
+ * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB (see wiki :)
+BA - business activities
+ * BA is term from "another" world - in general it's long terming transaction (booking a flight + taxi from the airport)
+Txn management
+* Resource local - transaction at level of database or JMS server
+* Global - transaction "consisting" from several resource local transactions managed by transaction manager
+* Distributed transaction - transaction spread over multiple transaction managers
+JTA and JTS
+The JTA is the interface developers use to manage transactions.
+The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+ Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+--
+
+=== ACID
+ * Atomicity
+ * Consistency
+ * Isolation
+ * Durablitity
+
+[NOTE.speaker]
+--
+http://en.wikipedia.org/wiki/ACID
+Atomicity
+ * all or nothing
+ * one part of transaction fails then whole transaction fails 
+Consistency
+ * transaction will bring the database from one valid state to another according to defined rules (as constraints, cascades, triggers...)
+ * does not mean correctness of transaction from business point of view
+Isolation
+ * for transaction itself the system behaves like the paralel transactions would be run in serial order
+ * concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially (one by one)
+Durablitity
+ * once a transaction has been committed, it will remain so, even in the event of power loss, crashes, or errors
+--
+
+
 
 == References
  * Java Transaction Design Strategies (http://www.infoq.com/minibooks/JTDS)
 
  * My bookmarks on https://delicious.com/chalda/ts.presentation
+
+
+--
+// vim: set syntax=asciidoc:
+--

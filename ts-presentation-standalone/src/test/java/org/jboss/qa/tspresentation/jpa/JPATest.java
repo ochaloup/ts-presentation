@@ -181,26 +181,8 @@ public class JPATest {
      */
     @Test(expected = NullPointerException.class)
     public void jtaPersistenceUnitWithoutTM() {
-        EntityManager em = jpaJTA.getEntityManager();
-        EntityTransaction tx = null;
-
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-
-            PresentationEntity entity = new PresentationEntity();
-            entity.setName("Frodo");
-
-            em.persist(entity);
-            tx.commit();
-        } catch (RuntimeException re) {
-            if(tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw re;
-        } finally {
-            em.close();
-        }
+        // :)
+        jpaJTA.getEntityManager();
     }
 
     /**
