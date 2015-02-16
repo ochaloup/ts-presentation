@@ -130,7 +130,7 @@ public class JdbcTest {
     }
 
     /**
-     * !!! This works for PostgreSQL but it won't for Oracle !!!
+     * !!! DATABASE dependent !!!
      *
      * When close is called prior of calling commit on connection
      * then rollback is done for PostgresSQL.

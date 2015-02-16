@@ -110,6 +110,8 @@ public class JPATest {
     }
 
     /**
+     * !!! DATABASE dependent !!!
+     *
      * When Hibernate starts transaction it automatically calls {@link Connection#setAutoCommit(boolean)}
      * with false. If there is no transaction specified then EntityManager closes it on EntityManager.close().
      * Now it depends on DB behaviour
@@ -121,7 +123,8 @@ public class JPATest {
      *
      * For longer discussion on this see: https://developer.jboss.org/wiki/Non-transactionalDataAccessAndTheAuto-commitMode
      *
-     * BUT!!! if I set hibernate.connection.autocommit to true then it does not behaves as I would expect
+     * BUT!!! for PostgreSQL
+     *        if I set hibernate.connection.autocommit to true then it does not behaves as I would expect
      *        data is not pass to database at all - em.close() does not do that and em.flush() is not permitted outside of txn
      *        I have idea that this option was disabled in Hibernate 4.x but I'm not sure in this at all
      */
