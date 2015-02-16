@@ -2,6 +2,29 @@
 :revealjs_theme: redhat
 :revealjs_controls: false
 
-= Java Transactions
+:images: ./misc
+
+
+= Transactions in Java
 Ondra Chaloupka
 
+== Transactions in Java ?
+[ source, language="java" ]
+----
+@Stateless
+public class TestBean {
+    
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void doWork() {
+        // do something
+    }
+}
+---- 
+
+== Transactions in Java !?
+image:{images}/tagcloud.png[]
+
+== References
+ * Java Transaction Design Strategies (http://www.infoq.com/minibooks/JTDS)
+
+ * My bookmarks on https://delicious.com/chalda/ts.presentation
