@@ -18,6 +18,8 @@
 
         <!-- Versions -->
         <version.arquillian.wildfly>8.1.0.CR2</version.arquillian.wildfly>
+        <version.spec.ejb>1.0.0.Final</version.spec.ejb>
+        <version.spec.jms>1.0.0.Final</version.spec.jms>
   </properties>
 
   <dependencies>
@@ -29,11 +31,13 @@
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <version>${version.spec.ejb}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <artifactId>jboss-jms-api_2.0_spec</artifactId>
+      <version>${version.spec.jms}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
