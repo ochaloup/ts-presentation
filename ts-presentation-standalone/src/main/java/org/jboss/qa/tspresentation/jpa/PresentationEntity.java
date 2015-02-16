@@ -1,15 +1,23 @@
 package org.jboss.qa.tspresentation.jpa;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class TransactionPresentationEntity {
+@Table(name = PresentationEntity.TABLE_NAME)
+public class PresentationEntity {
+    public static final String TABLE_NAME = "PRESENTATION_ENTITY";
+    public static final String NAME_COMUMN_NAME = "name";
+
     @Id
     @GeneratedValue
+    @Column(name = "id")
     int id;
 
+    @Column(name = NAME_COMUMN_NAME)
     String name;
 
     public int getId() {

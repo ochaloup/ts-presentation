@@ -19,10 +19,9 @@ import org.slf4j.LoggerFactory;
 public class JdbcTest {
     private static final Logger log = LoggerFactory.getLogger(JdbcTest.class);
 
-    private JDBCDriver jdbcDriver = new JDBCDriver();
-
     private static final String TABLE_NAME = "test";
-    private static final String CREATE_TABLE_PATTERN = "CREATE TABLE %s (id int, text varchar(255))";
+    private static final String TEXT_COLUMN_NAME = "text";
+    private static final String CREATE_TABLE_PATTERN = "CREATE TABLE %s (id int, " + TEXT_COLUMN_NAME + " varchar(255))";
     private static final String CREATE_TABLE = String.format(CREATE_TABLE_PATTERN, TABLE_NAME);
     private static final String DROP_TABLE_PATTERN = "DROP TABLE %s";
     private static final String DROP_TABLE =  String.format(DROP_TABLE_PATTERN, TABLE_NAME);
@@ -31,7 +30,8 @@ public class JdbcTest {
     private static final String INSERT = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?)";
     private static final String UPDATE = "UPDATE " + TABLE_NAME + " SET id = ?, text = ? WHERE id = ?";
     private static final String SELECT_PATTERN = "SELECT * FROM %s";
-    private static final String SELECT_WHERE = String.format(SELECT_PATTERN + " WHERE id = ?", TABLE_NAME);
+    private static final String SELECT_WHERE_PATTERN = " WHERE id = ?";
+    // private static final String SELECT_WHERE = String.format(SELECT_PATTERN + SELECT_WHERE_PATTERN, TABLE_NAME);
 
     private int id = 1;
     private String text = "testing text";
@@ -58,7 +58,7 @@ public class JdbcTest {
      */
     @Test
     public void autocommitTrue() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             PreparedStatement ps = getInsert(conn, id, text);
             // conn.setAutoCommit(true); // this is by default
             ps.executeUpdate();
@@ -83,7 +83,7 @@ public class JdbcTest {
      */
     @Test
     public void autocommitFalse() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             PreparedStatement ps = getInsert(conn, id, text);
 
             // saying that I will manage transaction on the connection
@@ -111,7 +111,7 @@ public class JdbcTest {
      */
     @Test
     public void autocommitFalseWithRollback() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             PreparedStatement ps = getInsert(conn, id, text);
 
             // saying that I will manage transaction on the connection
@@ -130,15 +130,18 @@ public class JdbcTest {
     }
 
     /**
+     * !!! This works for PostgreSQL but it won't for Oracle !!!
+     *
      * When close is called prior of calling commit on connection
-     * then rollback is done.
+     * then rollback is done for PostgresSQL.
+     * But for Oracle commit is done probably.
      *
      * According to the javadoc, you should try to either commit or roll back before calling the close method. The results otherwise are implementation-defined.
      * (http://stackoverflow.com/questions/218350/does-java-connection-close-rollback)
      */
     @Test
     public void closingConnectionMeansRollback() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             PreparedStatement ps = getInsert(conn, id, text);
 
             // saying that I will manage transaction on the connection
@@ -162,7 +165,7 @@ public class JdbcTest {
      */
     @Test
     public void doubleChangeInTransaction() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             // saying that I will manage transaction on the connection
             conn.setAutoCommit(false);
 
@@ -193,7 +196,7 @@ public class JdbcTest {
      */
     @Test
     public void safePointCommit() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             PreparedStatement ps = getInsert(conn, id, text);
 
             // saying that I will manage transaction on the connection
@@ -223,7 +226,7 @@ public class JdbcTest {
      */
     @Test
     public void safePointRollback() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             // get command for data insertion
             PreparedStatement ps = getInsert(conn, 1, text);
 
@@ -251,7 +254,7 @@ public class JdbcTest {
      */
     @Test
     public void safePointDoubleRollback() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             // saying that I will manage transaction on the connection
             conn.setAutoCommit(false);
             // execute
@@ -289,7 +292,7 @@ public class JdbcTest {
     public void runBatch() throws SQLException {
         int id2 = 2;
 
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             // saying that I will manage transaction on the connection
             // it's needed for batch as well - otherwise each batch item
             // will be executed in its own transaction
@@ -337,7 +340,7 @@ public class JdbcTest {
             // ignore - expecting that table does not exist
         }
 
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             // starting transaction
             conn.setAutoCommit(false);
             // doing ddl command
@@ -354,7 +357,7 @@ public class JdbcTest {
             log.error("ERROR: {}", e);
             Assert.fail("Can't finish the test. Cause: " + e.getMessage());
         } finally {
-            try (Connection conn = jdbcDriver.getConnection()) {
+            try (Connection conn = JDBCDriver.getConnection()) {
                 Statement st = conn.createStatement();
                 st.executeQuery(dropTableSQL);
             } catch (Exception e) {
@@ -370,7 +373,7 @@ public class JdbcTest {
     @Test
     @Ignore
     public void transactionIsolationTRANSACTION_NONE() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_NONE);
             PreparedStatement ps = getInsert(conn, id, text);
             // saying that I will manage transaction on the connection
@@ -390,7 +393,7 @@ public class JdbcTest {
     @Test
     @Ignore
     public void transactionIsolationTRANSACTION_READ_UNCOMMITED() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             PreparedStatement ps = getInsert(conn, id, text);
             // saying that I will manage transaction on the connection
@@ -406,18 +409,18 @@ public class JdbcTest {
 
     @Test
     public void transactionIsolationTRANSACTION_READ_COMMITED() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             getInsert(conn, id, text).executeUpdate();
         }
 
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             conn.setAutoCommit(false);
 
             // not commited - but running without transaction here
             String takenText = selectById(id, conn);
 
-            try (Connection connAnother = jdbcDriver.getConnection()) {
+            try (Connection connAnother = JDBCDriver.getConnection()) {
                 connAnother.setAutoCommit(false);
                 // update in different transaction
                 getUpdate(connAnother, 1, newText).executeUpdate();
@@ -436,18 +439,18 @@ public class JdbcTest {
 
     @Test
     public void transactionIsolationTRANSACTION_REPEATABLE_READ() throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             getInsert(conn, id, text).executeUpdate();
         }
 
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
             conn.setAutoCommit(false);
 
             // not commited - but running without transaction here
             String takenText = selectById(id, conn);
 
-            try (Connection connAnother = jdbcDriver.getConnection()) {
+            try (Connection connAnother = JDBCDriver.getConnection()) {
                 connAnother.setAutoCommit(false);
                 // update in different transaction
                 getUpdate(connAnother, 1, newText).executeUpdate();
@@ -470,7 +473,7 @@ public class JdbcTest {
     public void standardRollbackIdiom() throws SQLException {
         Connection connection = null;
         try {
-            connection = jdbcDriver.getConnection();
+            connection = JDBCDriver.getConnection();
             connection.setAutoCommit(false);
 
             // transactional queries here
@@ -499,25 +502,32 @@ public class JdbcTest {
         }
     }
 
-    private static boolean runSQL(final String sql) throws SQLException {
-        JDBCDriver jdbcDriver = new JDBCDriver();
-        try (Connection conn = jdbcDriver.getConnection()) {
+
+    // ---------------------------------------------------------
+    // ----------------- PUBLIC STATIC METHODS -----------------
+    // ---------------------------------------------------------
+    public static boolean runSQL(final String sql) throws SQLException {
+        try (Connection conn = JDBCDriver.getConnection()) {
             Statement st = conn.createStatement();
             return st.execute(sql);
         }
     }
 
-    private String selectById(final int id, final Connection conn) throws SQLException {
-        return selectById(id, TABLE_NAME, conn);
+    public static String selectById(final int id, final Connection conn) throws SQLException {
+        return JdbcTest.selectById(id, TABLE_NAME, conn);
     }
 
-    private String selectById(final int id, final String tableName, final Connection conn) throws SQLException {
-        String selectClause = String.format(SELECT_WHERE, tableName);
+    public static String selectById(final int id, final String tableName, final Connection conn) throws SQLException {
+        return selectById(id, tableName, TEXT_COLUMN_NAME, conn);
+    }
+
+    public static String selectById(final int id, final String tableName, final String columnName, final Connection conn) throws SQLException {
+        String selectClause = String.format(SELECT_PATTERN + SELECT_WHERE_PATTERN, tableName) ;
         PreparedStatement ps = conn.prepareStatement(selectClause);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         if(rs.next()) {
-            String text = rs.getString("text");
+            String text = rs.getString(columnName);
             log.debug("Result of the query '{}' is '{}'", ps.toString(), text);
             return text;
         } else {
@@ -526,7 +536,7 @@ public class JdbcTest {
     }
 
     private String selectById(final int id) throws SQLException {
-        try (Connection conn = jdbcDriver.getConnection()) {
+        try (Connection conn = JDBCDriver.getConnection()) {
             return selectById(id, conn);
         }
     }

@@ -13,7 +13,6 @@ public class ProjectProperties {
     // Property to specify folder where library jar files will be searched in
     public static final String JAR_LIBRARY = "jar.library";
 
-
     // Connection configuration properties
     public static final String JDBC_DRIVER_FILEPATH = "db.jdbc_driver";
     public static final String JDBC_CLASS = "db.jdbc_class";
@@ -21,6 +20,10 @@ public class ProjectProperties {
     public static final String DB_PASSWORD = "db.password";
     public static final String DB_USERNAME = "db.username";
     public static final String XA_DATASOURCE_CLASS = "datasource.class.xa";
+
+    // Persistence unit properties
+    public static final String PERSISTENCE_UNIT_RESOURCE_LOCAL = "ResourceLocalPersistenceUnit";
+    public static final String PERSISTENCE_UNIT_JTA = "JTAPersistenceUnit";
 
     // -----------------------------
     // ----- LOADED PROPERTIES -----

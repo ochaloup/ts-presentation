@@ -62,7 +62,7 @@ public class JDBCDriver {
         }
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection;
         try {
             connection = DriverManager.getConnection(
