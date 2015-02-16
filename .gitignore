@@ -6,3 +6,5 @@ target/
 .settings/
 .checkstyle
 .classpath
+# some testing stuff
+test.adoc

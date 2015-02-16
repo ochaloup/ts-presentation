@@ -1,0 +1,7 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+
+= Java Transactions
+Ondra Chaloupka
+
