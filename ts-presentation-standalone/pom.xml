@@ -18,9 +18,12 @@
     
     <!-- Versions for standalone part -->
     <version.hibernate>4.3.8.Final</version.hibernate>
+    <version.hornetq>2.4.4.Final</version.hornetq>
+    <version.netty>3.10.0.Final</version.netty>
   </properties>
 
   <dependencies>
+    <!-- HIBERNATE -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -35,6 +38,24 @@
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${version.hibernate}</version>
     </dependency>
+    
+    <!-- HORNETQ -->
+    <dependency>
+        <groupId>org.hornetq</groupId>
+        <artifactId>hornetq-core-client</artifactId>
+        <version>${version.hornetq}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.hornetq</groupId>
+        <artifactId>hornetq-jms-client</artifactId>
+        <version>${version.hornetq}</version>
+    </dependency>
+  <!--   <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty</artifactId>
+        <version>${version.netty}</version>
+    </dependency> -->
+  
   </dependencies>
-
+  
 </project>
