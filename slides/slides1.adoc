@@ -1,7 +1,7 @@
 :source-highlighter: highlight.js
 :revealjs_theme: redhat
 :revealjs_controls: false
-:revealjs_center: false
+:revealjs_center: true
 
 :images: ./misc
 
@@ -37,6 +37,9 @@ image:{images}/tagcloud.png[]
  ** Bean managed transactions (BMT)
  ** Container managed transactions (CMT)
 
+
+= Terminology corner
+
 == A transaction
 A transaction is a group of business logic statements with certain shared properties.
 
@@ -46,17 +49,36 @@ Atomic, Consistent, Isolated, Durable
 
 [NOTE.speaker]
 --
-The statement above stolen from presentation of Michael Musgrove for Brno JBug, January 2015
-From user point of view a transaction is an atomic unit of the work where everything or nothing is finished.
+ The statement above stolen from presentation of Michael Musgrove for Brno JBug, January 2015
+ From user point of view a transaction is an atomic unit of the work where everything or nothing is finished.
 --
 
-== Terminology corner
- * ACID and "his brothers" BASE, BA...
- * Transaction management
- ** Resource local
- ** Global transaction
- ** Distributed transaction
- * JTA vs. JTS
+=== ACID
+ * Atomicity
+ * Consistency
+ * Isolation
+ * Durablitity
+
+[NOTE.speaker]
+--
+ http://en.wikipedia.org/wiki/ACID
+ Atomicity
+  * all or nothing
+  * one part of transaction fails then whole transaction fails 
+ Consistency
+  * transaction will bring the database from one valid state to another according to defined rules (as constraints, cascades, triggers...)
+  * does not mean correctness of transaction from business point of view
+ Isolation
+  * for transaction itself the system behaves like the paralel transactions would be run in serial order
+  * concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially (one by one)
+ Durablitity
+  * once a transaction has been committed, it will remain so, even in the event of power loss, crashes, or errors
+--
+
+== and his "brothers"
+ * BASE
+ * BA
+ * ...
 
 [NOTE.speaker]
 --
@@ -70,45 +92,64 @@ BASE
  * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB (see wiki :)
 BA - business activities
  * BA is term from "another" world - in general it's long terming transaction (booking a flight + taxi from the airport)
-Txn management
-* Resource local - transaction at level of database or JMS server
-* Global - transaction "consisting" from several resource local transactions managed by transaction manager
-* Distributed transaction - transaction spread over multiple transaction managers
-JTA and JTS
-The JTA is the interface developers use to manage transactions.
-The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
-The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
- Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
 --
 
-=== ACID
- * Atomicity
- * Consistency
- * Isolation
- * Durablitity
+== JTA vs. JTS
+
+JTA is to JDBC as JTS is to the database driver
 
 [NOTE.speaker]
 --
-http://en.wikipedia.org/wiki/ACID
-Atomicity
- * all or nothing
- * one part of transaction fails then whole transaction fails 
-Consistency
- * transaction will bring the database from one valid state to another according to defined rules (as constraints, cascades, triggers...)
- * does not mean correctness of transaction from business point of view
-Isolation
- * for transaction itself the system behaves like the paralel transactions would be run in serial order
- * concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially (one by one)
-Durablitity
- * once a transaction has been committed, it will remain so, even in the event of power loss, crashes, or errors
+ JTA and JTS
+ The JTA is the interface developers use to manage transactions.
+ The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+ The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+ Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
 --
 
+== Transaction "types" (transaction manager point of view)
+ * Resource local
+ * Global transaction
+ * Distributed transaction
+
+[NOTE.speaker]
+--
+ Txn management
+ * Resource local - transaction at level of database or JMS server
+ * Global - transaction "consisting" from several resource local transactions managed by transaction manager
+ * Distributed transaction - transaction spread over multiple transaction managers
+ JTA and JTS
+ The JTA is the interface developers use to manage transactions.
+ The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+ The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+  Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+--
+
+== Transaction management model (developer point of view)
+ * Local transaction model
+ * Programmatic transaction model
+ * Declarative transaction model
+
+[NOTE.speaker]
+--
+ * Local - working directly with resource/connection
+ * Programmatic - not working with resource but with transaction
+ * Declarativ - transactions are hidden behind of JEE layer
+* Local
+`connection.commit`
+* Programatic
+`transaction.begin()
+transaction.commit()`
+* Declarative
+`@TransactionManagement(TransactionManagementType.CONTAINER)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)`
+--
 
 
 == References
  * Java Transaction Design Strategies (http://www.infoq.com/minibooks/JTDS)
 
- * My bookmarks on https://delicious.com/chalda/ts.presentation
+ * My bookmarks on http://delicious.com/chalda/ts.presentation
 
 
 --
