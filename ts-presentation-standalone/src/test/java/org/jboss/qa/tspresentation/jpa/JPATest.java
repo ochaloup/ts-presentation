@@ -5,10 +5,11 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaDelete;
 
 import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
+import org.hibernate.jdbc.ReturningWork;
 import org.jboss.qa.tspresentation.jdbc.JDBCDriver;
 import org.jboss.qa.tspresentation.jdbc.JdbcTest;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
@@ -132,17 +133,7 @@ public class JPATest {
     public void persistNoTransaction() throws SQLException {
         EntityManager em = jpaResourceLocal.getEntityManager();
 
-        // gettting Hibernate session and checking autocommit mode of the connection
-        Session session = (Session) em.getDelegate();
-        session.doWork(
-            new Work() {
-                public void execute(final Connection connection) throws SQLException {
-                    if(connection != null) {
-                        log.info("Connection autocommit mode is " + (connection.getAutoCommit() ? "true" : "false"));
-                    }
-                }
-            }
-        );
+        autocommitAssert(em, true);
 
         int id = -1;
         try {
@@ -155,14 +146,89 @@ public class JPATest {
             em.persist(entity);
 
             id = entity.getId();
-            Assert.assertNull(NAME, selectById(id));
+            Assert.assertNull(selectById(id));
         } finally {
             // em.flush(); // flush fails as it needs a running transaction (there is a check in code for this)
             em.close();
         }
         // as autocommit hibernate property hibernate.connection.autocommit is set to false by default
         // then there will be no information if Connection.close() rollbacks DB transaction
-        Assert.assertNull(NAME, selectById(id));
+        Assert.assertNull(selectById(id));
+    }
+
+    @Test
+    public void multipleTransactions() throws SQLException {
+        EntityTransaction tx = null;
+        Connection conn = null, conn2 = null;
+        PresentationEntity entity = null;
+        final String newName = NAME + "-changed";
+
+        EntityManager em = jpaResourceLocal.getEntityManager();
+        autocommitAssert(em, true);
+
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            autocommitAssert(em, false);
+
+            conn = getUnderlayingConnection(em);
+            log.info("Using connection {}", conn);
+
+            entity = new PresentationEntity();
+            entity.setName(NAME);
+            em.persist(entity);
+            // saying if entity is loaded with all it's information or if we have just handle to it (proxy object)
+            Assert.assertTrue("Entity was now persisted - it has to be loaded",
+                    Persistence.getPersistenceUtil().isLoaded(entity));
+            // saying if entity is attached or detached
+            Assert.assertTrue("We are at the same transaction - entity has to be attached",
+                    em.contains(entity));
+            tx.commit();
+
+            autocommitAssert(em, true);
+            Assert.assertFalse("Expecting the connection being pooled and not being closed",
+                    getUnderlayingConnection(em).isClosed());
+            Assert.assertTrue("We are out of the context of transaction but with the resource local transaction " +
+                    " and entity is detached only if we do it manually (e.g. by clear)",
+                    em.contains(entity));
+
+
+            tx = em.getTransaction();
+            tx.begin();
+            autocommitAssert(em, false);
+
+            conn2 = getUnderlayingConnection(em);
+            log.info("Using connection {}", conn2);
+            Assert.assertTrue("We in context of other transaction - entity should be still attached",
+                    em.contains(entity));
+
+            em.clear();
+            Assert.assertFalse("We expicitly called clear and entity should not be attached to persistence context by now",
+                    em.contains(entity));
+
+            // em.merge() seems is not working - I need to take entity which is returned by merge cal
+            // merge creates new entity instance here but it seems to me being against spec... maybe?
+            int id = entity.getId();
+            entity = em.merge(entity);
+            entity.setName(newName);
+            Assert.assertEquals("Id of merged entity instance has to be the same", id, entity.getId());
+
+            tx.commit();
+
+            // Connections taken from pool and pool can return the same connection
+            // Assert.assertNotEquals(conn, conn2);
+
+        } catch (RuntimeException re) {
+            if(tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw re;
+        } finally {
+            em.close();
+        }
+
+        Assert.assertEquals("Database should contain value defined in second transaction",
+                newName, selectById(entity.getId()));
     }
 
     /**
@@ -195,5 +261,24 @@ public class JPATest {
         } catch (SQLException sqle) {
             throw new RuntimeException("Can't get data from " + PresentationEntity.TABLE_NAME + " where id is " + id, sqle);
         }
+    }
+
+    private void autocommitAssert(final EntityManager em, final boolean autocommitValueExpected) throws SQLException {
+        Connection conn =  getUnderlayingConnection(em);
+        log.info("Connection autocommit mode is {}", (conn.getAutoCommit() ? "true" : "false"));
+        Assert.assertEquals("Autocommit mode " + (autocommitValueExpected ? "true" : "false") + " is expected",
+                autocommitValueExpected, conn.getAutoCommit());
+    }
+
+    private Connection getUnderlayingConnection(final EntityManager em) {
+        // gettting Hibernate session as delegate from entity manager
+        Session session = (Session) em.getDelegate();
+        return session.doReturningWork(
+            new ReturningWork<Connection>(){
+                public Connection execute(final Connection connection) throws SQLException {
+                    return connection;
+                }
+            }
+        );
     }
 }
