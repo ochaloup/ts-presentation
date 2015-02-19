@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
+import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
 
 public class JPAProvider {
 
@@ -18,10 +19,10 @@ public class JPAProvider {
      */
     public JPAProvider(final String persistenceUnitName) {
         Map<String, String> jpaConfiguration = new HashMap<String, String>();
-        jpaConfiguration.put("hibernate.connection.url", ProjectProperties.get(ProjectProperties.DB_URL));
-        jpaConfiguration.put("hibernate.connection.driver_class", ProjectProperties.get(ProjectProperties.JDBC_CLASS));
-        jpaConfiguration.put("hibernate.connection.username", ProjectProperties.get(ProjectProperties.DB_USERNAME));
-        jpaConfiguration.put("hibernate.connection.password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+        jpaConfiguration.put("hibernate.connection.url", ProjectProperties.get(DB_URL));
+        jpaConfiguration.put("hibernate.connection.driver_class", ProjectProperties.get(JDBC_CLASS));
+        jpaConfiguration.put("hibernate.connection.username", ProjectProperties.get(DB_USERNAME));
+        jpaConfiguration.put("hibernate.connection.password", ProjectProperties.get(DB_PASSWORD));
         emf = Persistence.createEntityManagerFactory(persistenceUnitName, jpaConfiguration);
     }
 

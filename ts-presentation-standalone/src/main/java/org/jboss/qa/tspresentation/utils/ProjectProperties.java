@@ -25,6 +25,11 @@ public class ProjectProperties {
     public static final String PERSISTENCE_UNIT_RESOURCE_LOCAL = "ResourceLocalPersistenceUnit";
     public static final String PERSISTENCE_UNIT_JTA = "JTAPersistenceUnit";
 
+    // JMS
+    public static final String JMS_HOST = "jms.host";
+    public static final String JMS_PORT = "jms.port";
+    public static final String JMS_QUEUE = "jms.queue";
+
     // -----------------------------
     // ----- LOADED PROPERTIES -----
     // -----------------------------
