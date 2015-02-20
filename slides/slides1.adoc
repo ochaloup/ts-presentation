@@ -61,37 +61,20 @@ Atomic, Consistent, Isolated, Durable
 
 [NOTE.speaker]
 --
- http://en.wikipedia.org/wiki/ACID
+ http://en.wikipedia.org/wiki/ACID, http://what-when-how.com/hibernate/transactions-and-concurrency-hibernate/
  Atomicity
-  * all or nothing
-  * one part of transaction fails then whole transaction fails 
+  * one part of transaction fails then whole transaction fails
+  * the notion that all operations are executed as an atomic unit
  Consistency
   * transaction will bring the database from one valid state to another according to defined rules (as constraints, cascades, triggers...)
+  * consistency means that a transaction works on a consistent set of data: a set of data that is hidden from other concurrently running transactions
+     and that is left in a clean and consistent state after the transactions completes
   * does not mean correctness of transaction from business point of view
  Isolation
   * for transaction itself the system behaves like the paralel transactions would be run in serial order
   * concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially (one by one)
  Durablitity
-  * once a transaction has been committed, it will remain so, even in the event of power loss, crashes, or errors
---
-
-== and his "brothers"
- * BASE
- * BA
- * ...
-
-[NOTE.speaker]
---
-BASE
- * connected with the movement of NoSQL
- * tighly coupled with CAP theorem - system could satisfy just two of these three requirements: Consistency, Availability, Parition Tolerance
- * one of the way how to handle CAP "trouble" is relaxing consistency which is where BASE goes
- ** Basic Availability -  spread data across many storage systems with a high degree of replication
- ** Soft State. - data consistency is the developer's problem and should not be handled by the database, consistency is not a goal here
- ** Eventual Consistency - system will eventually become consistent once it stops receiving input
- * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB (see wiki :)
-BA - business activities
- * BA is term from "another" world - in general it's long terming transaction (booking a flight + taxi from the airport)
+  * durability means that once a transaction completes, all changes made during that transaction become persistent and aren’t lost even if the system subsequently fails
 --
 
 == JTA vs. JTS
@@ -107,6 +90,46 @@ JTA is to JDBC as JTS is to the database driver
  Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
 --
 
+== ACID (contd.) - its "brothers"
+ * BA (Business Activities)
+ ** BTP
+ ** WS-CAF
+ ** WS-TX (WA-AT and WS-BA)
+ * BASE
+ * TODO ????
+
+[NOTE.speaker]
+--
+  Resources
+  * https://www.youtube.com/watch?v=CR8_m5_k4fQ
+  * http://www.infoq.com/articles/History-of-Extended-Transactions
+  BA - business activities
+   * BA is term from "another" world - in general it's long terming transaction (booking a flight + taxi from the airport)
+   * came along with WebServices
+  BTP
+   * Hewlett-Packard, Oracle and BEA worked on the OASIS Business Transaction Protocol (BTP), which was aimed at business-to-business transactions in loosely coupled domains such as Web Services
+   * based on 2PC protocol in general
+   * The specification developed two new models for "transactions", requiring business-level decisions to be incorporated within the transaction infrastructure
+   * 2001
+  WS-CAF
+   * ASIS Web Services Composite Application Framework (WS-CAF) TC (Defining an open framework for supporting coordinated and transactional compositions of multiple Web services applications)
+   * 2006
+  WS-TX
+   * ideas came from CORBA model (http://www.infoq.com/articles/History-of-Extended-Transactions)
+   ** coordinator responsible for sending and receiving messages of arbitrary types - called signals
+   ** coordinator inteligence - enabled for specific protocol with special sets of signals being transfered
+   * WS-AT: atomic transactions - 2PC
+   * WS-BA: businness activities doing compensation actions
+  BASE
+   * connected with the movement of NoSQL
+   * came with CAP theorem - system could satisfy just two of these three requirements: Consistency, Availability, Parition Tolerance
+   * one of the way how to handle CAP "trouble" is relaxing consistency which is where BASE goes
+   ** Basic Availability -  spread data across many storage systems with a high degree of replication
+   ** Soft State. - data consistency is the developer's problem and should not be handled by the database, consistency is not a goal here
+   ** Eventual Consistency - system will eventually become consistent once it stops receiving input
+   * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB...
+--
+
 == Transaction "types" (transaction manager point of view)
  * Resource local
  * Global transaction
@@ -118,36 +141,55 @@ JTA is to JDBC as JTS is to the database driver
  * Resource local - transaction at level of database or JMS server
  * Global - transaction "consisting" from several resource local transactions managed by transaction manager
  * Distributed transaction - transaction spread over multiple transaction managers
- JTA and JTS
- The JTA is the interface developers use to manage transactions.
- The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
- The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
-  Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
 --
 
 == Transaction management model (developer point of view)
  * Local transaction model
+   `connection.commit`
  * Programmatic transaction model
+   `transaction.commit()`
  * Declarative transaction model
+   `@TransactionAttribute(TransactionAttributeType.REQUIRED)`
 
 [NOTE.speaker]
 --
  * Local - working directly with resource/connection
  * Programmatic - not working with resource but with transaction
- * Declarativ - transactions are hidden behind of JEE layer
-* Local
-`connection.commit`
-* Programatic
-`transaction.begin()
-transaction.commit()`
-* Declarative
-`@TransactionManagement(TransactionManagementType.CONTAINER)
-@TransactionAttribute(TransactionAttributeType.REQUIRED)`
+ * Declarative - transactions are hidden behind of JEE layer
 --
 
+= Databases and JDBC
+
+== Database transaction
+[ source, language="sql" ]
+----
+BEGIN;
+INSERT INTO test_table VALUES (1, 'test');
+COMMIT;
+----
+
+[NOTE.speaker]
+--
+ PostgreSQL "syntax"
+--
+
+== Isolation level
+
+
+[NOTE.speaker]
+--
+ It's interaction of interleaving transactions
+ Transaction isolation is a function of database cocurrency and database consistency - more isolation, means more consistency but less concurrency
+ Base resources
+ * http://what-when-how.com/hibernate/transactions-and-concurrency-hibernate/#bookmark369
+ * http://en.wikipedia.org/wiki/Isolation_%28database_systems%29
+ * Java Transaction Design Strategy p53
+ Notes:
+--
 
 == References
- * Java Transaction Design Strategies (http://www.infoq.com/minibooks/JTDS)
+ * Java Transaction Design Strategies http://www.infoq.com/minibooks/JTDS
+ * Transakce v Java EE (Kamil Ševeček) https://www.youtube.com/watch?v=6q9NIRBHd5I
 
  * My bookmarks on http://delicious.com/chalda/ts.presentation
 
