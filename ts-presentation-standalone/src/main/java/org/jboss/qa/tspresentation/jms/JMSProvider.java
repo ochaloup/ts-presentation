@@ -27,6 +27,7 @@ import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
  *  http://java.dzone.com/articles/hornetq-getting-started
  */
 public class JMSProvider {
+    private static final long RECEIVE_CALL_TIMEOUT = 1000L;
     private static final String HOST = ProjectProperties.get(JMS_HOST);
     private static final String PORT = ProjectProperties.get(JMS_PORT);
     private static final String QUEUE_NAME = ProjectProperties.get(JMS_QUEUE);
@@ -42,17 +43,21 @@ public class JMSProvider {
         producer.send(msg);
     }
 
-    public static String receiveMessage(final Connection connection, final Session session) throws JMSException {
+    public static TextMessage receiveMessage(final Connection connection, final Session session) throws JMSException {
         Queue testQueue = session.createQueue(QUEUE_NAME);
 
         // receive needs connection being started for consumer to start consume
         // consumer waits till connection is started to start reading messages
         connection.start();
         MessageConsumer consumer = session.createConsumer(testQueue);
-        TextMessage received = (TextMessage) consumer.receive(10000L);
+        TextMessage received = (TextMessage) consumer.receive(RECEIVE_CALL_TIMEOUT);
         connection.stop();
 
-        return received.getText();
+        return received;
+    }
+
+    public static String receiveMessageAsString(final Connection connection, final Session session) throws JMSException {
+        return receiveMessage(connection, session).getText();
     }
 
     public static Connection getConnection() throws JMSException {
@@ -62,7 +67,7 @@ public class JMSProvider {
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getCanonicalName(), props);
 
         HornetQConnectionFactory cf = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
-        cf.setCallTimeout(3000L);
+        cf.setCallTimeout(RECEIVE_CALL_TIMEOUT);
         if(USERNAME != null && PASSWORD != null ) {
             return cf.createConnection(USERNAME, PASSWORD);
         } else {
