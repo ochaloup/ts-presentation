@@ -29,6 +29,8 @@ public class ProjectProperties {
     public static final String JMS_HOST = "jms.host";
     public static final String JMS_PORT = "jms.port";
     public static final String JMS_QUEUE = "jms.queue";
+    public static final String JMS_USERNAME = "jms.username";
+    public static final String JMS_PASSWORD = "jms.password";
 
     // -----------------------------
     // ----- LOADED PROPERTIES -----

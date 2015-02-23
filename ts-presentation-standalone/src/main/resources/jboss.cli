@@ -1,2 +1,0 @@
-# $JBOSS_HOME/bin/jboss-cli.sh -c --file=src/main/resources/jboss-config.cli
-/subsystem=messaging/hornetq-server=default/jms-queue="queue/testQueue":add(entries=[java:jboss/queue/testQueue])

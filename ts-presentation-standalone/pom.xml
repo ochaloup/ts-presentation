@@ -18,7 +18,7 @@
     
     <!-- Versions for standalone part -->
     <version.hibernate>4.3.8.Final</version.hibernate>
-    <version.hornetq>2.4.4.Final</version.hornetq>
+    <version.hornetq>2.3.25.Final</version.hornetq>
     <version.netty>3.10.0.Final</version.netty>
   </properties>
 
@@ -50,11 +50,13 @@
         <artifactId>hornetq-jms-client</artifactId>
         <version>${version.hornetq}</version>
     </dependency>
-  <!--   <dependency>
+    <!-- netty depenency is probably not needed for hornetq client (?) 
+    <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty</artifactId>
         <version>${version.netty}</version>
-    </dependency> -->
+    </dependency> 
+    -->
   
   </dependencies>
   

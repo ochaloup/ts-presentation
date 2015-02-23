@@ -21,16 +21,22 @@ import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
 
 /**
- * Using HornetQ native API
+ * Using HornetQ native API to send messages
+ *
+ * For another way how to do it check:
+ *  http://java.dzone.com/articles/hornetq-getting-started
  */
 public class JMSProvider {
     private static final String HOST = ProjectProperties.get(JMS_HOST);
     private static final String PORT = ProjectProperties.get(JMS_PORT);
     private static final String QUEUE_NAME = ProjectProperties.get(JMS_QUEUE);
+    private static final String USERNAME = ProjectProperties.get(JMS_USERNAME);
+    private static final String PASSWORD = ProjectProperties.get(JMS_PASSWORD);
 
     public static void sendMessage(final String text, final Session session) throws JMSException {
         Queue testQueue = session.createQueue(QUEUE_NAME);
 
+        // for sending message I do not need to start connection
         MessageProducer producer = session.createProducer(testQueue);
         TextMessage msg = session.createTextMessage(text);
         producer.send(msg);
@@ -39,6 +45,8 @@ public class JMSProvider {
     public static String receiveMessage(final Connection connection, final Session session) throws JMSException {
         Queue testQueue = session.createQueue(QUEUE_NAME);
 
+        // receive needs connection being started for consumer to start consume
+        // consumer waits till connection is started to start reading messages
         connection.start();
         MessageConsumer consumer = session.createConsumer(testQueue);
         TextMessage received = (TextMessage) consumer.receive(10000L);
@@ -55,91 +63,11 @@ public class JMSProvider {
 
         HornetQConnectionFactory cf = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
         cf.setCallTimeout(3000L);
-        return cf.createConnection("guest", "guest");
-        // return connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        if(USERNAME != null && PASSWORD != null ) {
+            return cf.createConnection(USERNAME, PASSWORD);
+        } else {
+            return cf.createConnection();
+        }
     }
 
-    /*
-     * http://java.dzone.com/articles/hornetq-getting-started
-    public void sendTextMessage2(final String text) {
-        // Step 1. Create an initial context to perform the JNDI lookup.
-        Hashtable<String, String> env = new Hashtable<String, String>();
-        env.put(Context.PROVIDER_URL, "jnp://localhost:1099");
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-        env.put(Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces  ");
-        Context ctx = new InitialContext(env);
-
-        // Step 2. Lookup the connection factory
-        ConnectionFactory cf = (ConnectionFactory)ctx.lookup("/ConnectionFactory");
-
-        // Step 3. Lookup the JMS queue
-        Queue queue = (Queue)ctx.lookup("/queue/ExampleQueue");
-
-        // Step 4. Create the JMS objects to connect to the server and manage a session
-        Connection connection = cf.createConnection();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        // Step 5. Create a JMS Message Producer to send a message on the queue
-        MessageProducer producer = session.createProducer(queue);
-
-        // Step 6. Create a Text Message and send it using the producer
-        TextMessage message = session.createTextMessage("Hello, HornetQ!");
-        producer.send(message);
-        System.out.println("Sent message: " + message.getText());
-
-        // now that the message has been sent, let's receive it
-
-        // Step 7. Create a JMS Message Consumer to receive message from the queue
-        MessageConsumer messageConsumer = session.createConsumer(queue);
-
-        // Step 8. Start the Connection so that the server starts to deliver messages
-        connection.start();
-
-        // Step 9. Receive the message
-        TextMessage messageReceived = (TextMessage)messageConsumer.receive(5000);
-        System.out.println("Received message: " + messageReceived.getText());
-
-        // Finally, we clean up all the JMS resources
-        connection.close();
-        // Step 1. Create an initial context to perform the JNDI lookup.
-        Hashtable<String, String> env = new Hashtable<String, String>();
-        env.put(Context.PROVIDER_URL, "jnp://localhost:1099");
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
-        env.put(Context.URL_PKG_PREFIXES, "org.jboss.naming:org.jnp.interfaces  ");
-        Context ctx = new InitialContext(env);
-
-        // Step 2. Lookup the connection factory
-        ConnectionFactory cf = (ConnectionFactory)ctx.lookup("/ConnectionFactory");
-
-        // Step 3. Lookup the JMS queue
-        Queue queue = (Queue)ctx.lookup("/queue/ExampleQueue");
-
-        // Step 4. Create the JMS objects to connect to the server and manage a session
-        Connection connection = cf.createConnection();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        // Step 5. Create a JMS Message Producer to send a message on the queue
-        MessageProducer producer = session.createProducer(queue);
-
-        // Step 6. Create a Text Message and send it using the producer
-        TextMessage message = session.createTextMessage("Hello, HornetQ!");
-        producer.send(message);
-        System.out.println("Sent message: " + message.getText());
-
-        // now that the message has been sent, let's receive it
-
-        // Step 7. Create a JMS Message Consumer to receive message from the queue
-        MessageConsumer messageConsumer = session.createConsumer(queue);
-
-        // Step 8. Start the Connection so that the server starts to deliver messages
-        connection.start();
-
-        // Step 9. Receive the message
-        TextMessage messageReceived = (TextMessage)messageConsumer.receive(5000);
-        System.out.println("Received message: " + messageReceived.getText());
-
-        // Finally, we clean up all the JMS resources
-        connection.close();
-    }
-    */
 }
