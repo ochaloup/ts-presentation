@@ -224,6 +224,21 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
  * acknowledge() is called Message (transacted=false, acknowledgeMode=CLIENT_ACKNOWLEDGE)
 --
 
+== Transacted session and rollback
+ * automatic redelivery rollbacked messages
+ * redelivery count could be defined
+ * redelivery timeout could be defined
+ * exception destination when delivery not possible
+ ** message is only logged
+ ** message is forwarded to an error destination
+ ** message is forgotten
+
+[NOTE.speaker]
+--
+ redelivery count - number of tries to deliver message, redelivery count is important as not deliverable messages can eventually crash the system
+ redelivery timeout - time to wait before redelivering the message. This delay lets the JMS provider and the application recover to a stable state.
+ when rollback it could be set whether rollbacked message goes to the end or to the front of the queue - it depends on some config etc.
+--
 
 = JPA
 
