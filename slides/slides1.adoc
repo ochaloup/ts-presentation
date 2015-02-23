@@ -187,9 +187,61 @@ COMMIT;
  Notes:
 --
 
+= JMS
+
+[NOTE.speaker]
+--
+ There are two delivery modes: nonpersistent and persistent.
+--
+
+== Transactions and redelivery
+image:{images}/jms-transaction-redelivery.png[]
+
+
+[NOTE.speaker]
+--
+ Resources: http://www.javaworld.com/article/2074123/java-web-development/transaction-and-redelivery-in-jms.html
+ First - simplifiyng abilities of JMS
+ Second - aim is that we want being safe thta message was really delivered
+ * if message waits in queue (in JMS provider) then the its fate in case of failure depends on delivery mode: *persistent* or *nonpersistent*
+ ** HornetQ settings: <persistence-enabled>true</persistence-enabled>
+ * if message is being sent then acknowledgement that was received is driven by by transaction/redelivery modes
+ * all this is set when *Session* is created
+--
+
+== Session creation
+[ source, language="java" ]
+----
+Connection.createSession(boolean transacted, int acknowledgeMode)
+---
+ * `Session.AUTO_ACKNOWLEDGE`
+ * `Session.DUPS_OK_ACKNOWLEDGE`
+ * `Session.CLIENT_ACKNOWLEDGE`
+ * `Session.SESSION_TRANSACTED`
+
+[NOTE.speaker]
+--
+ If session is set as transacted then acknowledgeMode is ignored
+--
+
+= JPA
+
+[NOTE.speaker]
+--
+--
+
+= Java EE
+
+[NOTE.speaker]
+--
+ Ideas to check:
+  * MDB and BMT
+--
+
 == References
  * Java Transaction Design Strategies http://www.infoq.com/minibooks/JTDS
  * Transakce v Java EE (Kamil Ševeček) https://www.youtube.com/watch?v=6q9NIRBHd5I
+ * Java Transaction Processing http://www.amazon.com/Java-Transaction-Processing-Design-Implementation/dp/013035290X
 
  * My bookmarks on http://delicious.com/chalda/ts.presentation
 
