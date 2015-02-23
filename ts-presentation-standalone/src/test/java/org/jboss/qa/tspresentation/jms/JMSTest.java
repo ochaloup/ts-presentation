@@ -105,7 +105,7 @@ public class JMSTest {
     }
 
     @Test
-    public void simpleTransacted() throws JMSException {
+    public void transacted() throws JMSException {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 
@@ -118,6 +118,53 @@ public class JMSTest {
 
         Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
         session.commit();
+
+        checkIsNull(jmsConnection);
+    }
+
+    @Test
+    public void transactedWithRollback() throws JMSException {
+        log.debug("Sending message {} to through connection {}", message, jmsConnection);
+        Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
+
+        JMSProvider.sendMessage(message, session);
+        session.commit();
+
+        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        session.rollback();
+
+        // session is now rollbacked so no message should be delivered
+        JMSProvider.sendMessage(message + "2", session);
+
+        jmsConnection.close();
+        jmsConnection = JMSProvider.getConnection();
+        session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
+
+        JMSProvider.sendMessage(message + "2", session);
+
+        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        try {
+            JMSProvider.receiveMessageAsString(jmsConnection, session);
+        } catch (NullPointerException npe) {
+            // expected behaviour as message + 2 should not be delivered to queue
+        }
+        session.commit();
+
+        checkIsNull(jmsConnection);
+    }
+
+    /**
+     * Closing session without explicit commit causes that data is not commited - i.e. it's not
+     * send to the queue on the remote JMS server.
+     * Close means rollback.
+     */
+    @Test
+    public void transactedWithConnectionClosed() throws JMSException {
+        log.debug("Sending message {} to through connection {}", message, jmsConnection);
+        Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
+        JMSProvider.sendMessage(message, session);
+
+        session.close();
 
         checkIsNull(jmsConnection);
     }

@@ -158,6 +158,7 @@ JTA is to JDBC as JTS is to the database driver
  * Declarative - transactions are hidden behind of JEE layer
 --
 
+
 = Databases and JDBC
 
 == Database transaction
@@ -187,12 +188,8 @@ COMMIT;
  Notes:
 --
 
-= JMS
 
-[NOTE.speaker]
---
- There are two delivery modes: nonpersistent and persistent.
---
+= JMS
 
 == Transactions and redelivery
 image:{images}/jms-transaction-redelivery.png[]
@@ -221,14 +218,16 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 
 [NOTE.speaker]
 --
- If session is set as transacted then acknowledgeMode is ignored
+ If session is set as transacted = true then acknowledgeMode is ignored
+ Or at least it should be - this is not true for Genereic JMS RA (Tibco and EAP)
+ * commit() is called on Session (transacted=true)
+ * acknowledge() is called Message (transacted=false, acknowledgeMode=CLIENT_ACKNOWLEDGE)
 --
+
 
 = JPA
 
-[NOTE.speaker]
---
---
+== abc
 
 = Java EE
 

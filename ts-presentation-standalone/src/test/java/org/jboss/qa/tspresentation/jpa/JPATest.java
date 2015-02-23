@@ -115,7 +115,7 @@ public class JPATest {
     }
 
     /**
-     * !!! DATABASE dependent !!!
+     * This is DATABASE dependent
      *
      * When Hibernate starts transaction it automatically calls {@link Connection#setAutoCommit(boolean)}
      * with false. If there is no transaction specified then EntityManager closes it on EntityManager.close().
