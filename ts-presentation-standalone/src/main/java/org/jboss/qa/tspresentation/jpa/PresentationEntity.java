@@ -10,14 +10,14 @@ import javax.persistence.Table;
 @Table(name = PresentationEntity.TABLE_NAME)
 public class PresentationEntity {
     public static final String TABLE_NAME = "PRESENTATION_ENTITY";
-    public static final String NAME_COMUMN_NAME = "name";
+    public static final String NAME_COLUMN_NAME = "name";
 
     @Id
     @GeneratedValue
     @Column(name = "id")
     int id;
 
-    @Column(name = NAME_COMUMN_NAME)
+    @Column(name = NAME_COLUMN_NAME)
     String name;
 
     public int getId() {

@@ -1,17 +1,19 @@
 package org.jboss.qa.tspresentation.jpa;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaDelete;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.ReturningWork;
 import org.jboss.qa.tspresentation.jdbc.JDBCDriver;
-import org.jboss.qa.tspresentation.jdbc.JdbcTest;
+import org.jboss.qa.tspresentation.jdbc.JdbcUtil;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,6 +23,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class JPATest {
     private static final Logger log = LoggerFactory.getLogger(JPATest.class);
 
@@ -28,6 +31,7 @@ public class JPATest {
     private static ClassLoader originalContextClassloader;
 
     private static final String NAME = "Frodo Baggins";
+    private static final String OTHER_NAME = "Bilbo Baggins";
 
     @BeforeClass
     public static void registerDriver() throws SQLException {
@@ -232,6 +236,64 @@ public class JPATest {
     }
 
     /**
+     * If we do some inserts or updates of database the JPA needs to be covered
+     * by a database transaction. But if we do just select queries then we
+     * do not need an active db transaction and hibernate will just do the query
+     * right to database (if it's not in L1 cache a.k.a EntityManager or in L2 cache
+     * a.ka. EntityManagerFactory)
+     */
+    @Test
+    public void selectDoesNotNeedATransaction() throws SQLException {
+        EntityManager em = jpaResourceLocal.getEntityManager();
+        EntityTransaction tx = null;
+        PresentationEntity entity = null;
+        int id = -1;
+
+        try {
+            tx = em.getTransaction();
+            tx.begin(); // it also calls Connection.setAutoCommit(false)
+
+            entity = new PresentationEntity();
+            entity.setName(NAME);
+            em.persist(entity);
+            id = entity.getId();
+
+            tx.commit();
+        } catch (RuntimeException re) {
+            if(tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw re;
+        }
+        // we are not closing the entity manager in finally block - we just leave it open for data being accesible
+
+        // now we are out of transaction but context was not cleared
+        // context is cleared when we use JTA in container
+        Assert.assertTrue("Context was not cleared - em has to know the entity " + entity,
+                em.contains(entity));
+        // database was updated from different connection
+        updateById(id, OTHER_NAME);
+        // we are out of transaction but entity was not detached - getting new data from database
+        em.refresh(entity);
+        Assert.assertEquals(OTHER_NAME, entity.getName());
+        // clearing entity manager by hand
+        em.clear();
+        // and running one more find to get the entity attached
+        entity = em.find(PresentationEntity.class, id);
+        Assert.assertTrue("Context was not cleared - em has to know the entity " + entity,
+                em.contains(entity));
+        // now we try to do update - setName for entity manager in memory
+        entity.setName(NAME);
+        // and write it to DB
+        try {
+            em.flush();
+            Assert.fail("Writing to dabase needs a transaction but we do not start any - some error here around");
+        } catch (TransactionRequiredException tre) {
+            // this is expected - no transaction is running
+        }
+    }
+
+    /**
      * When persistence unit is defined as jta then the EntityManager tries to join existing transaction.
      * But as there is no such thing then the try fails.
      *
@@ -257,9 +319,21 @@ public class JPATest {
      */
     private String selectById(final int id) {
         try (Connection conn = JDBCDriver.getConnection()) {
-            return JdbcTest.selectById(id, PresentationEntity.TABLE_NAME, PresentationEntity.NAME_COMUMN_NAME, conn);
+            return JdbcUtil.selectById(id, PresentationEntity.TABLE_NAME, PresentationEntity.NAME_COLUMN_NAME, conn);
         } catch (SQLException sqle) {
             throw new RuntimeException("Can't get data from " + PresentationEntity.TABLE_NAME + " where id is " + id, sqle);
+        }
+    }
+
+    private int updateById(final int id, final String newName) {
+        try (Connection conn = JDBCDriver.getConnection()) {
+            String sqlUpdate = "UPDATE " + PresentationEntity.TABLE_NAME + " SET " + PresentationEntity.NAME_COLUMN_NAME + " = ? WHERE id = ?";
+            PreparedStatement ps = conn.prepareStatement(sqlUpdate);
+            ps.setString(1, newName);
+            ps.setInt(2, id);
+            return ps.executeUpdate();
+        } catch (SQLException sqle) {
+            throw new RuntimeException("Can't update data in " + PresentationEntity.TABLE_NAME + " where id is " + id, sqle);
         }
     }
 
