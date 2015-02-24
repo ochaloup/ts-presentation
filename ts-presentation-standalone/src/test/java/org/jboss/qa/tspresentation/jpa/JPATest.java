@@ -13,6 +13,7 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaDelete;
 
 import org.hibernate.Session;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.transaction.spi.AbstractTransactionImpl;
 import org.hibernate.jdbc.ReturningWork;
 import org.jboss.qa.tspresentation.jdbc.JDBCDriver;
@@ -160,6 +161,7 @@ public class JPATest {
      * For "JDBC based" EntityTransaction the {@link AbstractTransactionImpl#doBegin()}
      * all the time change the autocommit mode to false and does not reflect the settings
      * of property hibernate.connection.autocommit
+     * This property is taken in settings property interface {@link AvailableSettings#AUTOCOMMIT}
      *
      * Not sure when and how is this property reflected.
      */
