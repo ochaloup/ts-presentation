@@ -267,6 +267,9 @@ public class JPATest {
         }
         // we are not closing the entity manager in finally block - we just leave it open for data being accesible
 
+        // checking if autocommit mode was changed on connection associated with em
+        autocommitAssert(em, true);
+
         // now we are out of transaction but context was not cleared
         // context is cleared when we use JTA in container
         Assert.assertTrue("Context was not cleared - em has to know the entity " + entity,
@@ -286,10 +289,53 @@ public class JPATest {
         entity.setName(NAME);
         // and write it to DB
         try {
+            autocommitAssert(em, true);
             em.flush();
             Assert.fail("Writing to dabase needs a transaction but we do not start any - some error here around");
         } catch (TransactionRequiredException tre) {
             // this is expected - no transaction is running
+        }
+    }
+
+    @Test
+    public void findWithoutTransactionAndUpdateWithTransaction() throws SQLException {
+        // creating test data - entity which will be retrieved afterwards
+        PresentationEntity testSetupEntity = createPresentationEntity(NAME);
+
+        // new em and finding entity by id
+        EntityManager em = jpaResourceLocal.getEntityManager();
+        PresentationEntity entity = em.find(PresentationEntity.class, testSetupEntity.id);
+        // equals has to be the same
+        Assert.assertEquals(testSetupEntity, entity);
+
+        // this call makes the entity detached which means that no update on the enity will
+        // be taken into consideration
+        em.clear();
+
+        // now updating the retrieved entity out of transaction in a transaction
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            entity = em.merge(entity); // entity was detached - we need to attach it again
+            entity.setName(OTHER_NAME);
+            tx.commit();
+        } catch (RuntimeException re) {
+            if(tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw re;
+        } finally {
+            em.close();
+        }
+
+        // retrieving entity from database (different em created)
+        EntityManager emVerify = jpaResourceLocal.getEntityManager();
+        try {
+            PresentationEntity entityVerify = emVerify.find(PresentationEntity.class, testSetupEntity.id);
+            emVerify.refresh(entityVerify); // this is ambiguous
+            Assert.assertEquals(entityVerify, entity);
+        } finally {
+            emVerify.close();
         }
     }
 
@@ -342,6 +388,29 @@ public class JPATest {
         log.info("Connection autocommit mode is {}", (conn.getAutoCommit() ? "true" : "false"));
         Assert.assertEquals("Autocommit mode " + (autocommitValueExpected ? "true" : "false") + " is expected",
                 autocommitValueExpected, conn.getAutoCommit());
+    }
+
+    private PresentationEntity createPresentationEntity(final String name) {
+        EntityManager em = jpaResourceLocal.getEntityManager();
+        EntityTransaction tx = null;
+        PresentationEntity entity = null;
+
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            entity = new PresentationEntity();
+            entity.setName(name);
+            em.persist(entity);
+            tx.commit();
+        } catch (RuntimeException re) {
+            if(tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw re;
+        } finally {
+            em.close();
+        }
+        return entity;
     }
 
     private Connection getUnderlayingConnection(final EntityManager em) {
