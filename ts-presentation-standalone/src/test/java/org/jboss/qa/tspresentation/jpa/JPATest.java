@@ -482,7 +482,7 @@ public class JPATest {
             txn.rollback();
         }
     }
-    
+
     private JPAProvider getAutocommitTrueJPAProvider() {
         Map<String, String> config = new HashMap<String, String>();
         config.put("hibernate.connection.autocommit", "true");
