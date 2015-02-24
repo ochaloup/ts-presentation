@@ -25,9 +25,6 @@
             <!-- Needed for exclude-unlisted-classes would work (http://stackoverflow.com/q/17951297/187035) -->
             <property name="hibernate.archive.autodetection" value="class, hbm" />
 
-            <!-- This forces the connection to be called as autocommit true (by default is false) -->
-            <property name="hibernate.connection.autocommit" value="true" />
-
             <!-- This should not be needed as dialect will be autodetected from jdbc driver -->
             <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>  -->
         </properties>

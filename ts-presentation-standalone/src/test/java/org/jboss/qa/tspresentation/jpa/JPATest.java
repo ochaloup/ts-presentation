@@ -3,6 +3,8 @@ package org.jboss.qa.tspresentation.jpa;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -11,6 +13,7 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaDelete;
 
 import org.hibernate.Session;
+import org.hibernate.engine.transaction.spi.AbstractTransactionImpl;
 import org.hibernate.jdbc.ReturningWork;
 import org.jboss.qa.tspresentation.jdbc.JDBCDriver;
 import org.jboss.qa.tspresentation.jdbc.JdbcUtil;
@@ -19,6 +22,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,28 +119,17 @@ public class JPATest {
     }
 
     /**
-     * This is DATABASE dependent
-     *
-     * When Hibernate starts transaction it automatically calls {@link Connection#setAutoCommit(boolean)}
-     * with false. If there is no transaction specified then EntityManager closes it on EntityManager.close().
-     * Now it depends on DB behaviour
-     *  - PostgreSQL - Connection.close() => rollback
-     *  - Oracle - Connection.close() => commit
-     *
-     * To get data being commmited it's should  be necessary to set
-     * hibernate.connection.autocommit as true.
-     *
+     * When Hibernate starts transaction it automatically calls {@link Connection#setAutoCommit(boolean)} with false.
+     * If we are out of transaction then autocommit is false as well until we set hibernate.connection.autocommit property.
      * For longer discussion on this see: https://developer.jboss.org/wiki/Non-transactionalDataAccessAndTheAuto-commitMode
      *
-     * BUT!!! for PostgreSQL
-     *        if I set hibernate.connection.autocommit to true then it does not behaves as I would expect
-     *        data is not pass to database at all - em.close() does not do that and em.flush() is not permitted outside of txn
-     *        I have idea that this option was disabled in Hibernate 4.x but I'm not sure in this at all
+     * As we are out of transaction then no update, insert etc. will be reflected to a SQL statement.
+     * There is in fact nothing to be done - persist is silently ignored.
      */
     @Test
     public void persistNoTransaction() throws SQLException {
-        EntityManager em = jpaResourceLocal.getEntityManager();
-
+        JPAProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
+        EntityManager em = autocommitJpaProvider.getEntityManager();
         autocommitAssert(em, true);
 
         int id = -1;
@@ -145,19 +138,83 @@ public class JPATest {
             entity.setName(NAME);
 
             // em.persist() => Hibernate remembers it has to make a database INSERT,
-            // but does not actually execute the instruction until you commit the transaction
-            // this is mainly done for performance reasons.
+            // but does not actually execute the instruction until you commit the transaction or call flush() operation
+            // this is mainly done for performance reasons (lazy DML)
             em.persist(entity);
 
+            // id is set by doing select to database (generated value of @Id) -> select statement could be run out of the transaction
             id = entity.getId();
+            // no actual change in db occurs
             Assert.assertNull(selectById(id));
         } finally {
             // em.flush(); // flush fails as it needs a running transaction (there is a check in code for this)
+            this.autocommitAssert(em, true); // expecting autocommit is still true
+            em.close(); // nothing is done as no transaction is active
+            autocommitJpaProvider.close(); // to having a clean garden
+        }
+        // still nothing in database :)
+        Assert.assertNull(selectById(id));
+    }
+
+    /**
+     * For "JDBC based" EntityTransaction the {@link AbstractTransactionImpl#doBegin()}
+     * all the time change the autocommit mode to false and does not reflect the settings
+     * of property hibernate.connection.autocommit
+     *
+     * Not sure when and how is this property reflected.
+     */
+    @Ignore
+    @Test
+    public void transactionWithAutocommitTrue() throws SQLException {
+        JPAProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
+        EntityManager em = autocommitJpaProvider.getEntityManager();
+        autocommitAssert(em, true);
+
+        PresentationEntity entity = new PresentationEntity(NAME);
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+            // autocommit mode is change everytime and the hibernate.connection.autocommit is not reflected
+            autocommitAssert(em, true);
+
+            em.persist(entity);
+            Assert.assertNull("Persist does not do any change of database", selectById(entity.getId()));
+            em.flush();
+            Assert.assertEquals("Data should be in DB as we use autocommit=true", NAME, selectById(entity.getId()));
+            tx.commit();
+        } catch (RuntimeException re) {
+            doRollback(tx);
+            throw re;
+        } finally {
+            em.close();
+            autocommitJpaProvider.close();
+        }
+    }
+
+    /**
+     * What happens when close on enity manager is called without finishing the transaction?
+     *
+     * It depends on DB behaviour
+     *  - PostgreSQL - Connection.close() => rollback
+     *  - Oracle - Connection.close() => commit
+     */
+    @Test
+    public void transactionEndsByCallOfEntityManagerClose() {
+        EntityManager em = jpaResourceLocal.getEntityManager();
+        PresentationEntity entity = null;
+
+        try {
+            em.getTransaction().begin();
+            entity = new PresentationEntity();
+            entity.setName(NAME);
+            em.persist(entity);
+        } finally {
             em.close();
         }
-        // as autocommit hibernate property hibernate.connection.autocommit is set to false by default
-        // then there will be no information if Connection.close() rollbacks DB transaction
-        Assert.assertNull(selectById(id));
+
+        Assert.assertNull("On postgres rollback is called so there will be nothing saved in database",
+                selectById(entity.getId()));
     }
 
     @Test
@@ -168,12 +225,10 @@ public class JPATest {
         final String newName = NAME + "-changed";
 
         EntityManager em = jpaResourceLocal.getEntityManager();
-        autocommitAssert(em, true);
 
         try {
             tx = em.getTransaction();
             tx.begin();
-            autocommitAssert(em, false);
 
             conn = getUnderlayingConnection(em);
             log.info("Using connection {}", conn);
@@ -189,7 +244,6 @@ public class JPATest {
                     em.contains(entity));
             tx.commit();
 
-            autocommitAssert(em, true);
             Assert.assertFalse("Expecting the connection being pooled and not being closed",
                     getUnderlayingConnection(em).isClosed());
             Assert.assertTrue("We are out of the context of transaction but with the resource local transaction " +
@@ -267,9 +321,6 @@ public class JPATest {
         }
         // we are not closing the entity manager in finally block - we just leave it open for data being accesible
 
-        // checking if autocommit mode was changed on connection associated with em
-        autocommitAssert(em, true);
-
         // now we are out of transaction but context was not cleared
         // context is cleared when we use JTA in container
         Assert.assertTrue("Context was not cleared - em has to know the entity " + entity,
@@ -289,7 +340,6 @@ public class JPATest {
         entity.setName(NAME);
         // and write it to DB
         try {
-            autocommitAssert(em, true);
             em.flush();
             Assert.fail("Writing to dabase needs a transaction but we do not start any - some error here around");
         } catch (TransactionRequiredException tre) {
@@ -310,6 +360,8 @@ public class JPATest {
 
         // this call makes the entity detached which means that no update on the enity will
         // be taken into consideration
+        // a side note: when JTA is used the entity won't be attached to persistence context
+        // entity found out of transaction context will be behaving as here when we cleared the em
         em.clear();
 
         // now updating the retrieved entity out of transaction in a transaction
@@ -423,5 +475,18 @@ public class JPATest {
                 }
             }
         );
+    }
+
+    private void doRollback(final EntityTransaction txn) {
+        if(txn != null && txn.isActive()) {
+            txn.rollback();
+        }
+    }
+    
+    private JPAProvider getAutocommitTrueJPAProvider() {
+        Map<String, String> config = new HashMap<String, String>();
+        config.put("hibernate.connection.autocommit", "true");
+        JPAProvider autocommitTrueJpaProvider = new JPAProvider(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL, config);
+        return autocommitTrueJpaProvider;
     }
 }

@@ -20,6 +20,15 @@ public class PresentationEntity {
     @Column(name = NAME_COLUMN_NAME)
     String name;
 
+
+    public PresentationEntity() {
+        // no-arg constructor needed for reflection
+    }
+
+    public PresentationEntity(final String name) {
+        setName(name);
+    }
+
     public int getId() {
         return id;
     }

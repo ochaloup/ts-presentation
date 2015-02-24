@@ -17,17 +17,28 @@ public class JPAProvider {
     /**
      * Creating {@link EntityManagerFactory}
      */
-    public JPAProvider(final String persistenceUnitName) {
+    public JPAProvider(final String persistenceUnitName, final Map<String,String> additionalConfiguration) {
         Map<String, String> jpaConfiguration = new HashMap<String, String>();
         jpaConfiguration.put("hibernate.connection.url", ProjectProperties.get(DB_URL));
         jpaConfiguration.put("hibernate.connection.driver_class", ProjectProperties.get(JDBC_CLASS));
         jpaConfiguration.put("hibernate.connection.username", ProjectProperties.get(DB_USERNAME));
         jpaConfiguration.put("hibernate.connection.password", ProjectProperties.get(DB_PASSWORD));
+        if(additionalConfiguration != null) {
+            jpaConfiguration.putAll(additionalConfiguration);
+        }
         emf = Persistence.createEntityManagerFactory(persistenceUnitName, jpaConfiguration);
     }
 
+    public JPAProvider(final Map<String,String> additionalConfiguration) {
+        this(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL, additionalConfiguration);
+    }
+
+    public JPAProvider(final String persistenceUnitName) {
+        this(persistenceUnitName, null);
+    }
+
     public JPAProvider() {
-        this("ResourceLocalJTAPersistenceUnit");
+        this(new HashMap<String, String>());
     }
 
     public EntityManager getEntityManager() {
