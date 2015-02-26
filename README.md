@@ -9,3 +9,5 @@ Checklist of what to do
    * logs at: `/var/lib/pgsql/data/pg_log/`
 3. Showing all databases from PostgreSQL schema
    * `SELECT *  FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_type, table_name;`
+4. Start HornetQ server
+   * the easiest way is to start EAP 6.4.0.GA and run ts-presentation-standalone/src/main/resources/hornetq-jms-jboss.cli
