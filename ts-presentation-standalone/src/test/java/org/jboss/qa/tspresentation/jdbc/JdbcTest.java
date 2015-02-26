@@ -17,6 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import static org.jboss.qa.tspresentation.jdbc.JdbcUtil.*;
 
+/**
+ * If I'm checking the PosgreSQL log when running tests I'm getting tons of
+ * SET extra_float_digits = 3
+ * it's seemed to be run for each new connection. See http://dba.stackexchange.com/questions/31108/set-extra-float-digits-3
+ */
 public class JdbcTest {
     private static final Logger log = LoggerFactory.getLogger(JdbcTest.class);
 
@@ -51,7 +56,7 @@ public class JdbcTest {
             ps.executeUpdate();
 
             ps = getInsert(conn, id + 1, text);
-            ps.executeUpdate();
+            ps.executeUpdate(); // execute() is possible here as well, not so executeQuery()
 
             // commit expected as it's autocommiting
             Assert.assertEquals(text, selectById(id));

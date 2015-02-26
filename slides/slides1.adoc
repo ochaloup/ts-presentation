@@ -147,7 +147,7 @@ JTA is to JDBC as JTS is to the database driver
  * Distributed transaction - transaction spread over multiple transaction managers
 --
 
-== Transaction management model (developer point of view)
+== Transactions from developer point of view
  * Local transaction model
    `connection.commit`
  * Programmatic transaction model
@@ -158,8 +158,17 @@ JTA is to JDBC as JTS is to the database driver
 [NOTE.speaker]
 --
  * Local - working directly with resource/connection
- * Programmatic - not working with resource but with transaction
+ * Programmatic - not working with resource but with a transaction
  * Declarative - transactions are hidden behind of JEE layer
+--
+
+== Transaction types
+ * Nested transaction
+ * TODO...
+
+[NOTE.speaker]
+--
+ * Nested - 
 --
 
 
@@ -241,7 +250,7 @@ image:{images}/db/04-phantom-reads.jpg[]
 ----
 java.sql.Connection connection = DriverManager.getConnection(...)
 Statement st = connection.createStatement();
-st.execute("INSERT INTO table VALUES (1, 'EAP QE');
+st.execute("INSERT INTO table VALUES (1, 'EAP QE')");
 ----
 
 [NOTE.speaker]
@@ -255,13 +264,67 @@ st.execute("INSERT INTO table VALUES (1, 'EAP QE');
 java.sql.Connection connection = DriverManager.getConnection(...)
 connection.setAutoCommit(false);
 Statement st = connection.createStatement();
-st.execute("INSERT INTO table VALUES (1, 'EAP QE');
+st.execute("INSERT INTO table VALUES (1, 'EAP QE')");
 connection.commit();
 ----
 
 [NOTE.speaker]
 --
  Where is the transaction?
+--
+
+== JDBC
+ * Connection.setAutoCommit
+ * Connection.setTransactionIsolation
+
+[NOTE.speaker]
+--
+ * transactions are managed by Connection.setAutoCommit method
+--
+
+== JDBC batch
+[ source, language="java" ]
+----
+java.sql.Connection connection = DriverManager.getConnection(...)
+connection.setAutoCommit(false);
+Statement st = connection.createStatement();
+st.addBatch("INSERT INTO table VALUES (1, 'JTA')");
+st.addBatch("INSERT INTO table VALUES (2, 'JCA')");
+int[] updateCounts = st.executeBatch();
+connection.commit();
+----
+
+[NOTE.speaker]
+--
+ Some performance optimalizations for batching could be taken by database.
+ But from test log there is no any special handling for simple cases as this one.
+ There are just two inserts one after another.
+--
+
+== JDBC "nested" transactions
+[ source, language="java" ]
+----
+java.sql.Connection connection = DriverManager.getConnection(...)
+connection.setAutoCommit(false);
+Statement st = connection.createStatement();
+st.execute("INSERT INTO table VALUES (1, 'EAP 6')");
+Savepoint savePoint = connection.setSavepoint();
+st.execute("UPDATE table SET product='EAP 7' WHERE id=1");
+connection.rollback(savePoint);
+connection.commit();
+----
+
+== Be aware of DDL commands
+ * DDL - data definition language (CREATE, DROP...)
+ * DML - data manipulation language (INSERT, UPDATE...)
+ * lot of Databases does not support transactional DDL
+
+[NOTE.speaker]
+--
+Resource:
+ https://wiki.postgresql.org/wiki/Transactional_DDL_in_PostgreSQL:_A_Competitive_Analysis
+ PostgreSQL do DDL in transaction
+ e.g. Oracle (probably - not up-to-date info) first commits currently running DML and then does DDL in separate transaction
 --
 
 = JMS
