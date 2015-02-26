@@ -289,6 +289,35 @@ public class JdbcTest {
     }
 
     /**
+     * Rollbacking safepoint.
+     */
+    @Test
+    public void safePointWholeTransactionRollback() throws SQLException {
+        try (Connection conn = JDBCDriver.getConnection()) {
+            conn.setAutoCommit(false);
+            PreparedStatement ps = getInsert(conn, 1, text);
+
+            ps.executeUpdate();
+            // not commited - null expected
+            Assert.assertNull(selectById(id));
+
+            // specifying save point as a point where transaction will be nested
+            Savepoint savePoint = conn.setSavepoint();
+            getUpdate(conn, 1, newText).executeUpdate();
+            conn.releaseSavepoint(savePoint);
+
+            // still no data visible as transaction was not commited
+            Assert.assertNull(selectById(id));
+
+            // rollback on the connection itself
+            conn.rollback();
+
+            // no data as transaction was rollbacked
+            Assert.assertNull(selectById(id));
+        }
+    }
+
+    /**
      * Using batch of prepare statement.
      * (Nothing much with transaction management :)
      */
