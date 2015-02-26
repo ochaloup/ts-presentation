@@ -20,6 +20,7 @@
     <version.hibernate>4.3.8.Final</version.hibernate>
     <version.hornetq>2.3.25.Final</version.hornetq>
     <version.netty>3.10.0.Final</version.netty>
+    <version.postgresql.jdbc>9.3-1100-jdbc4</version.postgresql.jdbc>
   </properties>
 
   <dependencies>
@@ -57,7 +58,15 @@
         <version>${version.netty}</version>
     </dependency> 
     -->
-  
+
+    <!-- JDBC driver sources for debugging -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <scope>provided</scope>
+        <version>${version.postgresql.jdbc}</version>
+    </dependency>
+
   </dependencies>
   
 </project>
