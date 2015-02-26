@@ -117,8 +117,6 @@ public class JdbcTest {
     }
 
     /**
-     * !!! DATABASE dependent !!!
-     *
      * When close is called prior of calling commit on connection
      * then rollback is done for PostgresSQL.
      * But for Oracle commit is done probably.
@@ -174,6 +172,20 @@ public class JdbcTest {
             conn.commit();
             // updated data available
             Assert.assertEquals(differentText, selectById(id));
+        }
+    }
+
+    @Test
+    public void commitForAutocommitTrue() throws SQLException {
+        try (Connection conn = JDBCDriver.getConnection()) {
+            PreparedStatement ps = getInsert(conn, id, text);
+            ps.executeUpdate();
+            Assert.assertEquals(text, selectById(id));
+            try {
+                conn.commit();
+            } catch (Exception e) {
+                log.info("Got an expected exception {} as no transaction is in run", e);
+            }
         }
     }
 
