@@ -77,32 +77,23 @@ Atomic, Consistent, Isolated, Durable
   * durability means that once a transaction completes, all changes made during that transaction become persistent and aren’t lost even if the system subsequently fails
 --
 
-== JTA vs. JTS
-
-JTA is to JDBC as JTS is to the database driver
-
-[NOTE.speaker]
---
- JTA and JTS
- The JTA is the interface developers use to manage transactions.
- The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
- The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
- Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
---
-
-== ACID (contd.) - its "brothers"
+== Other transaction "types"
  * BA (Business Activities)
- ** BTP
- ** WS-CAF
- ** WS-TX (WA-AT and WS-BA)
+ * BTP
+ * WS-CAF
+ * WS-TX (WA-AT and WS-BA)
+ * Extended transactions
  * BASE
- * TODO ????
 
 [NOTE.speaker]
 --
   Resources
   * https://www.youtube.com/watch?v=CR8_m5_k4fQ
   * http://www.infoq.com/articles/History-of-Extended-Transactions
+  Extended transactions (in Narayana)
+   * umbrella term for transaction systems/protocols which relax some of the ACID guarantees (properties)
+   * from part of Narayana it's protocol based on Sagus (academic research from 1997)
+   ** relaxes Isolation and Consistency (it's eventually consistent)
   BA - business activities
    * BA is term from "another" world - in general it's long terming transaction (booking a flight + taxi from the airport)
    * came along with WebServices
@@ -121,6 +112,7 @@ JTA is to JDBC as JTS is to the database driver
    * WS-AT: atomic transactions - 2PC
    * WS-BA: businness activities doing compensation actions
   BASE
+   * ACID transaction doesn't scale
    * connected with the movement of NoSQL
    * came with CAP theorem - system could satisfy just two of these three requirements: Consistency, Availability, Parition Tolerance
    * one of the way how to handle CAP "trouble" is relaxing consistency which is where BASE goes
@@ -130,6 +122,18 @@ JTA is to JDBC as JTS is to the database driver
    * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB...
 --
 
+== JTA vs. JTS
+
+JTA is to JDBC as JTS is to the database driver
+
+[NOTE.speaker]
+--
+ JTA and JTS
+ The JTA is the interface developers use to manage transactions.
+ The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+ The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+ Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+--
 == Transaction "types" (transaction manager point of view)
  * Resource local
  * Global transaction
@@ -175,24 +179,95 @@ COMMIT;
 --
 
 == Isolation level
-
+image:{images}/db/isolation-levels-base.png[]
 
 [NOTE.speaker]
 --
+ Resources
+   * http://what-when-how.com/hibernate/transactions-and-concurrency-hibernate/#bookmark369
+   * Java Transaction Design Strategy p53
  It's interaction of interleaving transactions
  Transaction isolation is a function of database cocurrency and database consistency - more isolation, means more consistency but less concurrency
- Base resources
- * http://what-when-how.com/hibernate/transactions-and-concurrency-hibernate/#bookmark369
- * http://en.wikipedia.org/wiki/Isolation_%28database_systems%29
- * Java Transaction Design Strategy p53
- Notes:
+ Hibernate increase level of isolation to moving control to application layer
+  * optimistic locking adds versioning and so non-repeatable reads can't occur (or the special case when second commit replaces data of first commit)
+  * pesimistic locking uses SELECT ... FOR UPDATE to lock particular record in database
 --
 
+== Lost update
+image:{images}/db/01-lost-update.jpg[]
+
+[small]#kindly stolen from http://what-when-how.com#
+
+[NOTE.speaker]
+--
+ two transactions doing update in parallel but first does commit and second rollbacks - then the commit of first willl be lost
+--
+
+== Dirty reads
+image:{images}/db/02-dirty-reads.jpg[]
+
+[small]#kindly stolen from http://what-when-how.com#
+
+[NOTE.speaker]
+--
+ two transactions running in paralel. first does update and second shortly after that reads the same data - the update will be wisible
+ despite the fact that the first transaction is rollbacked in a while
+--
+
+== Non-repeatable reads
+image:{images}/db/03-non-repeatable-reads[]
+
+[small]#kindly stolen from http://what-when-how.com#
+
+[NOTE.speaker]
+--
+ when first transaction does two reads of some data already saved! in transaction - one after another - and between these two actions second transaction does commit
+ the second read of the first transaction will get another data then the first read
+--
+
+== Phantom reads
+image:{images}/db/04-phantom-reads.jpg[]
+
+[small]#kindly stolen from http://what-when-how.com#
+
+[NOTE.speaker]
+--
+ when transaction does select over more rows it could reads different count of rows in two subsequent queries when another transaction was meanwhile commited and
+ added a row which is contained in the searched query
+--
+
+== Quiz #1
+[ source, language="java" ]
+----
+java.sql.Connection connection = DriverManager.getConnection(...)
+Statement st = connection.createStatement();
+st.execute("INSERT INTO table VALUES (1, 'EAP QE');
+----
+
+[NOTE.speaker]
+--
+ Where is the transaction?
+--
+
+== Quiz #1 - Answer
+[ source, language="java" ]
+----
+java.sql.Connection connection = DriverManager.getConnection(...)
+connection.setAutoCommit(false);
+Statement st = connection.createStatement();
+st.execute("INSERT INTO table VALUES (1, 'EAP QE');
+connection.commit();
+----
+
+[NOTE.speaker]
+--
+ Where is the transaction?
+--
 
 = JMS
 
 == Transactions and redelivery
-image:{images}/jms-transaction-redelivery.png[]
+image:{images}/jms/jms-transaction-redelivery.png[]
 
 
 [NOTE.speaker]
@@ -228,7 +303,7 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
  * automatic redelivery rollbacked messages
  * redelivery count could be defined
  * redelivery timeout could be defined
- * exception destination when delivery not possible
+ * exceptional destination (message is non-deliverable)
  ** message is only logged
  ** message is forwarded to an error destination
  ** message is forgotten
@@ -250,6 +325,8 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 --
  Ideas to check:
   * MDB and BMT
+  * JCA multiple datasources in XA
+  * history of JTA vs. Narayana versions vs EE versions
 --
 
 == References
@@ -259,7 +336,3 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 
  * My bookmarks on http://delicious.com/chalda/ts.presentation
 
-
---
-// vim: set syntax=asciidoc:
---
