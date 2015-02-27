@@ -10,6 +10,7 @@
 Ondra Chaloupka / ochaloup@redhat.com
 
 == Transactions in Java ?
+
 [ source, language="java" ]
 ----
 @Stateless
@@ -23,6 +24,7 @@ public class TestBean {
 ----
 
 == Transactions in Java !?
+
 image:{images}/tagcloud.png[]
 
 == Agenda
@@ -43,7 +45,7 @@ image:{images}/tagcloud.png[]
 == A transaction
 A transaction is a group of business logic statements with certain shared properties.
 
-One or more of:
+Which are one or more of:
 
 Atomic, Consistent, Isolated, Durable
 
@@ -51,6 +53,8 @@ Atomic, Consistent, Isolated, Durable
 --
  The statement above stolen from presentation of Michael Musgrove for Brno JBug, January 2015
  From user point of view a transaction is an atomic unit of the work where everything or nothing is finished.
+ From developer point - we have some data and we want to save them to some store and if there is something
+  running in paralel with our task we want to be isolated/warned from colisions.
 --
 
 === ACID
@@ -67,6 +71,9 @@ Atomic, Consistent, Isolated, Durable
   * the notion that all operations are executed as an atomic unit
  Consistency
   * transaction will bring the database from one valid state to another according to defined rules (as constraints, cascades, triggers...)
+  * by some definitions proclam that consistency should be maintained during the transaction execution as well (not only at transaction's ends) 
+    what I understand it's ok to say that transaction keeps consistency for short lived ACID isolated transactions. but if transaction does not guarantee
+    isolation then the consistency inside of transaction run could be important or rather violated
   * consistency means that a transaction works on a consistent set of data: a set of data that is hidden from other concurrently running transactions
      and that is left in a clean and consistent state after the transactions completes
   * does not mean correctness of transaction from business point of view
@@ -78,6 +85,7 @@ Atomic, Consistent, Isolated, Durable
 --
 
 == Other transaction "types"
+
  * BA (Business Activities)
  * BTP
  * WS-CAF
@@ -122,19 +130,25 @@ Atomic, Consistent, Isolated, Durable
    * some of the NoSQL databases tries to be ACID(like) -> NewSQL - FoundationDB, NuoDB, OrientDB...
 --
 
-== JTA vs. JTS
+== Transaction types
 
-JTA is to JDBC as JTS is to the database driver
+ * Top-level
+ * Nested
+ * Nested top-level
+ * Concurrent nested
 
 [NOTE.speaker]
 --
- JTA and JTS
- The JTA is the interface developers use to manage transactions.
- The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
- The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
- Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+ * Top-level transaction - transaction as we understand it
+ * Nested - transaction contains other transaction. When nested rollbacks it does not mean that top-one will rollback. 
+            If nested commits then the overall result depends on the top-level transaction.
+ * Nested top-level - nested is invoked in context of another txn but if top-level commits 
+                      it's commited independently on the outcome of the caller transaction.
+ * Concurrently running nested transaction - result has to be the same as they would be run in arbitrary serial order
 --
-== Transaction "types" (transaction manager point of view)
+
+== Transaction types (contd.)
+
  * Resource local
  * Global transaction
  * Distributed transaction
@@ -147,7 +161,21 @@ JTA is to JDBC as JTS is to the database driver
  * Distributed transaction - transaction spread over multiple transaction managers
 --
 
+== XA vs. Distributed transaction
+
+ * XA - XA/Open XA architecture - multiple resources
+ * Distributed - multiple transaction managers
+
+[NOTE.speaker]
+--
+ In many sources under term distributed transaction is meant XA. We (from Narayna/JBoss/EAP point of view) understands
+ distributed transactions such ones that pass its context over a wire/to a different TM.
+ XA transaction is such that contains several resources, such specified by X/Open XA architecture - meaning transaction 2PC protocol implemented
+ !! This talk won't be about neither XA or distributed transactions (distributed maybe in sense of context passing between EJB beans)
+--
+
 == Transactions from developer point of view
+
  * Local transaction model
    `connection.commit`
  * Programmatic transaction model
@@ -161,16 +189,6 @@ JTA is to JDBC as JTS is to the database driver
  * Programmatic - not working with resource but with a transaction
  * Declarative - transactions are hidden behind of JEE layer
 --
-
-== Transaction types
- * Nested transaction
- * TODO...
-
-[NOTE.speaker]
---
- * Nested - 
---
-
 
 = Databases and JDBC
 
@@ -188,6 +206,7 @@ COMMIT;
 --
 
 == Isolation level
+
 image:{images}/db/isolation-levels-base.png[]
 
 [NOTE.speaker]
@@ -203,6 +222,7 @@ image:{images}/db/isolation-levels-base.png[]
 --
 
 == Lost update
+
 image:{images}/db/01-lost-update.jpg[]
 
 [small]#kindly stolen from http://what-when-how.com#
@@ -213,6 +233,7 @@ image:{images}/db/01-lost-update.jpg[]
 --
 
 == Dirty reads
+
 image:{images}/db/02-dirty-reads.jpg[]
 
 [small]#kindly stolen from http://what-when-how.com#
@@ -224,6 +245,7 @@ image:{images}/db/02-dirty-reads.jpg[]
 --
 
 == Non-repeatable reads
+
 image:{images}/db/03-non-repeatable-reads[]
 
 [small]#kindly stolen from http://what-when-how.com#
@@ -235,6 +257,7 @@ image:{images}/db/03-non-repeatable-reads[]
 --
 
 == Phantom reads
+
 image:{images}/db/04-phantom-reads.jpg[]
 
 [small]#kindly stolen from http://what-when-how.com#
@@ -378,18 +401,117 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
  when rollback it could be set whether rollbacked message goes to the end or to the front of the queue - it depends on some config etc.
 --
 
-= JPA
-
-== abc
 
 = Java EE
 
 [NOTE.speaker]
 --
- Ideas to check:
-  * MDB and BMT
-  * JCA multiple datasources in XA
-  * history of JTA vs. Narayana versions vs EE versions
+ When speaking about Transaction manager then Narayana/Arjuna is meant
+ When speaking about appliation server then JBoss EAP/Wildfly is meant
+--
+
+= JTA
+
+[NOTE.speaker]
+--
+ TODO: Ideas to check:
+  * nested transactions
+  * JTS and Corba
+--
+
+== JTA and underlying Transaction Manager
+ * Implementation of X/Open XA architecture (JSR 907)
+ * Versions
+ ** 1.0 - year 2000
+ ** 1.1 - year 2007 (EE 5)
+ ** 1.2 - year 2013 (EE 7)
+
+[NOTE.speaker]
+--
+ Java Transaction API ensures that we can use XA transactions (2PC)
+ * X/Open XA - open group for distributed transaction processing (DTP)
+ * 1.0 - UserTransaction and all the stuff
+ * 1.1 - TransactionSynchronizationRegistry - used by component like JPA to registry in order and being able to manage transaction on the registred hook
+ * 1.2 - @Transactional, @TransactionScoped - ripping transaction of the EJB (with CDI to CDI beans, Servlet, JAX-RS...)
+--
+
+== JTA vs. JTS
+
+JTA is to JDBC as JTS is to the database driver
+
+[NOTE.speaker]
+--
+ JTA and JTS
+ The JTA is the interface developers use to manage transactions.
+ The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+ The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+ Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+ JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
+--
+
+== Specifications - a messy thing
+ * JTA (JSR 907) maps XA spec to Java
+ * XA spec from year 1991 by The Open Group
+ * JTS spec maps OTS spec to Java
+ * OTS spec by Object management Group (OMG)
+ * JCA, JMS, JDBC, Java EE Platform spec contains sections on TM
+ * WS-AT and WS-BA under OASIS standard
+
+[NOTE.speaker]
+--
+ There is no central place with information about transactions in Java
+ JTS specifies the implementation of a transaction manager which supports the JTA specification at the high-level and implements the Java mapping of the OMG Object Transaction Service (OTS) 1.1 Specification at the low-level.
+ JTS uses the CORBA OTS interfaces for interopertability and portability.
+ JSR - Java Community Process :)
+--
+
+== Where the transactions live
+
+ * EJB - by default
+ * CDI - `@Transactional`
+ * When you want to touch it
+ ** `@Resource/@Inject
+    private UserTransaction utx;`
+ ** `@Resource
+    private SessionContext ctx;`
+ ** `java:comp/UserTransaction`
+
+== JTA API overview
+
+ * UserTransaction
+ * TransactionManager
+ * Status
+ * Transaction
+ * Synchronization
+ * TransactionSynchronizationRegistry
+ * XAResource
+
+[NOTE.speaker]
+--
+ UserTransaction for user
+ TransactionManager for app server
+ UserTransaction is mapped by spec to java:comp/UserTransaction jndi space
+ TransactionManager is not specified where it resides
+ If you want to add some synchronization then you need to take Transaction instance from TransactionManager :/
+ Transaction instance means the transaction context in fact (flows from one bean to another)
+--
+
+= JPA
+
+== abc
+
+= EJB - BMT vs. CMT
+
+[NOTE.speaker]
+--
+ TODO:
+ Example of extended context from servlet to ejb and back
+ SFSB has to be saved in session from webservlet (@Inject or old way)
+ Does @Inject support to inject transaction?
+ MDB and BMT
+ JCA multiple datasources in XA
+ Asynchronous calls of EJB
+ Transactions for EE batches
 --
 
 == References
