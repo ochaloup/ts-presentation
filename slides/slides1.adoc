@@ -55,6 +55,9 @@ Atomic, Consistent, Isolated, Durable
  From user point of view a transaction is an atomic unit of the work where everything or nothing is finished.
  From developer point - we have some data and we want to save them to some store and if there is something
   running in paralel with our task we want to be isolated/warned from colisions.
+ All the presentation is about resources that could  be managed - resource is database, jms, mail service, whatever connected to JCA
+ Concurrency access is the main reason why we need to discuss such thing as transaction.
+ Transactions tries to make programmer's life easier to give him some assurances (zaruky)
 --
 
 === ACID
@@ -168,10 +171,11 @@ Atomic, Consistent, Isolated, Durable
 
 [NOTE.speaker]
 --
- In many sources under term distributed transaction is meant XA. We (from Narayna/JBoss/EAP point of view) understands
- distributed transactions such ones that pass its context over a wire/to a different TM.
- XA transaction is such that contains several resources, such specified by X/Open XA architecture - meaning transaction 2PC protocol implemented
- !! This talk won't be about neither XA or distributed transactions (distributed maybe in sense of context passing between EJB beans)
+ In many sources under term distributed transaction means XA from point of view of this presentation (and Narayana TM in general. 
+ E.g. JDBC specification talks about distributed transactions but such txn means XA transaction from point of view of this presentation.
+ Narayna/JBoss/EAP point of view understands distributed transactions such ones that pass its context over a to a different transaction manager.
+ XA transaction is such that contains several resources, such specified by X/Open XA architecture - meaning transaction using 2PC protocol over more resources.
+ This presentation won't be about neither XA or distributed transactions (maybe about distributed in sense of context passing between EJB beans)
 --
 
 == Transactions from developer point of view
@@ -268,7 +272,7 @@ image:{images}/db/04-phantom-reads.jpg[]
  added a row which is contained in the searched query
 --
 
-== Quiz #1
+== Quiz
 [ source, language="java" ]
 ----
 java.sql.Connection connection = DriverManager.getConnection(...)
@@ -281,7 +285,7 @@ st.execute("INSERT INTO table VALUES (1, 'EAP QE')");
  Where is the transaction?
 --
 
-== Quiz #1 - Answer
+== Quiz - Answer
 [ source, language="java" ]
 ----
 java.sql.Connection connection = DriverManager.getConnection(...)
@@ -322,6 +326,7 @@ connection.commit();
  Some performance optimalizations for batching could be taken by database.
  But from test log there is no any special handling for simple cases as this one.
  There are just two inserts one after another.
+ Butch return simple count of changes. It can't return ResultSet.
 --
 
 == JDBC "nested" transactions
@@ -371,7 +376,7 @@ image:{images}/jms/jms-transaction-redelivery.png[]
 [ source, language="java" ]
 ----
 Connection.createSession(boolean transacted, int acknowledgeMode)
----
+----
  * `Session.AUTO_ACKNOWLEDGE`
  * `Session.DUPS_OK_ACKNOWLEDGE`
  * `Session.CLIENT_ACKNOWLEDGE`
@@ -383,9 +388,19 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
  Or at least it should be - this is not true for Genereic JMS RA (Tibco and EAP)
  * commit() is called on Session (transacted=true)
  * acknowledge() is called Message (transacted=false, acknowledgeMode=CLIENT_ACKNOWLEDGE)
+ AUTO - If a failure occurs while executing the receive() method or the onMessage() method, the message is automatically redelivered.
+        The JMS provider carefully manages message redelivery and guarantees once-only delivery semantics.
+ DUPS - With less overhead than auto mode, in duplicates okay mode, the JMS provider guarantees at-least-once message delivery.
+        During failure recovery, certain messages are probably delivered more than once.
+ CLIENT - In client mode, invoking the Message class's acknowledge() method explicitly acknowledges the message.
+          In fact, using the acknowledge() method makes sense when only using the client mode.
 --
 
-== Transacted session and rollback
+== Quiz
+
+What happens on JMS transaction rollback?
+
+== Quiz - Answer
  * automatic redelivery rollbacked messages
  * redelivery count could be defined
  * redelivery timeout could be defined
@@ -416,10 +431,37 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 --
  TODO: Ideas to check:
   * nested transactions
-  * JTS and Corba
+  * JTS and Corba - how to use it
 --
 
-== JTA and underlying Transaction Manager
+== Quiz
+
+What is the JTA for?
+
+[NOTE.speaker]
+--
+ We know that we can manage database or jms resource directly why such thing is not
+ covered by Java EE container and we need some specification of transaction?
+ What that transaction for?
+ What the JTA could offer to me?
+--
+
+== Quiz
+
+ * Managing transactions :)
+ * Machinery of two phase commit protocol
+ * Recovery management
+ * Transaction timeout could be set
+ * Distributed transactions
+
+[NOTE.speaker]
+--
+ It's standardized way how container can communicate with transaction.
+ Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
+ It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
+--
+
+== JTA a bit on history
  * Implementation of X/Open XA architecture (JSR 907)
  * Versions
  ** 1.0 - year 2000
@@ -430,23 +472,9 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 --
  Java Transaction API ensures that we can use XA transactions (2PC)
  * X/Open XA - open group for distributed transaction processing (DTP)
- * 1.0 - UserTransaction and all the stuff
+ * 1.0 - All the stuff (UserTransaction)
  * 1.1 - TransactionSynchronizationRegistry - used by component like JPA to registry in order and being able to manage transaction on the registred hook
  * 1.2 - @Transactional, @TransactionScoped - ripping transaction of the EJB (with CDI to CDI beans, Servlet, JAX-RS...)
---
-
-== JTA vs. JTS
-
-JTA is to JDBC as JTS is to the database driver
-
-[NOTE.speaker]
---
- JTA and JTS
- The JTA is the interface developers use to manage transactions.
- The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
- The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
- Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
- JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
 --
 
 == Specifications - a messy thing
@@ -464,6 +492,26 @@ JTA is to JDBC as JTS is to the database driver
  JTS uses the CORBA OTS interfaces for interopertability and portability.
  JSR - Java Community Process :)
 --
+
+== JTA vs. JTS
+
+JTA is to JDBC as JTS is to the database driver
+
+[NOTE.speaker]
+--
+ JTA and JTS
+ The JTA is the interface developers use to manage transactions.
+ The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
+ The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
+ Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
+ JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
+--
+
+== JTA and JBoss World
+
+JTA is implemented by Narayana (Arjuna) Transaction manager
+
+image:{images}/narayana-logo.png[]
 
 == Where the transactions live
 
@@ -498,7 +546,55 @@ JTA is to JDBC as JTS is to the database driver
 
 = JPA
 
-== abc
+=== SQL table creation
+
+[ source, language="sql" ]
+----
+ CREATE TABLE PERSON (
+   id INTEGER NOT NULL DEFAULT ('person_seq'),
+   username VARCHAR(255),
+   birthdate DATE,
+   ...
+ )
+----
+
+[NOTE.speaker]
+--
+ PostgreSQL sequence: reate sequence person_seq increment 1 start 1;
+--
+
+=== Java entity definition
+
+[ source, language="java" ]
+----
+ @Entity
+ @Table("person")
+ public class Person {
+   @Id
+   @GeneratedValue
+   private int id;
+
+   private String username;
+
+   @Temporal(TemproalType.DATE)
+   private Date birthDate;
+
+   @ManyToMany
+   @JoinTable(name = "PERSON_GROUP",
+     joinColumn = @JoinColumn(name = "person_id"),
+     inverseJoinColumn = @JoinColumn(name = "group_id"))
+   private List<Groups> groups;
+
+   ...
+ }
+----
+
+=== JPA and Hibernate
+
+ * ORM - Object relational mapping
+ * Reference implementation EclipseLink
+ * JBoss implementation Hibernate
+
 
 = EJB - BMT vs. CMT
 
