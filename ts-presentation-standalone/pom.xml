@@ -69,4 +69,13 @@
 
   </dependencies>
   
+  <profiles>
+    <profile>
+        <id>wildfly</id>
+        <properties>
+            <version.hornetq>2.4.3.Final</version.hornetq>
+        </properties>
+    </profile>
+  </profiles>
+  
 </project>
