@@ -1,0 +1,29 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+
+:images: ./misc
+
+
+= Narayana Transaction Manager in EAP
+Ondra Chaloupka / ochaloup@redhat.com
+
+[NOTE.speaker]
+--
+ What to check
+ * 2PC
+ * Periodic  recovery
+ * 2PC optimalizations
+ ** presumed rollback optimalization
+ ** read-only optimalization
+ ** one-phase commit optimalization
+ ** LRCO vs. CMR
+ * Narayana log store types (filesystem, hornetq, jdbc)
+ * Operation with log store and jboss cli
+--
+
+== References
+
+ * My bookmarks on http://delicious.com/chalda/ts.presentation-xa
+
