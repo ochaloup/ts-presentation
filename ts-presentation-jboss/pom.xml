@@ -22,14 +22,14 @@
         <version.spec.transaction>1.0.1.Final</version.spec.transaction>
         
         <!-- Other configuration -->
-        <jboss.dist>${env.JBOSS_HOME}</jboss.dist>
+        <jboss.dist>${env.JBOSS_HOME}</jboss.dist> <!-- used in arquillian.xml -->
   </properties>
     
   <dependencyManagement>
-      <dependencies>
+    <dependencies>
       <dependency>
         <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-7.0</artifactId>
+        <artifactId>jboss-javaee-7.0</artifactId> <!-- EE7 spec -->
         <version>${version.javaee.spec}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -39,11 +39,21 @@
 
 
   <dependencies>
+    <!-- Test utils -->
+    <dependency>
+        <groupId>org.jboss.qa.tspresentation</groupId>
+        <artifactId>ts-presentation-utils</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+  
+    <!-- Arquillian -->
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- Provided scope -->
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>
