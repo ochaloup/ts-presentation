@@ -16,10 +16,10 @@ public class ProjectProperties {
     // Connection configuration properties
     public static final String JDBC_DRIVER_FILEPATH = "db.jdbc_driver";
     public static final String JDBC_CLASS = "db.jdbc_class";
+    public static final String DB_JDBC_XA_CLASS = "db.jdbc_class_xa";
     public static final String DB_URL = "db.jdbc_url";
     public static final String DB_PASSWORD = "db.password";
     public static final String DB_USERNAME = "db.username";
-    public static final String XA_DATASOURCE_CLASS = "datasource.class.xa";
 
     // Persistence unit properties
     public static final String PERSISTENCE_UNIT_RESOURCE_LOCAL = "ResourceLocalPersistenceUnit";
@@ -31,6 +31,12 @@ public class ProjectProperties {
     public static final String JMS_QUEUE = "jms.queue";
     public static final String JMS_USERNAME = "jms.username";
     public static final String JMS_PASSWORD = "jms.password";
+    
+    // JAVA EE
+    public static final String NON_XA_DATASOURCE = "datasource-test";
+    public static final String NON_XA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_DATASOURCE;
+    public static final String XA_DATASOURCE = "xa-datsource-test";
+    public static final String XA_DATASOURCE_JNDI = "java:jboss/" + XA_DATASOURCE;
 
     // -----------------------------
     // ----- LOADED PROPERTIES -----

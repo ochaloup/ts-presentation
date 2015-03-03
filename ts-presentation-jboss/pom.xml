@@ -18,8 +18,11 @@
 
         <!-- Versions -->
         <version.arquillian.wildfly>8.1.0.Final</version.arquillian.wildfly>
+        <version.ironjacamar>1.2.0.Beta3</version.ironjacamar>
         <version.javaee.spec>1.0.2.Final</version.javaee.spec>
-        <version.spec.transaction>1.0.1.Final</version.spec.transaction>
+        <version.jboss.logging>3.2.1.Final</version.jboss.logging>
+        <version.narayana>5.0.3.Final</version.narayana>
+        <version.transaction.spi>7.1.0.Final</version.transaction.spi>
         
         <!-- Other configuration -->
         <jboss.dist>${env.JBOSS_HOME}</jboss.dist> <!-- used in arquillian.xml -->
@@ -48,12 +51,44 @@
   
     <!-- Arquillian -->
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
+        <groupId>org.jboss.arquillian.junit</groupId>
+        <artifactId>arquillian-junit-container</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${version.jboss.logging}</version>
+        <scope>test</scope>
     </dependency>
     
-    <!-- Provided scope -->
+    <!-- JCA and Transactions in JBoss app server-->
+    <dependency>
+        <groupId>org.jboss.narayana.jts</groupId>
+        <artifactId>narayana-jts-jacorb</artifactId>
+        <scope>provided</scope>
+        <version>${version.narayana}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-transaction-spi</artifactId>
+        <scope>provided</scope>
+        <version>${version.transaction.spi}</version>
+    </dependency>
+    <dependency>
+       <groupId>org.jboss.ironjacamar</groupId>
+       <artifactId>ironjacamar-core-impl</artifactId>
+       <version>${version.ironjacamar}</version>
+       <scope>provided</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.jboss.ironjacamar</groupId>
+       <artifactId>ironjacamar-jdbc</artifactId>
+       <version>${version.ironjacamar}</version>
+       <scope>provided</scope>
+    </dependency>
+    
+    <!-- Specifications -->
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>

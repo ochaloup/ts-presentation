@@ -13,16 +13,16 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class BasicTestCase {
-    
+
     @Inject TestBean testBean;
-    
+
     @Deployment(name = "basic")
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "basic.jar")
                 .addPackage("org.jboss.qa.tspresentation.bean");
         return jar;
     }
-    
+
     @Test
     public void test() {
         testBean.doWork();
