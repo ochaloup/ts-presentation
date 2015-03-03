@@ -4,7 +4,8 @@
   <container qualifier="WILDFLY_MANAGED" default="true">
     <configuration>
         <!-- This has to be set for Eclipse would start arquillian without troubles -->
-        <propety name="jbossHome">/home/ochaloup/</propety>
+        <property name="jbossHome">${jboss.home:/home/ochaloup/jboss/wildfly-9.0.0.Alpha1}</property>
+        <property name="serverConfig">${jboss.config:standalone-full.xml}</property>
         <!-- When server is started then not run new server but use the started one -->
         <property name="allowConnectingToRunningServer">true</property>
     </configuration>

@@ -19,7 +19,10 @@
         <!-- Versions -->
         <version.arquillian.wildfly>8.1.0.Final</version.arquillian.wildfly>
         <version.javaee.spec>1.0.2.Final</version.javaee.spec>
-        <version.spec.transaction>1.0.1.Final</version.spec.transaction>        
+        <version.spec.transaction>1.0.1.Final</version.spec.transaction>
+        
+        <!-- Other configuration -->
+        <jboss.dist>${env.JBOSS_HOME}</jboss.dist>
   </properties>
     
   <dependencyManagement>
@@ -79,6 +82,8 @@
             <configuration>
               <systemPropertyVariables>
                 <arquillian.launch>WILDFLY_MANAGED</arquillian.launch>
+                <jboss.home>${jboss.dist}</jboss.home>
+                <jboss.config>${jboss.config}</jboss.config>
               </systemPropertyVariables>
             </configuration>
           </plugin>

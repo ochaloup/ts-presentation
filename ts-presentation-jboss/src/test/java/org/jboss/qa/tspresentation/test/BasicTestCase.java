@@ -7,7 +7,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.qa.tspresentation.bean.TestBean;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,7 @@ public class BasicTestCase {
     @Deployment(name = "basic")
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "basic.jar")
-                .addPackage("org.jboss.qa.tspresentation.test");
+                .addPackage("org.jboss.qa.tspresentation.bean");
         return jar;
     }
     
