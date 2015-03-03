@@ -589,12 +589,12 @@ image:{images}/narayana-logo.png[]
  }
 ----
 
-=== JPA and Hibernate
+=== Entity Manager
 
- * ORM - Object relational mapping
- * Reference implementation EclipseLink
- * JBoss implementation Hibernate
-
+[ source, language="java" ]
+----
+ @Persisten
+----
 
 = EJB - BMT vs. CMT
 
@@ -606,11 +606,14 @@ image:{images}/narayana-logo.png[]
  Does @Inject support to inject transaction?
  MDB and BMT
  JCA multiple datasources in XA
+ JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
  Asynchronous calls of EJB
  Transactions for EE batches
+ JMS closing connection during the XA transaction - will be msg commited or not?
 --
 
 == References
+ * Presentation https://github.com/ochaloup/ts-presentation
  * Java Transaction Design Strategies http://www.infoq.com/minibooks/JTDS
  * Transakce v Java EE (Kamil Ševeček) https://www.youtube.com/watch?v=6q9NIRBHd5I
  * Java Transaction Processing http://www.amazon.com/Java-Transaction-Processing-Design-Implementation/dp/013035290X
