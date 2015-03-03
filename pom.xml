@@ -130,4 +130,10 @@
     </pluginManagement>
   </build>
 
+  <modules>
+    <module>ts-presentation-utils</module>
+    <module>ts-presentation-standalone</module>
+    <module>ts-presentation-jboss</module>
+  </modules>
+
 </project>
