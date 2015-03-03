@@ -18,12 +18,19 @@
     
     <!-- Versions for standalone part -->
     <version.hibernate>4.3.8.Final</version.hibernate>
-    <version.hornetq>2.3.25.Final</version.hornetq>
+    <version.hornetq>2.4.3.Final</version.hornetq> <!-- version in WildFly -->
     <version.netty>3.10.0.Final</version.netty>
     <version.postgresql.jdbc>9.3-1100-jdbc4</version.postgresql.jdbc>
   </properties>
 
   <dependencies>
+    <!-- Test utils -->
+    <dependency>
+        <groupId>org.jboss.qa.tspresentation</groupId>
+        <artifactId>ts-presentation-utils</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+  
     <!-- HIBERNATE -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -71,9 +78,9 @@
   
   <profiles>
     <profile>
-        <id>wildfly</id>
+        <id>eap6</id>
         <properties>
-            <version.hornetq>2.4.3.Final</version.hornetq>
+            <version.hornetq>2.3.25.Final</version.hornetq>
         </properties>
     </profile>
   </profiles>

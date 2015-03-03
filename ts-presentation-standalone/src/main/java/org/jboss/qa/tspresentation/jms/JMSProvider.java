@@ -18,6 +18,9 @@ import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
 import org.hornetq.core.remoting.impl.netty.TransportConstants;
 import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
 
 /**
@@ -27,6 +30,8 @@ import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
  *  http://java.dzone.com/articles/hornetq-getting-started
  */
 public class JMSProvider {
+    private static final Logger log = LoggerFactory.getLogger(JMSProvider.class);
+
     private static final long RECEIVE_CALL_TIMEOUT = 1000L;
     private static final String HOST = ProjectProperties.get(JMS_HOST);
     private static final String PORT = ProjectProperties.get(JMS_PORT);
@@ -64,13 +69,18 @@ public class JMSProvider {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(TransportConstants.HOST_PROP_NAME, HOST);
         props.put(TransportConstants.PORT_PROP_NAME, PORT);
+        // this is needed for WildFly as http protocol upgrade has to be enabled
+        props.put(TransportConstants.HTTP_UPGRADE_ENABLED_PROP_NAME, true);
+        props.put(TransportConstants.HTTP_UPGRADE_ENDPOINT_PROP_NAME, "http-acceptor");
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getCanonicalName(), props);
 
         HornetQConnectionFactory cf = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
         cf.setCallTimeout(RECEIVE_CALL_TIMEOUT);
         if(USERNAME != null && PASSWORD != null ) {
+            log.debug("Creating JMS connection to {}:{} for user '{}' and password '{}'", HOST, PORT, USERNAME, PASSWORD);
             return cf.createConnection(USERNAME, PASSWORD);
         } else {
+            log.debug("Creating JMS connection to {}:{} without authentication", HOST, PORT);
             return cf.createConnection();
         }
     }
