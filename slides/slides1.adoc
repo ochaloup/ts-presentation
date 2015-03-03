@@ -229,7 +229,7 @@ image:{images}/db/isolation-levels-base.png[]
 
 image:{images}/db/01-lost-update.jpg[]
 
-[small]#kindly stolen from http://what-when-how.com#
+[small]#shamelessly stolen from http://what-when-how.com#
 
 [NOTE.speaker]
 --
@@ -240,7 +240,7 @@ image:{images}/db/01-lost-update.jpg[]
 
 image:{images}/db/02-dirty-reads.jpg[]
 
-[small]#kindly stolen from http://what-when-how.com#
+[small]#shamelessly stolen from http://what-when-how.com#
 
 [NOTE.speaker]
 --
@@ -252,7 +252,7 @@ image:{images}/db/02-dirty-reads.jpg[]
 
 image:{images}/db/03-non-repeatable-reads[]
 
-[small]#kindly stolen from http://what-when-how.com#
+[small]#shamelessly stolen from http://what-when-how.com#
 
 [NOTE.speaker]
 --
@@ -264,7 +264,7 @@ image:{images}/db/03-non-repeatable-reads[]
 
 image:{images}/db/04-phantom-reads.jpg[]
 
-[small]#kindly stolen from http://what-when-how.com#
+[small]#shamelessly stolen from http://what-when-how.com#
 
 [NOTE.speaker]
 --
