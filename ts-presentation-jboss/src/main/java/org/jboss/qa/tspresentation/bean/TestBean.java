@@ -1,4 +1,4 @@
-package com.example.tspresentation.bean;
+package org.jboss.qa.tspresentation.bean;
 
 import javax.ejb.ApplicationException;
 import javax.ejb.Stateless;
@@ -9,7 +9,7 @@ import javax.ejb.TransactionManagement;
 @Stateless
 @TransactionManagement
 public class TestBean {
-    
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void doWork() {
         // do something

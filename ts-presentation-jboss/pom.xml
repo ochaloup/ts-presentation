@@ -17,10 +17,23 @@
         <project.root.dir>${basedir}/..</project.root.dir>
 
         <!-- Versions -->
-        <version.arquillian.wildfly>8.1.0.CR2</version.arquillian.wildfly>
-        <version.spec.ejb>1.0.0.Final</version.spec.ejb>
-        <version.spec.jms>1.0.0.Final</version.spec.jms>
+        <version.arquillian.wildfly>8.1.0.Final</version.arquillian.wildfly>
+        <version.javaee.spec>1.0.2.Final</version.javaee.spec>
+        <version.spec.transaction>1.0.1.Final</version.spec.transaction>        
   </properties>
+    
+  <dependencyManagement>
+      <dependencies>
+      <dependency>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-7.0</artifactId>
+        <version>${version.javaee.spec}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
 
   <dependencies>
     <dependency>
@@ -30,15 +43,23 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <version>${version.spec.ejb}</version>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
       <artifactId>jboss-jms-api_2.0_spec</artifactId>
-      <version>${version.spec.jms}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.jboss.spec.javax.transaction</groupId>
+        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        <scope>provided</scope>
     </dependency>
   </dependencies>
 
