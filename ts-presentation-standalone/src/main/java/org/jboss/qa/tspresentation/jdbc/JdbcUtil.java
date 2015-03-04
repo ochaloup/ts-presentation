@@ -27,7 +27,7 @@ public class JdbcUtil {
     // private static final String SELECT_WHERE = String.format(SELECT_PATTERN + SELECT_WHERE_PATTERN, TABLE_NAME);
 
     public static boolean runSQL(final String sql) throws SQLException {
-        try (Connection conn = JDBCDriver.getConnection()) {
+        try (Connection conn = JdbcDriver.getConnection()) {
             Statement st = conn.createStatement();
             return st.execute(sql);
         }
@@ -56,7 +56,7 @@ public class JdbcUtil {
     }
 
     public static String selectById(final int id) throws SQLException {
-        try (Connection conn = JDBCDriver.getConnection()) {
+        try (Connection conn = JdbcDriver.getConnection()) {
             return selectById(id, conn);
         }
     }

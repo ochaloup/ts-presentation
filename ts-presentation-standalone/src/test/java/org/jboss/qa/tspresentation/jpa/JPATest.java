@@ -16,7 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.transaction.spi.AbstractTransactionImpl;
 import org.hibernate.jdbc.ReturningWork;
-import org.jboss.qa.tspresentation.jdbc.JDBCDriver;
+import org.jboss.qa.tspresentation.jdbc.JdbcDriver;
 import org.jboss.qa.tspresentation.jdbc.JdbcUtil;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.junit.After;
@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class JPATest {
     private static final Logger log = LoggerFactory.getLogger(JPATest.class);
 
-    private static JPAProvider jpaResourceLocal, jpaJTA;
+    private static JpaProvider jpaResourceLocal, jpaJTA;
     private static ClassLoader originalContextClassloader;
 
     private static final String NAME = "Frodo Baggins";
@@ -41,7 +41,7 @@ public class JPATest {
     @BeforeClass
     public static void registerDriver() throws SQLException {
         // Loading JDBC driver from URL specified in properties file
-        JDBCDriver.registerDriver();
+        JdbcDriver.registerDriver();
 
         /*
          * This is a bit hack as ConnectionProvider of Hibernate does do Class.forName() to get driver class
@@ -55,11 +55,11 @@ public class JPATest {
          * to use it with property hibernate.connection.provider_class in persistence.xml
          */
         originalContextClassloader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(JDBCDriver.getDriverClassLoader());
+        Thread.currentThread().setContextClassLoader(JdbcDriver.getDriverClassLoader());
 
         // creating entity manager factory
-        jpaResourceLocal = new JPAProvider(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL);
-        jpaJTA = new JPAProvider(ProjectProperties.PERSISTENCE_UNIT_JTA);
+        jpaResourceLocal = new JpaProvider(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL);
+        jpaJTA = new JpaProvider(ProjectProperties.PERSISTENCE_UNIT_JTA);
     }
 
     @AfterClass
@@ -129,7 +129,7 @@ public class JPATest {
      */
     @Test
     public void persistNoTransaction() throws SQLException {
-        JPAProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
+        JpaProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
         EntityManager em = autocommitJpaProvider.getEntityManager();
         autocommitAssert(em, true);
 
@@ -168,7 +168,7 @@ public class JPATest {
     @Ignore
     @Test
     public void transactionWithAutocommitTrue() throws SQLException {
-        JPAProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
+        JpaProvider autocommitJpaProvider = getAutocommitTrueJPAProvider();
         EntityManager em = autocommitJpaProvider.getEntityManager();
         autocommitAssert(em, true);
 
@@ -418,7 +418,7 @@ public class JPATest {
      * {@link PresentationEntity#TABLE_NAME}. Using jdbc connection.
      */
     private String selectById(final int id) {
-        try (Connection conn = JDBCDriver.getConnection()) {
+        try (Connection conn = JdbcDriver.getConnection()) {
             return JdbcUtil.selectById(id, PresentationEntity.TABLE_NAME, PresentationEntity.NAME_COLUMN_NAME, conn);
         } catch (SQLException sqle) {
             throw new RuntimeException("Can't get data from " + PresentationEntity.TABLE_NAME + " where id is " + id, sqle);
@@ -426,7 +426,7 @@ public class JPATest {
     }
 
     private int updateById(final int id, final String newName) {
-        try (Connection conn = JDBCDriver.getConnection()) {
+        try (Connection conn = JdbcDriver.getConnection()) {
             String sqlUpdate = "UPDATE " + PresentationEntity.TABLE_NAME + " SET " + PresentationEntity.NAME_COLUMN_NAME + " = ? WHERE id = ?";
             PreparedStatement ps = conn.prepareStatement(sqlUpdate);
             ps.setString(1, newName);
@@ -485,10 +485,10 @@ public class JPATest {
         }
     }
 
-    private JPAProvider getAutocommitTrueJPAProvider() {
+    private JpaProvider getAutocommitTrueJPAProvider() {
         Map<String, String> config = new HashMap<String, String>();
         config.put("hibernate.connection.autocommit", "true");
-        JPAProvider autocommitTrueJpaProvider = new JPAProvider(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL, config);
+        JpaProvider autocommitTrueJpaProvider = new JpaProvider(ProjectProperties.PERSISTENCE_UNIT_RESOURCE_LOCAL, config);
         return autocommitTrueJpaProvider;
     }
 }

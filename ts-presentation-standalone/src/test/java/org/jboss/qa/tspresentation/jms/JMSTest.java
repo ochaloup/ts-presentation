@@ -26,14 +26,14 @@ public class JMSTest {
     @Before
     public void setUp() throws JMSException {
         message = testName.getMethodName() + BASE_MESSAGE;
-        jmsConnection = JMSProvider.getConnection();
+        jmsConnection = JmsProvider.getConnection();
 
         // cleaning queue
         Session session = null;
         try {
             while (true) {
                 session = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                String msg = JMSProvider.receiveMessageAsString(jmsConnection, session);
+                String msg = JmsProvider.receiveMessageAsString(jmsConnection, session);
                 log.info("Cleanign queue - received '" + msg + "'");
                 session.close();
             }
@@ -56,9 +56,9 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
 
-        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        Assert.assertEquals(message, JmsProvider.receiveMessageAsString(jmsConnection, session));
 
         // for full acknowledgement the session has to be closed
         session.close();
@@ -72,9 +72,9 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(false, Session.DUPS_OK_ACKNOWLEDGE);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
 
-        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        Assert.assertEquals(message, JmsProvider.receiveMessageAsString(jmsConnection, session));
         session.close();
     }
 
@@ -83,23 +83,23 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
 
-        TextMessage textMessage = JMSProvider.receiveMessage(jmsConnection, session);
+        TextMessage textMessage = JmsProvider.receiveMessage(jmsConnection, session);
         Assert.assertEquals(message, textMessage.getText());
 
         jmsConnection.close();
-        jmsConnection = JMSProvider.getConnection();
+        jmsConnection = JmsProvider.getConnection();
         session = jmsConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
-        textMessage = JMSProvider.receiveMessage(jmsConnection, session);
+        textMessage = JmsProvider.receiveMessage(jmsConnection, session);
         Assert.assertEquals(message, textMessage.getText());
 
         // we are acknowledging the receive of the message and the jms server will forget about the message
         textMessage.acknowledge();
 
         jmsConnection.close();
-        jmsConnection = JMSProvider.getConnection();
+        jmsConnection = JmsProvider.getConnection();
 
         checkQueueIsEmpty(jmsConnection);
     }
@@ -109,7 +109,7 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
 
         // message was sent but not commited so no message should be delivered back
         checkQueueIsEmpty(jmsConnection);
@@ -128,7 +128,7 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
         Assert.assertTrue("Session should be transacted", session.getTransacted());
         checkQueueIsEmpty(jmsConnection); // not commited yet
         session.commit();
@@ -136,7 +136,7 @@ public class JMSTest {
         Assert.assertTrue("Session should be transacted", session.getTransacted());
 
         // next round of sending
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
         checkQueueIsEmpty(jmsConnection); // not commited yet
         session.commit();
         checkQueue(jmsConnection, message); // already commited
@@ -155,24 +155,24 @@ public class JMSTest {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
         session.commit();
 
-        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        Assert.assertEquals(message, JmsProvider.receiveMessageAsString(jmsConnection, session));
         session.rollback();
 
         // session is now rollbacked so no message should be delivered
-        JMSProvider.sendMessage(message + "2", session);
+        JmsProvider.sendMessage(message + "2", session);
 
         jmsConnection.close();
-        jmsConnection = JMSProvider.getConnection();
+        jmsConnection = JmsProvider.getConnection();
         session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 
-        JMSProvider.sendMessage(message + "2", session);
+        JmsProvider.sendMessage(message + "2", session);
 
-        Assert.assertEquals(message, JMSProvider.receiveMessageAsString(jmsConnection, session));
+        Assert.assertEquals(message, JmsProvider.receiveMessageAsString(jmsConnection, session));
         try {
-            JMSProvider.receiveMessageAsString(jmsConnection, session);
+            JmsProvider.receiveMessageAsString(jmsConnection, session);
         } catch (NullPointerException npe) {
             // expected behaviour as message + 2 should not be delivered to queue
         }
@@ -190,7 +190,7 @@ public class JMSTest {
     public void transactedWithConnectionClosed() throws JMSException {
         log.debug("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
-        JMSProvider.sendMessage(message, session);
+        JmsProvider.sendMessage(message, session);
 
         session.close();
 
@@ -219,7 +219,7 @@ public class JMSTest {
         Session session = null;
         try {
             session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            return JMSProvider.receiveMessage(conn, session);
+            return JmsProvider.receiveMessage(conn, session);
         } catch (NullPointerException npe) {
             // there is no message on the jms server
             return null;

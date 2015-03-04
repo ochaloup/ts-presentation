@@ -29,8 +29,8 @@ import static org.jboss.qa.tspresentation.utils.ProjectProperties.*;
  * For another way how to do it check:
  *  http://java.dzone.com/articles/hornetq-getting-started
  */
-public class JMSProvider {
-    private static final Logger log = LoggerFactory.getLogger(JMSProvider.class);
+public class JmsProvider {
+    private static final Logger log = LoggerFactory.getLogger(JmsProvider.class);
 
     private static final long RECEIVE_CALL_TIMEOUT = 1000L;
     private static final String HOST = ProjectProperties.get(JMS_HOST);

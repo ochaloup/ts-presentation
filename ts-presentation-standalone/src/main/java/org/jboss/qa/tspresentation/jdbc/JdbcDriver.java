@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class JDBCDriver {
-    private static final Logger log = LoggerFactory.getLogger(JDBCDriver.class);
+public class JdbcDriver {
+    private static final Logger log = LoggerFactory.getLogger(JdbcDriver.class);
 
     // saying if driver based on project properties was already registered or not
     private static volatile boolean isRegistered = false;
@@ -22,7 +22,7 @@ public class JDBCDriver {
      * Registering JDBC driver based on information from system properties
      */
     public static void registerDriver() {
-        synchronized (JDBCDriver.class) {
+        synchronized (JdbcDriver.class) {
             if(isRegistered) {
                 return;
             }
@@ -54,7 +54,7 @@ public class JDBCDriver {
      * Rerturning classloader used during registration of the jdbc driver.
      */
     public static ClassLoader getDriverClassLoader() {
-        synchronized (JDBCDriver.class) {
+        synchronized (JdbcDriver.class) {
             if(!isRegistered) {
                 throw new IllegalStateException("Driver was not registered - no class loader exist");
             }
