@@ -85,26 +85,27 @@ public class JPATest {
         }
     }
 
+    /**
+     * Base usage
+     */
     @Test
     public void persistWithTransaction() throws SQLException {
         EntityManager em = jpaResourceLocal.getEntityManager();
         EntityTransaction tx = null;
-        int id = -1;
+        PresentationEntity entity = new PresentationEntity();
 
         try {
             tx = em.getTransaction();
             tx.begin(); // it also calls Connection.setAutoCommit(false)
 
-            PresentationEntity entity = new PresentationEntity();
             entity.setName(NAME);
 
             em.persist(entity);
             em.flush();
 
             // checking if database state was changed (from different connection)
-            Assert.assertNull(selectById(id));
+            Assert.assertNull(selectById(entity.getId()));
 
-            id = entity.getId();
             tx.commit();
         } catch (RuntimeException re) {
             if(tx != null && tx.isActive()) {
@@ -116,7 +117,7 @@ public class JPATest {
         }
 
         // just checking if database state was changed
-        Assert.assertEquals(NAME, selectById(id));
+        Assert.assertEquals(NAME, selectById(entity.getId()));
     }
 
     /**
