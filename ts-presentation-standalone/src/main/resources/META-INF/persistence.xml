@@ -5,12 +5,15 @@
         <!-- transaction-type is default to JTA in a JavaEE environment and to RESOURCE_LOCAL in a JavaSE environment.
              See http://stackoverflow.com/a/17331863/187035 -->
 
-        <!-- All classes should be scan for being entity and the class element should not be needed -->
+        <!-- All classes should be scan for being entity - class element is not needed -->
+        <!-- When persistence.xml is deployed to EE container then this is not necessary as
+             container manage scanning all classes for being entity -->
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <!-- <class>org.jboss.qa.tspresentation.jpa.TestEntity</class> -->
 
         <properties>
             <!-- This is not needed as it's provided in application from properties
+                 seeorg.jboss.qa.tspresentation.jpa.JPAProvider class where EntityManagerFactory is created
                 <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/crashrec?loglevel=2"/>
                 <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
                 <property name="hibernate.connection.username" value="crashrec"/>

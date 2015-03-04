@@ -1,10 +1,17 @@
 package org.jboss.qa.tspresentation.jms;
 
+import static org.jboss.qa.tspresentation.utils.ProjectProperties.JMS_QUEUE;
+
+
 import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,6 +56,39 @@ public class JMSTest {
     @After
     public void tearDown() throws JMSException {
         jmsConnection.close();
+    }
+
+    /**
+     * Base usage
+     */
+    @Test
+    public void howTo() throws JMSException {
+        try (Connection connection = jmsConnection = JmsProvider.getConnection()) {
+
+            // AUTO_ACK
+            Session session = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            Queue testQueue = session.createQueue(ProjectProperties.get(JMS_QUEUE));
+
+            // for sending message I do not need to start connection, for receiving we need it
+            MessageProducer producer = session.createProducer(testQueue);
+            TextMessage msg = session.createTextMessage("hello there");
+            producer.send(msg);
+
+            session.close();
+
+            // TRANSACTED
+            session = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
+
+            testQueue = session.createQueue(ProjectProperties.get(JMS_QUEUE));
+
+            connection.start();
+            MessageConsumer consumer = session.createConsumer(testQueue);
+            TextMessage received = (TextMessage) consumer.receive(3000); // 3s
+            connection.stop();
+
+            Assert.assertEquals("hello there", received.getText());
+        }
     }
 
     @Test
