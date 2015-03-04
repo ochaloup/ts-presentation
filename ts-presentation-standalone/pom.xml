@@ -17,15 +17,32 @@
     <project.root.dir>${basedir}/..</project.root.dir>
     
     <!-- Versions for standalone part -->
+    <version.hibernate>4.3.8.Final</version.hibernate>
     <version.postgresql.jdbc>9.3-1100-jdbc4</version.postgresql.jdbc>
   </properties>
 
   <dependencies>
-    <!-- Test utils -->
+    <!-- Test utils (HornetQ linked within)-->
     <dependency>
         <groupId>org.jboss.qa.tspresentation</groupId>
         <artifactId>ts-presentation-utils</artifactId>
         <version>${project.version}</version>
+    </dependency>
+    
+    <!-- HIBERNATE -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${version.hibernate}</version>
+    </dependency>
+    <!-- 
+      javax.persistence.PersistenceException: No Persistence provider for EntityManager named
+      for getting rid of it we need to have entitymanger as dependency (+META-INF/persistence.xml file) 
+    -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${version.hibernate}</version>
     </dependency>
 
     <!-- JDBC driver sources for debugging -->

@@ -17,28 +17,12 @@
     <project.root.dir>${basedir}/..</project.root.dir>
     
     <!-- Versions -->
-    <version.hibernate>4.3.8.Final</version.hibernate>
     <version.hornetq>2.4.3.Final</version.hornetq> <!-- version in WildFly -->
     <version.netty>3.10.0.Final</version.netty>
   </properties>
   
   <dependencies>
-    <!-- HIBERNATE -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>${version.hibernate}</version>
-    </dependency>
-    <!-- 
-      javax.persistence.PersistenceException: No Persistence provider for EntityManager named
-      for getting rid of it we need to have entitymanger as dependency (+META-INF/persistence.xml file) 
-    -->
-    <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${version.hibernate}</version>
-    </dependency>
-    
+   
     <!-- HORNETQ -->
     <dependency>
         <groupId>org.hornetq</groupId>
