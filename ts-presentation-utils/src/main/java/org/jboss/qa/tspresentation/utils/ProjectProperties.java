@@ -31,7 +31,7 @@ public class ProjectProperties {
     public static final String JMS_QUEUE = "jms.queue";
     public static final String JMS_USERNAME = "jms.username";
     public static final String JMS_PASSWORD = "jms.password";
-    
+
     // JAVA EE
     public static final String NON_XA_DATASOURCE = "datasource-test";
     public static final String NON_XA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_DATASOURCE;

@@ -46,6 +46,44 @@ public class JdbcTest {
     }
 
     /**
+     * Base usage
+     */
+    @Test
+    public void howTo() throws SQLException {
+        Connection connection = null;
+        try {
+            connection = JdbcDriver.getConnection();
+            connection.setAutoCommit(false);
+
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TABLE_NAME + " VALUES (?, ?)");
+            ps.setInt(1, id);
+            ps.setString(2, text);
+            ps.executeUpdate();
+
+            connection.commit();
+        } catch (SQLException e) {
+            // rollback method could thorw the SQLException as well
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException exceptionIgnore) {
+                    // ignore
+                }
+            }
+            throw e; // rethrow exception cause to not supress it
+        } finally {
+            // Closing should happen in finally.
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException exceptionIgnore) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    /**
      * Transaction is commited immediatelly after each statement execution.
      */
     @Test
@@ -497,47 +535,4 @@ public class JdbcTest {
             conn.commit();
         }
     }
-
-    /**
-     * This is a kind of documentation test which shows standard idiom based on answer from Stackoverflow
-     * http://stackoverflow.com/questions/3160756/in-jdbc-when-autocommit-is-false-and-no-explicit-savepoints-have-been-set-is-i
-     */
-    @Test
-    public void standardRollbackIdiom() throws SQLException {
-        Connection connection = null;
-        try {
-            connection = JdbcDriver.getConnection();
-            connection.setAutoCommit(false);
-
-            // transactional queries here
-            getInsert(connection, id, text).executeUpdate();
-
-            connection.commit();
-        } catch (SQLException e) {
-            // Rollback throws SQLException as well.
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException exceptionIgnore) {
-                    // ignore
-                }
-            }
-            throw e; // You don't want to suppress the main exception.
-        } finally {
-            // Closing should happen in finally.
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException exceptionIgnore) {
-                    // ignore
-                }
-            }
-        }
-    }
-
-
-    // ---------------------------------------------------------
-    // ----------------- PUBLIC STATIC METHODS -----------------
-    // ---------------------------------------------------------
-
 }
