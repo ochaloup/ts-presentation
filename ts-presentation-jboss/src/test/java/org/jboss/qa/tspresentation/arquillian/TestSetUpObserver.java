@@ -18,8 +18,8 @@ import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefineDatasourceObserver {
-    private static final Logger log = LoggerFactory.getLogger(DefineDatasourceObserver.class);
+public class TestSetUpObserver {
+    private static final Logger log = LoggerFactory.getLogger(TestSetUpObserver.class);
 
     @Inject
     private Instance<ManagementClient> managementClient;
@@ -87,6 +87,11 @@ public class DefineDatasourceObserver {
                     connectionProperties,
                     xaDatasourceProperties);
             wasChangeDone = true;
+        }
+
+        // now JMS queue
+        if(!operations.isDefined("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
+            operations.addJmsQueue(ProjectProperties.get(ProjectProperties.JMS_QUEUE), ProjectProperties.JMS_QUEUE_JNDI);
         }
 
         if(wasChangeDone) {

@@ -37,6 +37,7 @@ public class ProjectProperties {
     public static final String NON_XA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_DATASOURCE;
     public static final String XA_DATASOURCE = "xa-datsource-test";
     public static final String XA_DATASOURCE_JNDI = "java:jboss/" + XA_DATASOURCE;
+    public static final String JMS_QUEUE_JNDI = "java:jboss/queue/testQueue";
 
     // -----------------------------
     // ----- LOADED PROPERTIES -----

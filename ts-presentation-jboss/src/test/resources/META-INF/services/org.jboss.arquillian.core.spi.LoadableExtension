@@ -1,1 +1,1 @@
-org.jboss.qa.tspresentation.arquillian.DefineDatasourceExtension
+org.jboss.qa.tspresentation.arquillian.TestSetUpExtension

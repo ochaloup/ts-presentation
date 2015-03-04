@@ -607,8 +607,8 @@ public class ManagementOperations {
             addXADataSourceProperty(address, key, xaDatasourceProperties.getProperty(key));
            }
 
-        // enable the datasource
-        enableXADataSource(datasourceName);
+        // Enable the datasource - this is needed for EAP6 but it causes problems for WildFly
+        // enableXADataSource(datasourceName);
 
         // execute the batch - promote the changes to model
         runBatch();
@@ -627,12 +627,12 @@ public class ManagementOperations {
     // -----------------------------------------------------
     // ------------------ MESSAGING ------------------------
     // -----------------------------------------------------
-    public void createJmsQueue(final String queueName, final String jndiName) throws IOException  {
-        createJmsDestination("jms-queue", queueName, jndiName);
+    public void addJmsQueue(final String queueName, final String jndiName) throws IOException  {
+        addJmsDestination("jms-queue", queueName, jndiName);
     }
 
-    public void createJmsTopic(final String topicName, final String jndiName) throws IOException  {
-        createJmsDestination("jms-topic", topicName, jndiName);
+    public void addJmsTopic(final String topicName, final String jndiName) throws IOException  {
+        addJmsDestination("jms-topic", topicName, jndiName);
     }
 
     public void removeJmsQueue(final String queueName) throws IOException  {
@@ -643,7 +643,7 @@ public class ManagementOperations {
         removeJmsDestination("jms-topic", topicName);
     }
 
-    private void createJmsDestination(final String destinationType, final String destinationName, final String jndiName) throws IOException {
+    private void addJmsDestination(final String destinationType, final String destinationName, final String jndiName) throws IOException {
         ModelNode address = parseAddress("/subsystem=messaging/hornetq-server=default")
                 .add(destinationType, destinationName);
         ModelNode operation = new ModelNode();

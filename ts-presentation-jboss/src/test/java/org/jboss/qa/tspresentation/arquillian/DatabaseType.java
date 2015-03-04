@@ -12,6 +12,8 @@ public enum DatabaseType {
     public static DatabaseType convert(final String dbStringToEvaluate) {
         if(dbStringToEvaluate.toUpperCase().contains(POSTGRESQL.name())) {
             return POSTGRESQL;
+        } else if (dbStringToEvaluate.toUpperCase().contains(ORACLE.name())) {
+            return ORACLE;
         } else {
             return UNKNOWN;
         }
