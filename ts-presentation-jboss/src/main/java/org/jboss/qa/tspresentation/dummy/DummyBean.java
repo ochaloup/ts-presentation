@@ -1,4 +1,4 @@
-package org.jboss.qa.tspresentation.bean;
+package org.jboss.qa.tspresentation.dummy;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 @Stateless
 @TransactionManagement
-public class TestBean {
-    private static final Logger log = LoggerFactory.getLogger(TestBean.class);
+public class DummyBean {
+    private static final Logger log = LoggerFactory.getLogger(DummyBean.class);
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void doWork() {
