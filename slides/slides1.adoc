@@ -610,6 +610,32 @@ image:{images}/narayana-logo.png[]
  Asynchronous calls of EJB
  Transactions for EE batches
  JMS closing connection during the XA transaction - will be msg commited or not?
+
+                <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test" enabled="true" use-java-context="true" spy="true">
+                    <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
+                    <driver>database-jdbc-driver.jar</driver>
+                    <security>
+                        <user-name>crashrec</user-name>
+                        <password>crashrec</password>
+                    </security>
+                </datasource>
+                <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test" enabled="true" spy="true">
+                    <xa-datasource-property name="PortNumber">
+                        5432
+                    </xa-datasource-property>
+                    <xa-datasource-property name="ServerName">
+                        localhost
+                    </xa-datasource-property>
+                    <xa-datasource-property name="DatabaseName">
+                        crashrec
+                    </xa-datasource-property>
+                    <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+                    <driver>database-jdbc-driver.jar</driver>
+                    <security>
+                        <user-name>crashrec</user-name>
+                        <password>crashrec</password>
+                    </security>
+                </xa-datasource>
 --
 
 == References

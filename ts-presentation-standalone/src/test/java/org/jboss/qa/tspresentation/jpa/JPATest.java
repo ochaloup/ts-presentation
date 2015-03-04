@@ -116,7 +116,7 @@ public class JPATest {
             em.close();
         }
 
-        // just checking if database state was changed
+        // just checking if database state was changed - jdbc api is used directly
         Assert.assertEquals(NAME, selectById(entity.getId()));
     }
 

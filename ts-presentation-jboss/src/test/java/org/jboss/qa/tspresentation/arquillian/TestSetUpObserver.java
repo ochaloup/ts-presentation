@@ -34,9 +34,12 @@ public class TestSetUpObserver {
         String jbossHome = container.getContainerConfiguration().getContainerProperties().get("jbossHome");
         File jbossDeploymentsDirectory = new File(jbossHome, "standalone" + File.separator + "deployments");
         File jdbcDriverTargetJarFile = new File(jbossDeploymentsDirectory, JDBC_DRIVER_NAME);
-        File jdbcDriverJarFile = FileLoader.getFile(ProjectProperties.get(ProjectProperties.JDBC_DRIVER_FILEPATH));
 
-        Files.copy(jdbcDriverJarFile.toPath(), jdbcDriverTargetJarFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        // if driver is already deployed we won't do it again
+        if(!jdbcDriverTargetJarFile.exists()) {
+            File jdbcDriverJarFile = FileLoader.getFile(ProjectProperties.get(ProjectProperties.JDBC_DRIVER_FILEPATH));
+            Files.copy(jdbcDriverJarFile.toPath(), jdbcDriverTargetJarFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     public void handleAfterStart(@Observes final AfterStart event, final Container container) throws Exception {
@@ -46,22 +49,26 @@ public class TestSetUpObserver {
         boolean wasChangeDone = false;
 
         // if not exist - then create the datasource
-        if(!operations.isDefined("/subsystem=datasources", new String[] {"data-source", ProjectProperties.NON_XA_DATASOURCE})) {
+        if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"data-source", ProjectProperties.NON_XA_DATASOURCE})) {
             Properties connectionProperties = new Properties();
-            connectionProperties.setProperty("user-name", ProjectProperties.get(ProjectProperties.DB_USERNAME));
-            connectionProperties.setProperty("password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
-            connectionProperties.setProperty("spy", "true");
+
+            Properties additionalDsProperties = new Properties();
+            additionalDsProperties.setProperty("spy", "true");
+            additionalDsProperties.setProperty("user-name", ProjectProperties.get(ProjectProperties.DB_USERNAME));
+            additionalDsProperties.setProperty("password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+            additionalDsProperties.setProperty("recovery-username", ProjectProperties.get(ProjectProperties.DB_USERNAME));
+            additionalDsProperties.setProperty("recovery-password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
 
             operations.addDatasource(ProjectProperties.NON_XA_DATASOURCE, ProjectProperties.NON_XA_DATASOURCE_JNDI,
                     ProjectProperties.get(ProjectProperties.DB_URL),
                     JDBC_DRIVER_NAME,
-                    new Properties(),
+                    additionalDsProperties,
                     connectionProperties);
             wasChangeDone = true;
         }
 
         // if not exist - then create the xa-datasource
-        if(!operations.isDefined("/subsystem=datasources", new String[] {"xa-data-source", ProjectProperties.XA_DATASOURCE})) {
+        if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"xa-data-source", ProjectProperties.XA_DATASOURCE})) {
 
             Properties connectionProperties = new Properties();
             connectionProperties.setProperty("user-name", ProjectProperties.get(ProjectProperties.DB_USERNAME));
@@ -90,7 +97,7 @@ public class TestSetUpObserver {
         }
 
         // now JMS queue
-        if(!operations.isDefined("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
+        if(!operations.isDefinedNoOutput("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
             operations.addJmsQueue(ProjectProperties.get(ProjectProperties.JMS_QUEUE), ProjectProperties.JMS_QUEUE_JNDI);
         }
 

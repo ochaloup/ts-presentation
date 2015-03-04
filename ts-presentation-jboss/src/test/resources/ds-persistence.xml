@@ -4,8 +4,8 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
         version="2.0">
 
-    <persistence-unit name="TestPersistenceUnit" transaction-type="JPA">
-        <jta-data-source>java:jboss/xa-datsource-test</jta-data-source>
+    <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
+        <jta-data-source>java:jboss/datasource-test</jta-data-source>
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>

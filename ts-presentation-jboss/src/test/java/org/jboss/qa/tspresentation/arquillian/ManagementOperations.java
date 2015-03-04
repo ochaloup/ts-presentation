@@ -69,11 +69,20 @@ public class ManagementOperations {
     private ModelNode batch = null;
     // definition whether the batch is in run
     private boolean isBatchMode = false;
+    // says if successful management execution will be logged
+    private boolean isLoggingExecutionSupress = false;
 
     private final ManagementClient managementClient;
 
     public ManagementOperations(final ManagementClient client) {
         this.managementClient = client;
+    }
+
+    // -----------------------------------------------------
+    // ------------------- GETTERS/SETTERS -----------------
+    // -----------------------------------------------------
+    public void setLoggingExecutionSupress(final boolean isLoggingExecutionSupress) {
+        this.isLoggingExecutionSupress = isLoggingExecutionSupress;
     }
 
     // -----------------------------------------------------
@@ -820,7 +829,7 @@ public class ManagementOperations {
             ModelNode ret = controllerClient.execute(op);
             if (!isUnwrapResult) return ret;  // do not unwrap the result - return all outcome to me
 
-            if(SUCCESS.equals(ret.get(OUTCOME).asString())) {
+            if(SUCCESS.equals(ret.get(OUTCOME).asString()) && !isLoggingExecutionSupress) {
                 log.info("Succesful management operation {} with result {}", op, ret);
             }
 
@@ -1004,6 +1013,16 @@ public class ManagementOperations {
         ModelNode modelNodeAddress = parseAddress(address);
         return isDefined(modelNodeAddress, checkPath);
 
+    }
+
+    public boolean isDefinedNoOutput(final String address, final String[] checkPath) throws IOException {
+        boolean previouslySetSupressOption = isLoggingExecutionSupress;
+        setLoggingExecutionSupress(true);
+        try {
+            return isDefined(address, checkPath);
+        } finally {
+            setLoggingExecutionSupress(previouslySetSupressOption);
+        }
     }
 
     /**

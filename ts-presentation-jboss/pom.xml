@@ -17,7 +17,7 @@
         <project.root.dir>${basedir}/..</project.root.dir>
 
         <!-- Versions -->
-        <version.arquillian.wildfly>8.1.0.Final</version.arquillian.wildfly>
+        <version.arquillian.wildfly>8.2.0.Final</version.arquillian.wildfly>
         <version.ironjacamar>1.2.0.Beta3</version.ironjacamar>
         <version.javaee.spec>1.0.2.Final</version.javaee.spec>
         <version.jboss.logging>3.2.1.Final</version.jboss.logging>

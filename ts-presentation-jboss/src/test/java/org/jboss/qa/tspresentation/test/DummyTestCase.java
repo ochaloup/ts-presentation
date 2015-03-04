@@ -23,7 +23,7 @@ public class DummyTestCase {
     @Deployment(name = "basic")
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "basic.jar")
-                .addPackage("org.jboss.qa.tspresentation.bean");
+                .addPackage("org.jboss.qa.tspresentation.dummy");
         return jar;
     }
 
