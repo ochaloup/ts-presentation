@@ -1052,7 +1052,7 @@ public class ManagementOperations {
     /**
      * Returning result from the address where running read-resource on.
      */
-    private ModelNode readResource(final String address) throws IOException {
+    public ModelNode readResource(final String address) throws IOException {
         ModelNode operation = parseAddressToOperation(address);
         operation.get(OP).set("read-resource");
         operation.get(INCLUDE_DEFAULTS).set(true);
