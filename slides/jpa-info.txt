@@ -1,0 +1,20 @@
+This should somelike sumarrize how the persitence.xml settings interacts with datasource settings in WildFly 8.2.0.Final
+
+transaction-type = JTA 
+ - the transaction handling depends on type of datasource that you use
+ - the transaction handling does not depends on tag that you use in persistence.xml (jta-data-source or non-jta-data-source)
+ - if you use jta datasource (standard datasource with attribute jta=true) then TM will handle the transaction of entity manager
+ - if you use non-jta datasource (jta=false) then TM is not incorporated/hooked into handling transaction behaviour and autocommit=true is set on connection (at least it seems so as it behaves so (not checke if it's really so))
+ - you can use @PersistenceContext (injects entity manager) or @PersistenceUnit (injects entity manager factory)
+ - you can't start transaction em.getTransaction().begin() on entity manager as TM already started global transaction and enlisted resource (XAResource linking to DB). If you try you will get javax.ejb.EJBException: java.lang.IllegalStateException: A JTA EntityManager cannot use getTransaction()
+ - you can call emf.createEntityManager(SynchronizationType.SYNCHRONIZED) (emf injected by @PersistenceUnit)
+ - you can call emf.createEntityManager(SynchronizationType.UNSYNCHRONIZED) and later on you need to join transaction by calling em.joinTransaction(). If you don't do it so then by any update operation throws exception that you are not part of JTA transaction and you can't proceed
+
+
+
+transaction-type = RESOURCE_LOCAL
+ - you can use @PersistenceUnit (injects entity manager factory)
+ - you can't use @PersistenceContext (injects entity manager) and if your deployed bean contains such annotation then deployment ends with exception
+ - you can't call emf.createEntityManager(SynchronizationType.SYNCHRONIZED) you will get IllegalStateException that SynchronizationType is possible to set just for JTA transaction type
+ - if you don't use <jta-data-source> tag then you are limited to create the emf by yourself from Persistence. If you use @PersistenceUnit to inject emf then it creates it from default datasource (ExampleDS) 
+ - if you use <jta-data-source> then you need to manage transaction by hand - you need to use em.getTransaction().begin() but the TransactionAttribute has to be set to NOT_SUPPORTED otherwise you will get RollBack exception

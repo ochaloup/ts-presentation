@@ -53,6 +53,19 @@ public class JpaUtils {
         return changeForJdbcProperties(content);
     }
 
+    public static String setAsResourceLocal(final String content) {
+        return changeTransactionType(content, "RESOURCE_LOCAL");
+    }
+
+    public static String setAsJTA(final String content) {
+        return changeTransactionType(content, "JTA");
+    }
+
+    public static String addTag(final String content,final String textToAdd) {
+        return content
+                .replaceAll("(<persistence-unit.*)", "$1\n" + textToAdd);
+    }
+
     /**
      * Changing for different datasource
      */
@@ -71,5 +84,10 @@ public class JpaUtils {
                 .replaceAll("(connection.driver_class\" value=\")[^\"]*", "$1" + ProjectProperties.get(ProjectProperties.JDBC_CLASS))
                 .replaceAll("(connection.username\" value=\")[^\"]*", "$1" + ProjectProperties.get(ProjectProperties.DB_USERNAME))
                 .replaceAll("(connection.password\" value=\")[^\"]*", "$1" + ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+    }
+
+    private static String changeTransactionType(final String content, final String transactionType) {
+        return content
+                .replaceAll("(transaction-type=\")[^\"]*", "$1" + transactionType);
     }
 }

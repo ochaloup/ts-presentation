@@ -1,4 +1,4 @@
-package org.jboss.qa.tspresentation.test.jpa;
+package org.jboss.qa.tspresentation.test.jpa.persistencexml;
 
 import java.sql.SQLException;
 
@@ -7,7 +7,8 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
-import org.jboss.qa.tspresentation.jpa.SimpleJPABean;
+import org.jboss.qa.tspresentation.jpa.PersistenceContextPersistBean;
+import org.jboss.qa.tspresentation.test.jpa.JpaUtils;
 import org.jboss.qa.tspresentation.utils.JdbcBean;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -38,7 +39,7 @@ public class JtaJdbcTestCase {
 
     private static final String DEPLOYMENT = "jta-tag-jdbc-properties";
 
-    @Inject SimpleJPABean simpleJpaBean;
+    @Inject PersistenceContextPersistBean simpleJpaBean;
 
     @Inject JdbcBean jdbcBean;
 
@@ -57,6 +58,7 @@ public class JtaJdbcTestCase {
         log.info("Checking result of the persist action by jdbc query");
         String name = jdbcBean.getSingle(JBossTestEntity.TABLE_NAME, id, JBossTestEntity.NAME_COLUMN_NAME);
 
-        Assert.assertEquals(DEPLOYMENT, name);
+        // ExampleDS is used so the defined ds will not be updated
+        Assert.assertNull(name);
     }
 }

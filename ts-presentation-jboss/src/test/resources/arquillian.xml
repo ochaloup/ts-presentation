@@ -11,9 +11,8 @@
     </configuration>
   </container>
 
-    <!--
+    <!-- -->
     <engine>
         <property name="deploymentExportPath">/tmp/deployment</property>
     </engine>
-    -->
 </arquillian>

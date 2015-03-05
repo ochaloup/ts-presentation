@@ -10,7 +10,9 @@ public class ProjectProperties {
     // Property file where properties could be load from
     public static final String PROPERTIES_FILE_PROPERTY = "property.file";
     public static final String DEFAULT_PROPERTIES_FILE_NAME = "resource.properties";
-    // Property to specify folder where library jar files will be searched in
+    /**
+     * Property to specify folder where library jar files will be searched in
+     */
     public static final String JAR_LIBRARY = "jar.library";
 
     // Connection configuration properties
