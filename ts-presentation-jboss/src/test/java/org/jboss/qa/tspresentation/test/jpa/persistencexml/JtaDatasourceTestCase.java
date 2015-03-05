@@ -116,7 +116,10 @@ public class JtaDatasourceTestCase {
         Assert.assertEquals(DEPLOYMENT, name);
     }
 
-    @Test(expected = NullPointerException.class)
+    /**
+     * Getting wrapped {@link NullPointerException} as it's not able to find entity manager factory in Persitence
+     */
+    @Test(expected = EJBException.class)
     public void testPersistWithManuallyCreatedEmf() throws SQLException {
         log.info("Running testPersistWithManuallyCreatedEmf with name '{}'", DEPLOYMENT);
         resourceLocalBean.doPersistWithManualEmfCreation(DEPLOYMENT);
