@@ -5,8 +5,12 @@
         version="2.0">
 
     <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
-        <non-jta-data-source>java:jboss/datasource-test</non-jta-data-source>
         <properties>
+            <property name="hibernate.connection.url" value=""/>
+            <property name="hibernate.connection.driver_class" value=""/>
+            <property name="hibernate.connection.username" value=""/>
+            <property name="hibernate.connection.password" value=""/>
+
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>

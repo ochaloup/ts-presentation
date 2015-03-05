@@ -35,6 +35,8 @@ public class ProjectProperties {
     // JAVA EE
     public static final String NON_XA_DATASOURCE = "datasource-test";
     public static final String NON_XA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_DATASOURCE;
+    public static final String NON_XA_NON_JTA_DATASOURCE = "nonjta-datasource-test";
+    public static final String NON_XA_NON_JTA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_NON_JTA_DATASOURCE;
     public static final String XA_DATASOURCE = "xa-datasource-test";
     public static final String XA_DATASOURCE_JNDI = "java:jboss/" + XA_DATASOURCE;
     public static final String JMS_QUEUE_JNDI = "java:jboss/queue/testQueue";

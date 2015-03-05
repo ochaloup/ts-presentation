@@ -19,29 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is set of tests which consist of classes
- * {@link JtaDatasourceTestCase}
- * {@link JtaNonJtaDatasourceTestCase}
- * {@link NonJtaDatasourceTestCase}
- * {@link NonJtaNonJtaDatasourceTestCase}
- * {@link JtaJdbcTestCase}
- *
- * These cases just persists an entity but with differently settings of persistence.xml
- * where tag jta-data-source and non-jta-data-source is used
- * and where different type of datasource is used - either jta one (jta=true) or non-jta one (jta=false)
- *
  * Conf:
  *     <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
- *       <jta-data-source>java:jboss/datasource-test</jta-data-source>
+ *       <jta-data-source>java:jboss/nonjta-datasource-test</jta-data-source>
  *       ...
  * Behaviour:
- *  Datasource is jta so it is managed by TM
+ *  Datasource is non-jta (jta=false) and it drives everything. Doesn't matter if
+ *  the <jta-data-source> tag is used. On the other hand as transaction type is set as JTA
+ *  then we can use @PersistenceContext injection of entity manager (if RESOURCE_LOCAL is used
+ *  thed injection of em is not possible)
+ *
  */
 @RunWith(Arquillian.class)
-public class JtaDatasourceTestCase {
-    private static final Logger log = LoggerFactory.getLogger(JtaDatasourceTestCase.class);
+public class JtaNonJtaDatasourceTestCase {
+    private static final Logger log = LoggerFactory.getLogger(JtaNonJtaDatasourceTestCase.class);
 
-    private static final String DEPLOYMENT = "jta-tag-jta-datasource";
+    private static final String DEPLOYMENT = "jta-tag-non-jta-datasource";
 
     @Inject SimpleJPABean simpleJpaBean;
 
@@ -50,7 +43,7 @@ public class JtaDatasourceTestCase {
     @Deployment(name = DEPLOYMENT)
     public static Archive<?> deploy() {
         JavaArchive jar = JpaUtils.getShrinkWrapJar(DEPLOYMENT);
-        jar.addAsManifestResource(new StringAsset(JpaUtils.getJtaPuWithJtaTagAndJtaDsPersistenceXml()), "persistence.xml");
+        jar.addAsManifestResource(new StringAsset(JpaUtils.getJtaPuWithJtaTagAndNonJtaDsPersistenceXml()), "persistence.xml");
         return jar;
     }
 

@@ -19,29 +19,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is set of tests which consist of classes
- * {@link JtaDatasourceTestCase}
- * {@link JtaNonJtaDatasourceTestCase}
- * {@link NonJtaDatasourceTestCase}
- * {@link NonJtaNonJtaDatasourceTestCase}
- * {@link JtaJdbcTestCase}
- *
- * These cases just persists an entity but with differently settings of persistence.xml
- * where tag jta-data-source and non-jta-data-source is used
- * and where different type of datasource is used - either jta one (jta=true) or non-jta one (jta=false)
- *
  * Conf:
  *     <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
- *       <jta-data-source>java:jboss/datasource-test</jta-data-source>
- *       ...
+ *       <properties>
+ *           <property name="hibernate.connection.url" value=""/>
+ *           <property name="hibernate.connection.driver_class" value=""/>
+ *           <property name="hibernate.connection.username" value=""/>
+ *           <property name="hibernate.connection.password" value=""/>
+ *           ...
  * Behaviour:
- *  Datasource is jta so it is managed by TM
+ *  As it's defined as JTA then hibernate properties are ignored. As jta-data-source tag
+ *  is not defined so the persistence unit is expected to be configured for default datasource
+ *  which is in default configuration ExampleDS
  */
 @RunWith(Arquillian.class)
-public class JtaDatasourceTestCase {
-    private static final Logger log = LoggerFactory.getLogger(JtaDatasourceTestCase.class);
+public class JtaJdbcTestCase {
+    private static final Logger log = LoggerFactory.getLogger(JtaJdbcTestCase.class);
 
-    private static final String DEPLOYMENT = "jta-tag-jta-datasource";
+    private static final String DEPLOYMENT = "jta-tag-jdbc-properties";
 
     @Inject SimpleJPABean simpleJpaBean;
 
@@ -50,7 +45,7 @@ public class JtaDatasourceTestCase {
     @Deployment(name = DEPLOYMENT)
     public static Archive<?> deploy() {
         JavaArchive jar = JpaUtils.getShrinkWrapJar(DEPLOYMENT);
-        jar.addAsManifestResource(new StringAsset(JpaUtils.getJtaPuWithJtaTagAndJtaDsPersistenceXml()), "persistence.xml");
+        jar.addAsManifestResource(new StringAsset(JpaUtils.getJtaPuWithJdbcPropertiesDsPersistenceXml()), "persistence.xml");
         return jar;
     }
 

@@ -49,6 +49,7 @@ public class TestSetUpObserver {
         boolean wasChangeDone = false;
 
         // if not exist - then create the datasource
+        // STANDARD JTA DATASOURCE
         if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"data-source", ProjectProperties.NON_XA_DATASOURCE})) {
             Properties connectionProperties = new Properties();
 
@@ -67,7 +68,27 @@ public class TestSetUpObserver {
             wasChangeDone = true;
         }
 
-        // if not exist - then create the xa-datasource
+        // STANDARD NON-JTA DATASOURCE
+        if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"data-source", ProjectProperties.NON_XA_NON_JTA_DATASOURCE})) {
+            Properties connectionProperties = new Properties();
+
+            Properties additionalDsProperties = new Properties();
+            additionalDsProperties.setProperty("spy", "true");
+            additionalDsProperties.setProperty("jta", "false");
+            additionalDsProperties.setProperty("user-name", ProjectProperties.get(ProjectProperties.DB_USERNAME));
+            additionalDsProperties.setProperty("password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+            additionalDsProperties.setProperty("recovery-username", ProjectProperties.get(ProjectProperties.DB_USERNAME));
+            additionalDsProperties.setProperty("recovery-password", ProjectProperties.get(ProjectProperties.DB_PASSWORD));
+
+            operations.addDatasource(ProjectProperties.NON_XA_NON_JTA_DATASOURCE, ProjectProperties.NON_XA_NON_JTA_DATASOURCE_JNDI,
+                    ProjectProperties.get(ProjectProperties.DB_URL),
+                    JDBC_DRIVER_NAME,
+                    additionalDsProperties,
+                    connectionProperties);
+            wasChangeDone = true;
+        }
+
+        // XA DATASOURCE
         if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"xa-data-source", ProjectProperties.XA_DATASOURCE})) {
 
             Properties connectionProperties = new Properties();
@@ -96,7 +117,7 @@ public class TestSetUpObserver {
             wasChangeDone = true;
         }
 
-        // now JMS queue
+        // JMS queue
         if(!operations.isDefinedNoOutput("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
             operations.addJmsQueue(ProjectProperties.get(ProjectProperties.JMS_QUEUE), ProjectProperties.JMS_QUEUE_JNDI);
         }

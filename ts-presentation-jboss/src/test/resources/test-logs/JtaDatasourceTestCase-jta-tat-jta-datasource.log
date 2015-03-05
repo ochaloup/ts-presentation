@@ -1,0 +1,426 @@
+2015-03-04 23:12:16,234 INFO  [org.jboss.qa.tspresentation.test.jpa.JtaDatasourceTestCase] (default task-7) Running test with name 'jta-tag-jta-datasource'
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:14
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:14
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:14, 1)
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:14 status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,235 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:14 status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.suspend
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2 result = true
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:15
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:15
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:15, 1)
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:15 adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:15 adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:15 status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,236 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:15 status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:15
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:15) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:15 removing TSThread:2
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:15 removing TSThread:2 result = true
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:15 status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.resume
+2015-03-04 23:12:16,237 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,238 INFO  [org.jboss.qa.tspresentation.jpa.SimpleJPABean] (default task-7) Running doPersist method with name 'jta-tag-jta-datasource'
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 DEBUG [org.hibernate.engine.transaction.internal.TransactionCoordinatorImpl] (default task-7) Skipping JTA sync registration due to auto join checking
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getRollbackOnly
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.registerInterposedSynchronization
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 DEBUG [org.hibernate.engine.transaction.internal.TransactionCoordinatorImpl] (default task-7) successfully registered Synchronization
+2015-03-04 23:12:16,238 DEBUG [org.hibernate.jpa.spi.AbstractEntityManagerImpl] (default task-7) Looking for a JTA transaction to join
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.registerInterposedSynchronization
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.putResource
+2015-03-04 23:12:16,238 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,238 DEBUG [org.hibernate.SQL] (default task-7) 
+    select
+        nextval ('hibernate_sequence')
+2015-03-04 23:12:16,238 INFO  [stdout] (default task-7) Hibernate: 
+2015-03-04 23:12:16,238 INFO  [stdout] (default task-7)     select
+2015-03-04 23:12:16,239 INFO  [stdout] (default task-7)         nextval ('hibernate_sequence')
+2015-03-04 23:12:16,239 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Obtaining JDBC connection
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.putResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.putResource
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.registerInterposedSynchronization
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.enlistResource ( LocalXAResourceImpl@5adfe37d[connectionListener=6782fd37 connectionManager=20d05227 warned=false currentXid=null productName=PostgreSQL productVersion=9.3.6 jndiName=java:jboss/datasource-test] )
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 0:0:0:0:1 )
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.arjuna] (default task-7) AbstractRecord::AbstractRecord (0:0:0:0:1)
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord()
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.arjuna] (default task-7) RecordList::insert(RecordList: empty) : appending /StateManager/AbstractRecord/LastResourceRecord for 0:0:0:0:1
+2015-03-04 23:12:16,239 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Obtained JDBC connection
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,239 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.239 (2) simple execute, handler=org.postgresql.jdbc2.AbstractJdbc2Statement$StatementResultHandler@1e7bcf20, maxRows=0, fetchSize=0, flags=1
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Parse(stmt=null,query="BEGIN",oids={})
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Bind(stmt=null,portal=null)
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Execute(portal=null,limit=0)
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Parse(stmt=null,query="select nextval ('hibernate_sequence')",oids={})
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Bind(stmt=null,portal=null)
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Describe(portal=null)
+2015-03-04 23:12:16,240 INFO  [stdout] (default task-7) 23:12:16.240 (2)  FE=> Execute(portal=null,limit=0)
+2015-03-04 23:12:16,241 INFO  [stdout] (default task-7) 23:12:16.241 (2)  FE=> Sync
+2015-03-04 23:12:16,241 INFO  [stdout] (default task-7) 23:12:16.241 (2)  <=BE ParseComplete [null]
+2015-03-04 23:12:16,241 INFO  [stdout] (default task-7) 23:12:16.241 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,241 INFO  [stdout] (default task-7) 23:12:16.241 (2)  <=BE CommandStatus(BEGIN)
+2015-03-04 23:12:16,241 INFO  [stdout] (default task-7) 23:12:16.241 (2)  <=BE ParseComplete [null]
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.241 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.242 (2)  <=BE RowDescription(1)
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.242 (2)         Field(,INT8,8,T)
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.242 (2)  <=BE DataRow(len=3)
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.242 (2)  <=BE CommandStatus(SELECT 1)
+2015-03-04 23:12:16,242 INFO  [stdout] (default task-7) 23:12:16.242 (2)  <=BE ReadyForQuery(T)
+2015-03-04 23:12:16,242 DEBUG [org.hibernate.id.enhanced.SequenceStructure] (default task-7) Sequence value obtained: 158
+2015-03-04 23:12:16,242 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Releasing JDBC connection
+2015-03-04 23:12:16,242 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,242 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,243 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Released JDBC connection
+2015-03-04 23:12:16,243 DEBUG [org.hibernate.event.internal.AbstractSaveEventListener] (default task-7) Generated identifier: 158, using strategy: org.hibernate.id.enhanced.SequenceStyleGenerator
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.suspend
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2 result = true
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1a
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1a
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:1a, 1)
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1a adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1a adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1a status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1a status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1a
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:1a) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1a removing TSThread:2
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1a removing TSThread:2 result = true
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1a status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.resume
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.beforeCompletion
+2015-03-04 23:12:16,243 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,243 DEBUG [org.hibernate.event.internal.AbstractFlushingEventListener] (default task-7) Processing flush-time cascades
+2015-03-04 23:12:16,243 DEBUG [org.hibernate.event.internal.AbstractFlushingEventListener] (default task-7) Dirty checking collections
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.event.internal.AbstractFlushingEventListener] (default task-7) Flushed: 1 insertions, 0 updates, 0 deletions to 1 objects
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.event.internal.AbstractFlushingEventListener] (default task-7) Flushed: 0 (re)creations, 0 updates, 0 removals to 0 collections
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.internal.util.EntityPrinter] (default task-7) Listing entities:
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.internal.util.EntityPrinter] (default task-7) org.jboss.qa.tspresentation.jpa.JBossTestEntity{id=158, name=jta-tag-jta-datasource}
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.validator.internal.engine.resolver.DefaultTraversableResolver] (default task-7) Found javax.persistence.Persistence on classpath containing 'getPersistenceUtil'. Assuming JPA 2 environment. Trying to instantiate JPA aware TraversableResolver
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.validator.internal.engine.resolver.DefaultTraversableResolver] (default task-7) Instantiated JPA aware TraversableResolver of type org.hibernate.validator.internal.engine.resolver.JPATraversableResolver.
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.validator.internal.xml.ValidationXmlParser] (default task-7) Trying to load META-INF/validation.xml for XML based Validator configuration.
+2015-03-04 23:12:16,244 DEBUG [org.hibernate.validator.internal.xml.ValidationXmlParser] (default task-7) No META-INF/validation.xml found. Using annotation based configuration only.
+2015-03-04 23:12:16,246 DEBUG [org.hibernate.validator.internal.engine.ConfigurationImpl] (default task-7) Setting custom ConstraintValidatorFactory of type org.hibernate.validator.internal.cdi.InjectingConstraintValidatorFactory
+2015-03-04 23:12:16,246 DEBUG [org.hibernate.validator.internal.engine.ConfigurationImpl] (default task-7) Setting custom MessageInterpolator of type org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator
+2015-03-04 23:12:16,246 DEBUG [org.hibernate.validator.internal.engine.ConfigurationImpl] (default task-7) Setting custom TraversableResolver of type org.hibernate.validator.internal.engine.resolver.DefaultTraversableResolver
+2015-03-04 23:12:16,246 DEBUG [org.hibernate.validator.internal.engine.ConfigurationImpl] (default task-7) Setting custom ParameterNameProvider of type org.hibernate.validator.internal.engine.DefaultParameterNameProvider
+2015-03-04 23:12:16,248 DEBUG [org.hibernate.SQL] (default task-7) 
+    insert 
+    into
+        JBOSS_TEST_ENTITY
+        (name, id) 
+    values
+        (?, ?)
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7) Hibernate: 
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)     insert 
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)     into
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)         JBOSS_TEST_ENTITY
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)         (name, id) 
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)     values
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7)         (?, ?)
+2015-03-04 23:12:16,249 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Obtaining JDBC connection
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.equals
+2015-03-04 23:12:16,249 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Obtained JDBC connection
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7) 23:12:16.249 (2) simple execute, handler=org.postgresql.jdbc2.AbstractJdbc2Statement$StatementResultHandler@50c93f00, maxRows=0, fetchSize=0, flags=5
+2015-03-04 23:12:16,249 INFO  [stdout] (default task-7) 23:12:16.249 (2)  FE=> Parse(stmt=null,query="insert into JBOSS_TEST_ENTITY (name, id) values ($1, $2)",oids={1043,23})
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  FE=> Bind(stmt=null,portal=null,$1=<'jta-tag-jta-datasource'>,$2=<158>)
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  FE=> Describe(portal=null)
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  FE=> Execute(portal=null,limit=1)
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  FE=> Sync
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  <=BE ParseComplete [null]
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,250 INFO  [stdout] (default task-7) 23:12:16.250 (2)  <=BE NoData
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2)  <=BE CommandStatus(INSERT 0 1)
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2)  <=BE ReadyForQuery(T)
+2015-03-04 23:12:16,251 DEBUG [org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl] (default task-7) Skipping aggressive release due to manual disabling
+2015-03-04 23:12:16,251 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Releasing JDBC connection
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,251 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Released JDBC connection
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.beforeCompletion
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.beforeCompletion
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:14
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::onePhaseCommit() for action-id 0:ffff0a000005:-6edc8415:54f782c0:14
+2015-03-04 23:12:16,251 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord::topLevelPrepare() for 0:0:0:0:1
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2) simple execute, handler=org.postgresql.jdbc2.AbstractJdbc2Connection$TransactionCommandHandler@4c47426f, maxRows=0, fetchSize=0, flags=22
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2)  FE=> Bind(stmt=S_1,portal=null)
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2)  FE=> Execute(portal=null,limit=1)
+2015-03-04 23:12:16,251 INFO  [stdout] (default task-7) 23:12:16.251 (2)  FE=> Sync
+2015-03-04 23:12:16,254 INFO  [stdout] (default task-7) 23:12:16.254 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,254 INFO  [stdout] (default task-7) 23:12:16.254 (2)  <=BE CommandStatus(COMMIT)
+2015-03-04 23:12:16,255 INFO  [stdout] (default task-7) 23:12:16.255 (2)  <=BE ReadyForQuery(I)
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord::topLevelCommit() for 0:0:0:0:1
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:14) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.afterCompletion
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.afterCompletion
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_COMMITTED
+2015-03-04 23:12:16,255 DEBUG [org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl] (default task-7) HHH000420: Closing un-released batch
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.afterCompletion
+2015-03-04 23:12:16,255 DEBUG [org.hibernate.engine.jdbc.internal.LogicalConnectionImpl] (default task-7) Aggressively releasing JDBC connection
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:14 removing TSThread:2 result = true
+2015-03-04 23:12:16,255 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:14 status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1b
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1b
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:1b, 1)
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1b status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1b status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.suspend
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2 result = true
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1c
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1c
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:1c, 1)
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1c adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1c adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1c status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,256 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1c status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1c
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:1c) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1c removing TSThread:2
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1c removing TSThread:2 result = true
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1c status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.resume
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.putResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getTransactionKey
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.getResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.putResource
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,257 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionSynchronizationRegistryImple.registerInterposedSynchronization
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.enlistResource ( LocalXAResourceImpl@5adfe37d[connectionListener=6782fd37 connectionManager=20d05227 warned=false currentXid=null productName=PostgreSQL productVersion=9.3.6 jndiName=java:jboss/datasource-test] )
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 0:0:0:0:1 )
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.arjuna] (default task-7) AbstractRecord::AbstractRecord (0:0:0:0:1)
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord()
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.arjuna] (default task-7) RecordList::insert(RecordList: empty) : appending /StateManager/AbstractRecord/LastResourceRecord for 0:0:0:0:1
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,258 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,258 INFO  [stdout] (default task-7) 23:12:16.258 (2) simple execute, handler=org.postgresql.jdbc2.AbstractJdbc2Statement$StatementResultHandler@98c18f8, maxRows=0, fetchSize=0, flags=1
+2015-03-04 23:12:16,258 INFO  [stdout] (default task-7) 23:12:16.258 (2)  FE=> Parse(stmt=null,query="BEGIN",oids={})
+2015-03-04 23:12:16,258 INFO  [stdout] (default task-7) 23:12:16.258 (2)  FE=> Bind(stmt=null,portal=null)
+2015-03-04 23:12:16,258 INFO  [stdout] (default task-7) 23:12:16.258 (2)  FE=> Execute(portal=null,limit=0)
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  FE=> Parse(stmt=null,query="SELECT name FROM JBOSS_TEST_ENTITY WHERE id = $1",oids={23})
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  FE=> Bind(stmt=null,portal=null,$1=<158>)
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  FE=> Describe(portal=null)
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  FE=> Execute(portal=null,limit=0)
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  FE=> Sync
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  <=BE ParseComplete [null]
+2015-03-04 23:12:16,259 INFO  [stdout] (default task-7) 23:12:16.259 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE CommandStatus(BEGIN)
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE ParseComplete [null]
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE RowDescription(1)
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)         Field(,VARCHAR,65535,T)
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE DataRow(len=22)
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE CommandStatus(SELECT 1)
+2015-03-04 23:12:16,260 INFO  [stdout] (default task-7) 23:12:16.260 (2)  <=BE ReadyForQuery(T)
+2015-03-04 23:12:16,260 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.suspend
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2 result = true
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.begin
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) StateManager::StateManager( 2, 0 )
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::BasicAction()
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::Begin() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1f
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::actionInitialise() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1f
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::ActionHierarchy(1)
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) ActionHierarchy::add(0:ffff0a000005:-6edc8415:54f782c0:1f, 1)
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1f adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1f adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::insert ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1f status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) ReaperElement::ReaperElement ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1f status: ActionStatus.RUNNING, 300 )
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1f
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:1f) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1f removing TSThread:2
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1f removing TSThread:2 result = true
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1f status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImpleManager.resume
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main]
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::addChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b adding Thread[default task-7,5,main] result = true
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.getStatus: javax.transaction.Status.STATUS_ACTIVE
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) BaseTransaction.commit
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) TransactionImple.commitAndDisassociate
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.beforeCompletion
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1b
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::onePhaseCommit() for action-id 0:ffff0a000005:-6edc8415:54f782c0:1b
+2015-03-04 23:12:16,261 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord::topLevelPrepare() for 0:0:0:0:1
+2015-03-04 23:12:16,261 INFO  [stdout] (default task-7) 23:12:16.261 (2) simple execute, handler=org.postgresql.jdbc2.AbstractJdbc2Connection$TransactionCommandHandler@1b1d2f36, maxRows=0, fetchSize=0, flags=22
+2015-03-04 23:12:16,261 INFO  [stdout] (default task-7) 23:12:16.261 (2)  FE=> Bind(stmt=S_1,portal=null)
+2015-03-04 23:12:16,261 INFO  [stdout] (default task-7) 23:12:16.261 (2)  FE=> Execute(portal=null,limit=1)
+2015-03-04 23:12:16,261 INFO  [stdout] (default task-7) 23:12:16.261 (2)  FE=> Sync
+2015-03-04 23:12:16,262 INFO  [stdout] (default task-7) 23:12:16.262 (2)  <=BE BindComplete [null]
+2015-03-04 23:12:16,262 INFO  [stdout] (default task-7) 23:12:16.262 (2)  <=BE CommandStatus(COMMIT)
+2015-03-04 23:12:16,262 INFO  [stdout] (default task-7) 23:12:16.262 (2)  <=BE ReadyForQuery(I)
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.arjuna] (default task-7) LastResourceRecord::topLevelCommit() for 0:0:0:0:1
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::End() result for action-id (0:ffff0a000005:-6edc8415:54f782c0:1b) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.jta] (default task-7) SynchronizationImple.afterCompletion
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.arjuna] (default task-7) BasicAction::removeChildThread () action 0:ffff0a000005:-6edc8415:54f782c0:1b removing TSThread:2 result = true
+2015-03-04 23:12:16,262 TRACE [com.arjuna.ats.arjuna] (default task-7) TransactionReaper::remove ( BasicAction: 0:ffff0a000005:-6edc8415:54f782c0:1b status: ActionStatus.COMMITTED )
+2015-03-04 23:12:16,319 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-8) JBAS017535: Unregistered web context: /test
+2015-03-04 23:12:16,325 INFO  [org.jboss.as.jpa] (ServerService Thread Pool -- 65) JBAS011410: Stopping Persistence Unit (phase 2 of 2) Service 'test.war#TestPersistenceUnit'
+2015-03-04 23:12:16,326 DEBUG [org.hibernate.internal.SessionFactoryImpl] (ServerService Thread Pool -- 65) HHH000031: Closing
+2015-03-04 23:12:16,327 DEBUG [org.hibernate.service.internal.AbstractServiceRegistryImpl] (ServerService Thread Pool -- 65) Implicitly destroying ServiceRegistry on de-registration of all child ServiceRegistries
+2015-03-04 23:12:16,327 DEBUG [org.hibernate.boot.registry.internal.BootstrapServiceRegistryImpl] (ServerService Thread Pool -- 65) Implicitly destroying Boot-strap registry on de-registration of all child ServiceRegistries
+2015-03-04 23:12:16,327 DEBUG [org.hibernate.jpa.internal.EntityManagerFactoryRegistry] (ServerService Thread Pool -- 65) Remove: name=test.war#TestPersistenceUnit
+2015-03-04 23:12:16,328 INFO  [org.jboss.weld.deployer] (MSC service thread 1-3) JBAS016009: Stopping weld service for deployment test.war
+2015-03-04 23:12:16,335 INFO  [org.jboss.as.jpa] (ServerService Thread Pool -- 65) JBAS011410: Stopping Persistence Unit (phase 1 of 2) Service 'test.war#TestPersistenceUnit'
+2015-03-04 23:12:16,343 INFO  [org.jboss.as.server.deployment] (MSC service thread 1-7) JBAS015877: Stopped deployment test.war (runtime-name: test.war) in 25ms
+2015-03-04 23:12:16,361 INFO  [org.jboss.as.repository] (management-handler-thread - 1) JBAS014901: Content removed from location /home/ochaloup/jboss/wildfly-8.2.0.Final/standalone/data/content/e0/8c9dd0c4d1a0b1822d58c95733ac75acb5271c/content
+2015-03-04 23:12:16,361 INFO  [org.jboss.as.server] (management-handler-thread - 1) JBAS018558: Undeployed "test.war" (runtime-name: "test.war")
+2015-03-04 23:12:18,723 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery) PeriodicRecovery: background thread Status <== SCANNING
+2015-03-04 23:12:18,723 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery) PeriodicRecovery: background thread scanning
+2015-03-04 23:12:18,724 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery) Periodic recovery first pass at Wed, 4 Mar 2015 23:12:18
+2015-03-04 23:12:18,724 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) InputObjectState::InputObjectState()
+2015-03-04 23:12:18,724 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery) AtomicActionRecoveryModule first pass
+2015-03-04 23:12:18,724 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.allObjUids(/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, InputObjectState Uid   : 0:0:0:0:0
+InputObjectState Type  : null
+InputObjectState Size  : 0
+InputObjectState Buffer: , -1)
+2015-03-04 23:12:18,724 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) OutputObjectState::OutputObjectState()
+2015-03-04 23:12:18,724 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery) processing /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction transactions
+2015-03-04 23:12:18,724 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery)  
+2015-03-04 23:12:18,724 DEBUG [com.arjuna.ats.txoj] (Periodic Recovery) TORecoveryModule - first pass
+2015-03-04 23:12:18,724 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) InputObjectState::InputObjectState()
+2015-03-04 23:12:18,725 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.allTypes(InputObjectState Uid   : 0:0:0:0:0
+InputObjectState Type  : null
+InputObjectState Size  : 0
+InputObjectState Buffer: )
+2015-03-04 23:12:18,725 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) OutputObjectState::OutputObjectState()
+2015-03-04 23:12:18,725 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.allTypes(OutputObjectState Uid   : 0:ffff0a000005:-6edc8415:54f782c0:21
+OutputObjectState Type  : null
+OutputObjectState Size  : 20
+OutputObjectState Buffer: , EISNAME)
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) InputObjectState::InputObjectState()
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.allObjUids(EISNAME, InputObjectState Uid   : 0:0:0:0:0
+InputObjectState Type  : null
+InputObjectState Size  : 0
+InputObjectState Buffer: , 2)
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) OutputObjectState::OutputObjectState()
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) ShadowingStore.genPathName(0:ffff0a280468:64958e6b:54f71b18:1f, EISNAME, StateType.OS_SHADOW)
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.genPathName(0:ffff0a280468:64958e6b:54f71b18:1f, EISNAME, 10)
+2015-03-04 23:12:18,726 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) ShadowingStore.genPathName(0:ffff0a280468:64958e6b:54f71b18:1f, EISNAME, StateType.OS_ORIGINAL)
+2015-03-04 23:12:18,727 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.genPathName(0:ffff0a280468:64958e6b:54f71b18:1f, EISNAME, 11)
+2015-03-04 23:12:18,727 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) ShadowingStore.currentState(0:ffff0a280468:64958e6b:54f71b18:1f, EISNAME) - returning StateStatus.OS_COMMITTED
+2015-03-04 23:12:18,727 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery)  
+2015-03-04 23:12:18,727 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) Local XARecoveryModule - first pass
+2015-03-04 23:12:18,727 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) InputObjectState::InputObjectState()
+2015-03-04 23:12:18,727 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) FileSystemStore.allObjUids(/StateManager/AbstractRecord/XAResourceRecord, InputObjectState Uid   : 0:0:0:0:0
+InputObjectState Type  : null
+InputObjectState Size  : 0
+InputObjectState Buffer: , -1)
+2015-03-04 23:12:18,727 TRACE [com.arjuna.ats.arjuna] (Periodic Recovery) OutputObjectState::OutputObjectState()
+2015-03-04 23:12:18,743 INFO  [stdout] (Periodic Recovery) DriverManager.getConnection("jdbc:postgresql://localhost:5432/crashrec?loginTimeout=0&socketTimeout=0&prepareThreshold=5&unknownLength=2147483647&tcpKeepAlive=false&binaryTransfer=true&disableColumnSanitiser=false")
+2015-03-04 23:12:18,744 INFO  [stdout] (Periodic Recovery)     skipping: java.sql.DriverInfo
+2015-03-04 23:12:18,745 INFO  [stdout] (Periodic Recovery)     trying org.postgresql.Driver
+2015-03-04 23:12:18,750 INFO  [stdout] (Periodic Recovery) getConnection returning org.postgresql.Driver
+2015-03-04 23:12:18,772 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) xarecovery of RecoveryOnlyEJBXAResource{receiverContext=EJBReceiverContext{clientContext=org.jboss.ejb.client.EJBClientContext@53c646cb, receiver=org.jboss.as.ejb3.remote.LocalEjbReceiver@7e51e464}, transactionOriginNodeIdentifier='1'}
+2015-03-04 23:12:18,772 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) Found 0 xids in doubt
+2015-03-04 23:12:18,773 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) xarecovery of XAResourceWrapperImpl@2558baa1[xaResource=org.jboss.jca.adapters.jdbc.xa.XAManagedConnection@6444b32e pad=false overrideRmValue=null productName=PostgreSQL productVersion=9.3.6 jndiName=java:jboss/xa-datasource-test]
+2015-03-04 23:12:18,775 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) Found 0 xids in doubt
+2015-03-04 23:12:18,775 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) xarecovery of HornetQXAResourceWrapper [serverLocator=null, csf=null, delegate=null, xaRecoveryConfigs=[XARecoveryConfig [transportConfiguration = [TransportConfiguration(name=38bd9997-c2bb-11e4-9804-cb9ba9ee3bf0, factory=org-hornetq-core-remoting-impl-invm-InVMConnectorFactory) ?server-id=0], discoveryConfiguration = null, username=null, password=****]], instance=1515177071]
+2015-03-04 23:12:18,799 DEBUG [com.arjuna.ats.jta] (Periodic Recovery) Found 0 xids in doubt
+2015-03-04 23:12:18,799 DEBUG [com.arjuna.ats.arjuna] (Periodic Recovery)  
