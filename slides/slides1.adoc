@@ -141,6 +141,7 @@ Atomic, Consistent, Isolated, Durable
 
 [NOTE.speaker]
 --
+ Types
  * Top-level transaction - transaction as we understand it
  * Nested - transaction contains other transaction. When nested rollbacks it does not mean that top-one will rollback. 
             If nested commits then the overall result depends on the top-level transaction.
@@ -298,7 +299,8 @@ connection.commit();
 
 [NOTE.speaker]
 --
- Where is the transaction?
+ The autocommit mode on connection was used. The update was reflected in database immediatelly when statement was executed.
+ In this answer slide the update is reflected after commit is called - the transaction was explicitly stated by setAutoCommit(false)
 --
 
 == JDBC
@@ -476,7 +478,7 @@ What happens on JMS transaction rollback?
  in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)
 --
 
-== JMS configuration (a.k.a HornetQ)
+== JMS configuration (HornetQ)
 
  See standalone-full.xml
 
@@ -528,9 +530,13 @@ What happens on JMS transaction rollback?
 
 == Implementations
 
- * *Transaction Manager*
+ *Transaction Manager*
+
  * Narayana JBoss TM (Arjuna formerly)
- * Atomikos, Bitronix, Glassfish reference implementation...
+ * Atomikos
+ * Bitronix
+ * Glassfish reference implementation
+ * ...
 
 image:{images}/narayana-logo.png[]
 
@@ -919,6 +925,34 @@ What is the JTA/Transaction Manager for?
  }
 ----
 
+[NOTE.speaker]
+--
+ A bit tricky :) here. Session bean is CONTAINER managed by default.
+ TODO: This will throw an IllegalStateException
+--
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void MyBean {
+   @Resource
+   UserTransaction utx;
+
+   public void method() {
+     try {
+        utx.begin();
+        ...
+        // utx.commit(); <---
+     } catch(Exception e) {
+        utx.rollback();
+     }
+   }
+ }
+----
+
 == Quiz - Answer
 
  * Still in EJB container which ensures that transaction won't leave a method uncommitted.
@@ -937,17 +971,21 @@ What is the JTA/Transaction Manager for?
 
 [ source, language="java" ]
 ----
- @Resource
- UserTransaction utx;
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void MyBean {
+   @Resource
+   UserTransaction utx;
 
- public void method(){
-   try {
-      utx.begin();
-      utx.setTransactionTimeout(30); // seconds
-      ...
-      utx.commit();
-   } catch(Exception e) {
-      ut.rollback();
+   public void method() {
+     try {
+        utx.begin();
+        utx.setTransactionTimeout(30); // seconds
+        ...
+        utx.commit();
+     } catch(Exception e) {
+        ut.rollback();
+     }
    }
  }
 ----
@@ -996,12 +1034,123 @@ What is the JTA/Transaction Manager for?
  * @TransactionManagement
  * @TransactionAttribute
  * @TransactionTimeout
+ * @ApplicationException
 
 [NOTE.speaker]
 --
- @TransactionManagement - CONTAINER, BEAN 
- @TransactionAttribute - REQUIRED, REQUIRES_NEW...
+ @TransactionManagement - CONTAINER, BEAN (container is by default)
+ @TransactionAttribute - REQUIRED, REQUIRES_NEW... (required is by default)
  @TransactionTimeout is jboss specific annotation - not part of EJB spec
+
+ Each method is associated with *one* transaction. Neither nested or multiple transactions are not permitted.
+--
+
+== Transaction attributes
+
+ * REQUIRED
+ * REQUIRES_NEW
+ * MANDATORY
+ * NOT_SUPPORTED
+ * SUPPORTS
+ * NEVER
+
+[NOTE.speaker]
+--
+ Resource: http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html
+ Attributes
+ * REQUIRED - no txn then new transaction is started or joining to existing txn
+ * REQUIRES_NEW - new transaction is started anytime
+    - outer transaction is put to sleep until the inner EJB call finishes
+    - note that the inner transaction does not share the managed entities of the outer transaction, they are completely isolated
+ * MANDATORY - no txn then TransactionRequiredException or joining the existing txn
+   - powerful tool that can help you to make your transactional code so much more robust - e.g. mark storage DAO methods that accept (managed) entities as a parameter as MANDATORY
+ * NOT_SUPPORTED - method runs without transaction anytime (no txn then nothing is done or suspend running txn)
+   What could be useful for:
+   - documentation. The annotation instantly tells you that the method does nothing transactional.
+   - resources. There is always a cost in managing a transaction, so if the container doesn't have to, give it a break.
+   - decreased whoops factor.  you'll catch transaction mistakes far sooner in your development cycle
+ * SUPPORTS - no txn then nothing is done (method runs without txn) or joining the existing txn
+    - container is lazy :)
+ * NEVER - no txn then nothing is done (method runs without txn) or TransactionRequiredException if calling method propagates some started txn
+    - can be a useful tool to catch programming mistakes early on
+    - when you make a call to another EJB, that EJB may safely create its own isolated transaction - NEVER may actually become a performance hog because of many mini-transactions being created
+
+ TODO: does overloaded method in child class inherits the transaction attribute from parent?
+ TODO: see http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html and This code will fail. Can you spot where?
+--
+
+== Easy peasy
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class MyBean {
+    public void method() {
+        // work with application managed resource
+        // working directly with a database connection or
+        // jms session won't bring you any transactional advantages
+    }
+ }
+----
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class MyBean {
+    @Resource
+    DataSource datasource;
+
+    public void insertMethod() {
+        try(Connection connection = datasource.getConnection()) {
+            Statement st = connection.createStatement();
+            st.execute("INSERT INTO table VALUES (1, 'EAP')");
+        }
+        updateMethod();
+    }
+
+    public void updateMethod() {
+        try(Connection connection = datasource.getConnection()) {
+            PreparedStatement ps = c.prepareStatement("SELECT " + columnNameToReturn + " FROM " + tableName + " WHERE id = ?");
+            ps.setInt(1, idValue);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                return rs.getObject(1).toString();
+
+            ResultSet rs = st.executeQuery("SELECT name FROM table WHERE id = 1");
+            String eapName = null;
+            if(rs.next()) {
+              eapName = rs.getString(1) + " 7";
+            } else {
+              eapName = "WildFly";
+            }
+
+            st.execute("UPDATE table SET text = '" + eapString + "' WHERE id = 1)");
+        }
+    }
+ }
+----
+
+[NOTE.speaker]
+--
+ We should close the connection on ours own. But in case the application server should close it for us at the end.
+ Btw. closing does not mean real closing. It just returns connection to pool.
+
+ TODO: try this example as a real testcase! (I would like know what cannection we will get by datasource - the same one?)
+--
+
+== Exception handling
+
+ Exception which causes rollback (setRollbackOnly called) of current transaction
+
+ * RuntimeException
+ * EjbException
+ * @ApplicationException(rollback = true)
+
+[NOTE.speaker]
+--
+ TODO: test this :)
 --
 
 == Transaction context propagation
