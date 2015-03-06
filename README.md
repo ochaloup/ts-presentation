@@ -5,6 +5,11 @@ Checklist
 =========
 ...what to do before running tests
 
+
+Configuration
+--------------
+Configuration is under `ts-presentation-utils/src/main/resources/resource.properties`
+
 Standalone part
 ---------------
 1. Start PosgreSQL server
@@ -25,3 +30,11 @@ Standalone part
 
 Application server part
 -----------------------
+ 1. Set JBOSS_HOME to WildFly 8.2.0 and Arquillian should do the setting on its own
+
+
+Do not forget
+--------------
+ * presentation template to Eclipse
+ * take a notebook with a pencil to make a note of some question from audience
+
