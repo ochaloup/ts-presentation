@@ -1,5 +1,6 @@
 @TransactionAttributeType
 @TransactionManagement
+@TransactionManagementType
 @ApplicationException
 XAResource
 REQUIRED
@@ -26,7 +27,6 @@ getTransactionTimeout
 prepare
 recover
 rollback
-setTransactionTimeout
 getStatus
 setRollbackOnly
 setTransactionTimeout
@@ -58,3 +58,7 @@ TRANSACTION_SERIALIZABLE
 releaseSavepoint
 setSavepoint
 setTransactionIsolation
+JTA
+JTS
+XTS
+RESOURCE_LOCAL

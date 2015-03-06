@@ -220,8 +220,10 @@ image:{images}/db/isolation-levels-base.png[]
  It's interaction of interleaving transactions
  Transaction isolation is a function of database cocurrency and database consistency - more isolation, means more consistency but less concurrency
  Hibernate increase level of isolation to moving control to application layer
-  * optimistic locking adds versioning and so non-repeatable reads can't occur (or the special case when second commit replaces data of first commit)
-  * pesimistic locking uses SELECT ... FOR UPDATE to lock particular record in database
+  * optimistic locking adds versioning and so non-repeatable reads can't occur - meaning repeatable read isolation level is supported
+     (or the special case when second commit replaces data of first commit)
+  * pesimistic locking uses SELECT ... FOR UPDATE to lock particular record in database - this is other way how support read isolation level
+     but it's hard support as the concurrent user has to wait till previous transaction will not release the resource
 --
 
 == Lost update
@@ -678,7 +680,7 @@ What is the JTA/Transaction Manager for?
  em.getTransaction().begin();
 
  Person person = new Person();
- person.setName("Ondra");
+ person.setName("JBoss EAP 6");
 
  em.persist(person);
 
@@ -694,6 +696,7 @@ What is the JTA/Transaction Manager for?
        Setting autoCommit to true in persistence.xml does not help in this (at least for RESOURCE_LOCAL)
        I think that autoCommit settings is used for JPA when TransactionAttribute NOT_SUPPORTED is used.
  em.getTranaction() is type of EntityTransaction
+ em.clear() - clear persistence context
 --
 
 === Entity Manager in Java EE
@@ -707,7 +710,7 @@ What is the JTA/Transaction Manager for?
 
    public void newPerson() {
      Person person = new Person();
-     person.setName("Ondra");
+     person.setName("JBoss EAP 6");
      em.persist(person);
    }
  }
@@ -740,18 +743,18 @@ What is the JTA/Transaction Manager for?
 [ source, language="xml" ]
 ----
  <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
-        <jta-data-source>java:jboss/datasource-test</jta-data-source>
+      <jta-data-source>java:jboss/datasource-test</jta-data-source>
 
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" />
+      <properties>
+          <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+          <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" />
 
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+          <property name="hibernate.hbm2ddl.auto" value="update"/>
 
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-        </properties>
-    </persistence-unit>
+          <property name="hibernate.show_sql" value="true"/>
+          <property name="hibernate.format_sql" value="true"/>
+      </properties>
+  </persistence-unit>
 ----
 
 [NOTE.speaker]
@@ -761,6 +764,42 @@ What is the JTA/Transaction Manager for?
  Beside jta-data-source there is tag non-jta-data-source bug JBoss(WildFly 8.2) does not respect this and it only depends what is underlayin datasource
  if datasource is jta=false then it always (doesn't matter what is tag for) used as non-transactional from TM point of view (autocommit=true)
  if datasource is jta=true then it's joint to global TM if exists
+--
+
+== em.flush() and em.clear()
+
+[ source, language="java" ]
+----
+  EntityManager em = emf.createEntityManager();
+  em.getTransaction().begin();
+  Person person = em.find(Person.java, 1L);
+  person.setName("JBoss EAP 7");
+  // em.flush()
+  em.getTransaction().commit();
+
+  em.clear();
+----
+
+[NOTE.speaker]
+--
+ EntityManager instance is 1st level cache. It contains all data that we used and it run SQLs to update database
+ just if it' necessary (it's lazy DML)
+ * em.flush()
+ * em.close() (application managed and extended-scoped pc)
+ * on commit transaction
+ * when using query and some entities are dirty
+ * driven by FlushModeType 
+ ** AUTO as stated above (default)
+ ** COMMIT only on transaction commit (queries could get stale data)
+ Hibernate implementation does add MANUAL, NEVER, ALWAYS, PERSISTENCE_CONTEXT... see javadoc
+
+ in Java EE em.clear() is called at the end of transaction
+ in Java SE the context (entity manager) is not cleared and it's up to developer when it should be cleared
+   if context is full of data we can do some change of one particular item/record/entity and all other data
+   which we don't know about their existence could be published to database simultaneouslly
+
+ after clear() is called (or em is closed) the entities are detached and for the next usage it's need to
+ be attached to some entity manager (persitence context) by em.merge(entity_instance)
 --
 
 == Transactions in JPA
@@ -779,6 +818,37 @@ What is the JTA/Transaction Manager for?
 
  NOTE: all this tested on PostgreSQL
 --
+
+== Persistence context types
+
+ * Application-managed
+ ** RESOURCE_LOCAL/Java SE
+ ** ends (is cleared) on manual call of clear method or em.remove(entity)
+ * Container-managed Transaction-scoped
+ ** ends at the end of transaction
+ * Container-managed Extended
+ ** used only with SFSB
+ ** ends when SFSB method `@Remove` is called
+ ** during the time several transactions could be committed
+
+[NOTE.speaker]
+--
+  Java SE is not precondition here but it's standard to do it so. The application managed is more bound to
+  transaction-type attribute where here it's resource local
+
+  Persistence context type is set by @PersistenceContext annotation and types like PersistenceContextType.TRANSACTION (default)
+  and PersistenceContextType.EXTENDED
+
+  When persitence context ends then it's flushed and cleared = all entities started to be detached
+--
+
+== A side note: locking
+
+ * Optimistic
+ ** `@Version` at attribute
+ ** `em.lock(person, LockModeType.OPTIMISTIC)`
+ * Pesimistic
+ ** `em.lock(persion, LockModeType.PESIMISTIC_WRITE)`
 
 = EJB - BMT vs. CMT
 
