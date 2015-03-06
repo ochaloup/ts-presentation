@@ -29,13 +29,12 @@ image:{images}/tagcloud.png[]
 
 == Agenda
  * Terminology
- * Resource local transaction in Java SE
+ * Resource local transactions in Java SE
  ** Database
  ** JMS
- * Global transaction in Java SE
+ * Transactions in Java EE (on JBoss)
  ** Java Transaction API (JTA)
- ** Narayana implementation
- * Transactions in Java EE
+ ** Java Persistence API (JPA)
  ** Bean managed transactions (BMT)
  ** Container managed transactions (CMT)
 
@@ -425,6 +424,65 @@ What happens on JMS transaction rollback?
  When speaking about appliation server then JBoss EAP/Wildfly is meant
 --
 
+= JBoss sources configuration
+
+== Datasource
+
+[ source, language="java" ]
+----
+  <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test" enabled="true" use-java-context="true" spy="true">
+      <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
+      <driver>database-jdbc-driver.jar</driver>
+      <security>
+          <user-name>crashrec</user-name>
+          <password>crashrec</password>
+      </security>
+  </datasource>
+----
+
+[NOTE.speaker]
+--
+ Note datasource attribute jta here which could be true/false - jta datasource or non-jta datasource
+--
+
+== XA Datasource
+
+[ source, language="java" ]
+----
+  <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test" enabled="true" spy="true">
+      <xa-datasource-property name="PortNumber">
+          5432
+      </xa-datasource-property>
+      <xa-datasource-property name="ServerName">
+          localhost
+      </xa-datasource-property>
+      <xa-datasource-property name="DatabaseName">
+          crashrec
+      </xa-datasource-property>
+      <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+      <driver>database-jdbc-driver.jar</driver>
+      <security>
+          <user-name>crashrec</user-name>
+          <password>crashrec</password>
+      </security>
+  </xa-datasource>
+----
+
+[NOTE.speaker]
+--
+ From testing point of view where different databases are used is necessary to know which xa-datasource-property is used
+ in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)
+--
+
+== JMS configuration (a.k.a HornetQ)
+
+ See standalone-full.xml
+
+[NOTE.speaker]
+--
+ Messaging is configured only in -full profiles
+--
+
 = JTA
 
 [NOTE.speaker]
@@ -432,33 +490,6 @@ What happens on JMS transaction rollback?
  TODO: Ideas to check:
   * nested transactions
   * JTS and Corba - how to use it
---
-
-== Quiz
-
-What is the JTA for?
-
-[NOTE.speaker]
---
- We know that we can manage database or jms resource directly why such thing is not
- covered by Java EE container and we need some specification of transaction?
- What that transaction for?
- What the JTA could offer to me?
---
-
-== Quiz
-
- * Managing transactions :)
- * Machinery of two phase commit protocol
- * Recovery management
- * Transaction timeout could be set
- * Distributed transactions
-
-[NOTE.speaker]
---
- It's standardized way how container can communicate with transaction.
- Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
- It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
 --
 
 == JTA a bit on history
@@ -477,7 +508,7 @@ What is the JTA for?
  * 1.2 - @Transactional, @TransactionScoped - ripping transaction of the EJB (with CDI to CDI beans, Servlet, JAX-RS...)
 --
 
-== Specifications - a messy thing
+== Specifications - a bit messy
  * JTA (JSR 907) maps XA spec to Java
  * XA spec from year 1991 by The Open Group
  * JTS spec maps OTS spec to Java
@@ -493,13 +524,21 @@ What is the JTA for?
  JSR - Java Community Process :)
 --
 
+== Implementations
+
+ * *Transaction Manager*
+ * Narayana JBoss TM (Arjuna formerly)
+ * Atomikos, Bitronix, Glassfish reference implementation...
+
+image:{images}/narayana-logo.png[]
+
 == JTA vs. JTS
 
 JTA is to JDBC as JTS is to the database driver
 
 [NOTE.speaker]
 --
- JTA and JTS
+ JTA is higher level api which uses application server, JTS is internal api of TM how to communicate and manage transactional context
  The JTA is the interface developers use to manage transactions.
  The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
  The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
@@ -507,11 +546,34 @@ JTA is to JDBC as JTS is to the database driver
  JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
 --
 
-== JTA and JBoss World
+== Quiz
 
-JTA is implemented by Narayana (Arjuna) Transaction manager
+What is the JTA/Transaction Manager for?
 
-image:{images}/narayana-logo.png[]
+[NOTE.speaker]
+--
+ We know that we can manage database or jms resource directly why such thing is not
+ covered by Java EE container and we need some specification of transaction?
+ What that transaction for?
+ What the JTA could offer to me?
+--
+
+== Quiz
+
+ * Managing transactions :)
+ * Machinery of two phase commit protocol
+ * Recovery management
+ * Timeout setting
+ * Could force rollback-only behaviour
+ * Distributed transactions
+
+[NOTE.speaker]
+--
+ It's standardized way how container can communicate with transaction.
+ Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
+ It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
+ setRollbackOnly() - this know to do EntityTransaction as well but it's just for one resource
+--
 
 == Where the transactions live
 
@@ -545,6 +607,23 @@ image:{images}/narayana-logo.png[]
 --
 
 = JPA
+
+== JPA overview in short
+
+ * ORM (Object-relational mapping)
+ * EclipseLink (reference), Hibernate (JBoss)
+ * Benefits (theoretically)
+ ** staying in object oriented world
+ ** independent on underlaying database
+ ** simplified CRUD
+ ** JPQL (db independent + simplified join queries)
+ ** automatic table creation (hbm2dll)
+ ** performance (lazy dml, batching sql, 2nd level cache)
+
+[NOTE.speaker]
+--
+ Resource: http://www.javatpoint.com/hibernate-tutorial, http://www.journaldev.com/2882/hibernate-tutorial-for-beginners-using-xml-annotations-and-property-configurations
+--
 
 === SQL table creation
 
@@ -589,12 +668,117 @@ image:{images}/narayana-logo.png[]
  }
 ----
 
-=== Entity Manager
+=== Entity Manager in Java SE
 
 [ source, language="java" ]
 ----
- @Persisten
+ EntityManagerFactory emf = Persistence.createEntityManagerFactory("MyPersistenceUnit");
+ EntityManager em = emf.createEntityManager();
+
+ em.getTransaction().begin();
+
+ Person person = new Person();
+ person.setName("Ondra");
+
+ em.persist(person);
+
+ em.getTransaction().commit();
+
+ em.close();
+ emf.close();
 ----
+
+[NOTE.speaker]
+--
+ TODO: I haven't found a way how to not use a transaction for persist action will be reflected in database.
+       Setting autoCommit to true in persistence.xml does not help in this (at least for RESOURCE_LOCAL)
+       I think that autoCommit settings is used for JPA when TransactionAttribute NOT_SUPPORTED is used.
+ em.getTranaction() is type of EntityTransaction
+--
+
+=== Entity Manager in Java EE
+
+[ source, language="java" ]
+----
+ @Stateless
+ public SomeBean() {
+   @PersistenceContext
+   EntityManager em;
+
+   public void newPerson() {
+     Person person = new Person();
+     person.setName("Ondra");
+     em.persist(person);
+   }
+ }
+----
+
+=== Persistence.xml in Java SE
+
+[ source, language="xml" ]
+----
+  <persistence-unit name="ResourceLocalPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+      <class>org.jboss.qa.tspresentation.Person</class>
+
+      <properties>
+          <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/crashrec?loglevel=2"/>
+          <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>  -->
+          <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+          <property name="hibernate.connection.username" value="crashrec"/>
+          <property name="hibernate.connection.password" value="crashrec"/>
+
+          <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+          <property name="hibernate.show_sql" value="true"/>
+          <property name="hibernate.format_sql" value="true"/>
+      </properties>
+  </persistence-unit>
+----
+
+=== Persistence.xml in Java EE
+
+[ source, language="xml" ]
+----
+ <persistence-unit name="TestPersistenceUnit" transaction-type="JTA">
+        <jta-data-source>java:jboss/datasource-test</jta-data-source>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" />
+
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+----
+
+[NOTE.speaker]
+--
+ What I understand when I define dialect and use hibernate.temp.use_jdbc_metadata_defaults then Hibernate does not need to ask for metatadata
+ from the database and there are not done some first quering of database
+ Beside jta-data-source there is tag non-jta-data-source bug JBoss(WildFly 8.2) does not respect this and it only depends what is underlayin datasource
+ if datasource is jta=false then it always (doesn't matter what is tag for) used as non-transactional from TM point of view (autocommit=true)
+ if datasource is jta=true then it's joint to global TM if exists
+--
+
+== Transactions in JPA
+
+ * Transaction management defined by transaction-type (persistence.xml)
+ * Connected with persistence context type
+ * Any update operation has to be proceeded inside of a transaction
+ * Read operation could be proceeded out of the transaction
+
+[NOTE.speaker]
+--
+ In Java SE working with EntityTransaction, in Java EE with global transaction. It's problematic to use autocommit=true.
+ In fact autocommit=true is probably (!) used when NOT_SUPPORTED for transaction is used. For Java SE it's probably(!) necessary
+ to directly touch underlaying connection as normally EntityTransaction has to be started and it's not possible to change it by some
+ easily accesible settings or API.
+
+ NOTE: all this tested on PostgreSQL
+--
 
 = EJB - BMT vs. CMT
 
@@ -611,31 +795,6 @@ image:{images}/narayana-logo.png[]
  Transactions for EE batches
  JMS closing connection during the XA transaction - will be msg commited or not?
 
-                <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test" enabled="true" use-java-context="true" spy="true">
-                    <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
-                    <driver>database-jdbc-driver.jar</driver>
-                    <security>
-                        <user-name>crashrec</user-name>
-                        <password>crashrec</password>
-                    </security>
-                </datasource>
-                <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test" enabled="true" spy="true">
-                    <xa-datasource-property name="PortNumber">
-                        5432
-                    </xa-datasource-property>
-                    <xa-datasource-property name="ServerName">
-                        localhost
-                    </xa-datasource-property>
-                    <xa-datasource-property name="DatabaseName">
-                        crashrec
-                    </xa-datasource-property>
-                    <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
-                    <driver>database-jdbc-driver.jar</driver>
-                    <security>
-                        <user-name>crashrec</user-name>
-                        <password>crashrec</password>
-                    </security>
-                </xa-datasource>
 --
 
 == References
