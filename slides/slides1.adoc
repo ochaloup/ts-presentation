@@ -560,7 +560,7 @@ What is the JTA/Transaction Manager for?
  What the JTA could offer to me?
 --
 
-== Quiz
+== Quiz - Answer
 
  * Managing transactions :)
  * Machinery of two phase commit protocol
@@ -576,17 +576,6 @@ What is the JTA/Transaction Manager for?
  It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
  setRollbackOnly() - this know to do EntityTransaction as well but it's just for one resource
 --
-
-== Where the transactions live
-
- * EJB - by default
- * CDI - `@Transactional`
- * When you want to touch it
- ** `@Resource/@Inject
-    private UserTransaction utx;`
- ** `@Resource
-    private SessionContext ctx;`
- ** `java:comp/UserTransaction`
 
 == JTA API overview
 
@@ -850,22 +839,189 @@ What is the JTA/Transaction Manager for?
  * Pesimistic
  ** `em.lock(persion, LockModeType.PESIMISTIC_WRITE)`
 
-= EJB - BMT vs. CMT
+= Transactions in Application Server
 
 [NOTE.speaker]
 --
  TODO:
  Example of extended context from servlet to ejb and back
  SFSB has to be saved in session from webservlet (@Inject or old way)
- Does @Inject support to inject transaction?
+ Does @Inject support injecting transaction?
  MDB and BMT
+ JMS closing connection during the XA transaction - will be msg commited or not?
+--
+
+== Where the transactions live
+
+ * EJB method is transactional by default
+ * CDI - `@Transactional`
+ * When you want to touch it
+ ** `@Resource/@Inject
+    private UserTransaction utx;`
+ ** `@Resource
+    private SessionContext ctx;`
+ ** `java:comp/UserTransaction`
+
+= EJB Bean-managed transactions
+
+[NOTE.speaker]
+--
+ Either in BMT or CMT we still touches global transaction managed by transaction manager. That's important to understand.
+ Programatic approach
+
+ TODO: The container must throw the java.lang.IllegalStateException if an instance of a bean with BMT attempts to invoke the setRollbackOnly() or getRollbackOnly() method of the EJBContext interface.
+--
+
+= Bean-managed transaction
+
+[ source, language="java" ]
+----
+ @Resource
+ SessionContext ctx;
+
+ public void method(){
+   try {
+      UserTransaction utx = ctx.getUserTransaction();
+      utx.begin();
+      ...
+      utx.commit();
+   } catch(Exception e) {
+      utx.rollback();
+   }
+ }
+----
+
+= Limitation of usage
+
+ * Session beans (@Stateful, @Stateless, @Singleton)
+ * SFSB which implements SessionSynchronization can't use BTM (TODO: SLSB could?)
+ * Message driven beans (@MessageDriven)
+ * Entity bean (EJB 2.0) can be only CMT
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ public void MyBean {
+   @Resource
+   UserTransaction utx;
+
+   public void method(){
+     try {
+        utx.begin();
+        ...
+        // utx.commit(); <---
+     } catch(Exception e) {
+        utx.rollback();
+     }
+   }
+ }
+----
+
+== Quiz - Answer
+
+ * Still in EJB container which ensures that transaction won't leave a method uncommitted.
+ ** IllegalStateException or rollback (MDB?) will be thrown (TODO: ensure this :)
+ ** true for @Stateless and @MessageDriven
+ ** *not true* for @Stateful beans
+ ** TODO: what @Singleton and what @CDI
+
+[NOTE.speaker]
+--
+ Limitation of @Stateless bean to commit transaction came from the fact (probably) that nested transactions
+ are not supported by JTA.
+--
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Resource
+ UserTransaction utx;
+
+ public void method(){
+   try {
+      utx.begin();
+      utx.setTransactionTimeout(30); // seconds
+      ...
+      utx.commit();
+   } catch(Exception e) {
+      ut.rollback();
+   }
+ }
+----
+
+== Quiz - Answer
+
+ Nothing will happen (TODO: ensure this as there could be transaction thrown in fact :). Transaction timeout has to be set before transaction is started.
+
+[NOTE.speaker]
+--
+ Default jboss transaction timeout is 5 minutes (default-timeout of transactions subsystem).
+--
+
+== Exception handling
+
+ In difference from CMT you have to handled it on your own.
+
+[NOTE.speaker]
+--
+ TODO: What happens when runtimeexception is thrown? What happens when application exception is thrown?
+       Is transaction rollbacked?
+--
+
+== Message Driven Bean
+
+ * transaction context does not flow with a JMS message
+ * handled by JCA in-flow protocol
+
+ * Bean managed transaction
+ ** message receive is not part of tranaction
+ ** you can start new transaction inside of onMessage method but received message is already acknowledged
+ * Container managed transaction
+ ** REQUIRED - new transaction at onMessage method start
+ ** NOT_SUPPORTED - no transaction - acknowledge mode
+
+
+= EJB Container-managed transactions
+
+[NOTE.speaker]
+--
+ Declarative approach
+--
+
+== Annotations under use
+
+ * @TransactionManagement
+ * @TransactionAttribute
+ * @TransactionTimeout
+
+[NOTE.speaker]
+--
+ @TransactionManagement - CONTAINER, BEAN 
+ @TransactionAttribute - REQUIRED, REQUIRES_NEW...
+ @TransactionTimeout is jboss specific annotation - not part of EJB spec
+--
+
+== Transaction context propagation
+
+ * propagation works from BMT to CMT
+ * NOT propagated to BMT
+ ** transaction from BMT is suspended
+
+= CDI transactional management
+
+= Additional information
+
+[NOTE.speaker]
+--
  JCA multiple datasources in XA
  JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
- Asynchronous calls of EJB
- Transactions for EE batches
- JMS closing connection during the XA transaction - will be msg commited or not?
-
 --
+
+
+
 
 == References
  * Presentation https://github.com/ochaloup/ts-presentation
