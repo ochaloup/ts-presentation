@@ -881,8 +881,6 @@ JTA is to JDBC as JTS is to the database driver
 --
  Either in BMT or CMT we still touches global transaction managed by transaction manager. That's important to understand.
  Programatic approach
-
- TODO: The container must throw the java.lang.IllegalStateException if an instance of a bean with BMT attempts to invoke the setRollbackOnly() or getRollbackOnly() method of the EJBContext interface.
 --
 
 = Bean-managed transaction
@@ -935,7 +933,7 @@ JTA is to JDBC as JTS is to the database driver
 [NOTE.speaker]
 --
  A bit tricky :) here. Session bean is CONTAINER managed by default.
- TODO: This will throw an IllegalStateException
+ This will throw an EjbException
 --
 
 == Quiz
@@ -1008,12 +1006,13 @@ JTA is to JDBC as JTS is to the database driver
 
 == Exception handling
 
- In difference from CMT you have to handled it on your own.
+ In difference from CMT you need to handled it on your own (at least partly).
 
 [NOTE.speaker]
 --
- TODO: What happens when runtimeexception is thrown? What happens when application exception is thrown?
-       Is transaction rollbacked?
+ When RuntimeException is thrown from another bean - ie. when setRollbackOnly flag is set then then transaction can't be commited.
+ When you run commit you got Throwable and when you catch it and try to rollback then you get EjbException - no transaction!
+ But in fact transaction seems to be really rollbacked. So some automatic handling is available.
 --
 
 == Message Driven Bean
