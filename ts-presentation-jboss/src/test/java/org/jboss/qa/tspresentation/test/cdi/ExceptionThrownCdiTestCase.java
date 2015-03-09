@@ -97,12 +97,10 @@ public class ExceptionThrownCdiTestCase {
 
         Assert.assertNull(em.find(JBossTestEntity.class, id));
 
-        /*
         Assert.assertEquals(1, results.getTxnStatusAtInvoke().size());
         Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtInvoke().getFirst().getCode());
         Assert.assertEquals(1, results.getTxnStatusAtExit().size());
         Assert.assertEquals(Status.STATUS_MARKED_ROLLBACK, results.getTxnStatusAtExit().getLast().getCode());
-        */
     }
 
     @Test
