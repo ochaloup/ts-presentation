@@ -12,7 +12,9 @@ import javax.transaction.TransactionManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.qa.tspresentation.ejb.BmtBean;
+import org.jboss.qa.tspresentation.ejb.SingletonBmtBean;
+import org.jboss.qa.tspresentation.ejb.StatefulBmtBean;
+import org.jboss.qa.tspresentation.ejb.StatelessBmtBean;
 import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.jboss.qa.tspresentation.utils.ResultsBean;
@@ -35,7 +37,9 @@ public class BmtEjbTestCase {
     private static final Logger log = LoggerFactory.getLogger(BmtEjbTestCase.class);
     private static final String DEPLOYMENT = "ejb-bmt-on-exception";
 
-    @EJB BmtBean bmtBean;
+    @EJB StatelessBmtBean statelessBmtBean;
+    @EJB StatefulBmtBean statefulBmtBean;
+    @EJB SingletonBmtBean singletonBmtBean;
 
     @EJB ResultsBean results;
 
@@ -47,7 +51,9 @@ public class BmtEjbTestCase {
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, DEPLOYMENT + ".jar")
                 .addPackage("org.jboss.qa.tspresentation.utils").addClass(ProjectProperties.class)
-                .addClass(BmtBean.class)
+                .addClass(StatelessBmtBean.class)
+                .addClass(StatefulBmtBean.class)
+                .addClass(SingletonBmtBean.class)
                 .addClass(JBossTestEntity.class)
                 .addAsManifestResource("beans.xml")
                 .addAsManifestResource("jta-ds-persistence.xml", "persistence.xml");
@@ -67,9 +73,9 @@ public class BmtEjbTestCase {
     }
 
     @Test
-    public void runtimeExceptionTrown() throws Exception {
+    public void statelessNotFinishedTransaction() throws Exception {
         try {
-            bmtBean.bmtHasToEndTransaction();
+            statelessBmtBean.beginTransaction();
             Assert.fail("Expecting exception");
         } catch (EJBException e) {
             // ignore
@@ -81,5 +87,78 @@ public class BmtEjbTestCase {
         Assert.assertEquals(Status.STATUS_NO_TRANSACTION, results.getTxnStatusAtInvoke().getFirst().getCode());
         Assert.assertEquals(1, results.getTxnStatusAtExit().size());
         Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtExit().getFirst().getCode());
+
+        int id = (Integer) results.getStorageValue("id");
+        log.info("Searching for entity with id {}", id);
+        Assert.assertNull(em.find(JBossTestEntity.class, id));
+    }
+
+    @Test
+    public void statefulTransactionOverSeveralCalls() throws Exception {
+        statefulBmtBean.beginTransaction();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+        Assert.assertEquals(1, results.getTxnStatusAtInvoke().size());
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, results.getTxnStatusAtInvoke().getFirst().getCode());
+        Assert.assertEquals(1, results.getTxnStatusAtExit().size());
+        Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtExit().getFirst().getCode());
+
+        int id = (Integer) results.getStorageValue("id");
+        results.clear();
+        statefulBmtBean.commitTransaction();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+        Assert.assertEquals(1, results.getTxnStatusAtInvoke().size());
+        Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtInvoke().getFirst().getCode());
+        Assert.assertEquals(1, results.getTxnStatusAtExit().size());
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, results.getTxnStatusAtExit().getFirst().getCode());
+
+        statefulBmtBean.remove();
+
+        log.info("Searching for entity with id {}", id);
+        Assert.assertNotNull(em.find(JBossTestEntity.class, id));
+    }
+
+    /**
+     * Tranaction is started but not committed.
+     * The transaction is neither rollbacked nor committed - it seems so.
+     */
+    @Test
+    public void statefulTransactionRemoveWithoutCommit() throws Exception {
+        statefulBmtBean.beginTransaction();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+        Assert.assertEquals(1, results.getTxnStatusAtInvoke().size());
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, results.getTxnStatusAtInvoke().getFirst().getCode());
+        Assert.assertEquals(1, results.getTxnStatusAtExit().size());
+        Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtExit().getFirst().getCode());
+
+        int id = (Integer) results.getStorageValue("id");
+        results.clear();
+
+        statefulBmtBean.remove();
+
+        log.info("Searching for entity with id {}", id);
+        Assert.assertNull(em.find(JBossTestEntity.class, id));
+    }
+
+    @Test
+    public void singletonTransactionOverSeveralCalls() throws Exception {
+        try {
+            singletonBmtBean.beginTransaction();
+        } catch (EJBException e) {
+            // ignore
+            // javax.ejb.EJBException: JBAS014581: EJB 3.1 FR 13.3.3: BMT bean ExceptionWorkerBmtEjbBean should complete transaction before returning.
+        }
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+        Assert.assertEquals(1, results.getTxnStatusAtInvoke().size());
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, results.getTxnStatusAtInvoke().getFirst().getCode());
+        Assert.assertEquals(1, results.getTxnStatusAtExit().size());
+        Assert.assertEquals(Status.STATUS_ACTIVE, results.getTxnStatusAtExit().getFirst().getCode());
+
+        int id = (Integer) results.getStorageValue("id");
+        log.info("Searching for entity with id {}", id);
+        Assert.assertNull(em.find(JBossTestEntity.class, id));
     }
 }

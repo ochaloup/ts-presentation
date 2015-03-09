@@ -9,13 +9,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
+import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
 import org.jboss.qa.tspresentation.utils.ResultsBean;
 import org.jboss.qa.tspresentation.utils.ResultsLogged;
 
 @ResultsLogged
 @Stateless
 @TransactionManagement(TransactionManagementType.BEAN)
-public class BmtBean {
+public class StatelessBmtBean {
     @PersistenceContext
     private EntityManager em;
 
@@ -25,7 +26,15 @@ public class BmtBean {
     @Resource
     private UserTransaction utx;
 
-    public void bmtHasToEndTransaction() throws Exception {
+    /**
+     * Not permitted as SLSB has to finish transaction before
+     * end of method
+     */
+    public void beginTransaction() throws Exception {
         utx.begin();
+
+        JBossTestEntity entity = new JBossTestEntity("stateless-bmt-begin");
+        em.persist(entity);
+        results.addStorageValue("id", entity.getId());
     }
 }

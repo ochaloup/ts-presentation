@@ -905,9 +905,9 @@ JTA is to JDBC as JTS is to the database driver
 = Limitation of usage
 
  * Session beans (@Stateful, @Stateless, @Singleton)
- * SFSB which implements SessionSynchronization can't use BTM (TODO: SLSB could?)
  * Message driven beans (@MessageDriven)
- * Entity bean (EJB 2.0) can be only CMT
+ * Entity bean (EJB 2.0) can only be CMT
+ * Stateful beans can't use SessionSynchronization
 
 == Quiz
 
@@ -958,18 +958,40 @@ JTA is to JDBC as JTS is to the database driver
  }
 ----
 
+== Quiz (contd.)
+
+[ source, language="java" ]
+----
+ @Stateful
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void MyBean {
+   @Resource
+   UserTransaction utx;
+
+   public void method() {
+     try {
+        utx.begin();
+        ...
+        // utx.commit(); <---
+     } catch(Exception e) {
+        utx.rollback();
+     }
+   }
+ }
+----
+
 == Quiz - Answer
 
- * Still in EJB container which ensures that transaction won't leave a method uncommitted.
- ** IllegalStateException or rollback (MDB?) will be thrown (TODO: ensure this :)
- ** true for @Stateless and @MessageDriven
- ** *not true* for @Stateful beans
- ** TODO: what @Singleton and what @CDI
+ * Stateless, Singleton, MDB: EJB container ensures that transaction won't leave a method uncommitted
+ ** EjbException ("should complete transaction before returning") + rollback done by container
+ * Stateful: transaction can flow over several method invocations on the same SFSB instance
 
 [NOTE.speaker]
 --
  Limitation of @Stateless bean to commit transaction came from the fact (probably) that nested transactions
- are not supported by JTA.
+ are not supported by JTA (<- really not sure with this statement)
+
+ For stateful bean the transaction could be span e.g. over several http calls.
 --
 
 == Quiz
