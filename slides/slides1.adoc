@@ -1041,6 +1041,8 @@ What is the JTA/Transaction Manager for?
  @TransactionManagement - CONTAINER, BEAN (container is by default)
  @TransactionAttribute - REQUIRED, REQUIRES_NEW... (required is by default)
  @TransactionTimeout is jboss specific annotation - not part of EJB spec
+ @ApplicationException is put to user exception (standard or runtime) and defines if such exception should cause the rollback or not
+   (RuntimeException could be marked for not causing the rollback)
 
  Each method is associated with *one* transaction. Neither nested or multiple transactions are not permitted.
 --
