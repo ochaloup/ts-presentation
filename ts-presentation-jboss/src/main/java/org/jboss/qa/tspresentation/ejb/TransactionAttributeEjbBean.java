@@ -8,7 +8,7 @@ import org.jboss.qa.tspresentation.utils.ResultsLogged;
 
 @Stateless
 @ResultsLogged
-public class TransactionAttributeBean {
+public class TransactionAttributeEjbBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void required() {
