@@ -496,6 +496,37 @@ What happens on JMS transaction rollback?
   * JTS and Corba - how to use it
 --
 
+== Quiz
+
+What is the JTA/Transaction Manager for?
+
+[NOTE.speaker]
+--
+ We know that we can manage database or jms resource directly why such thing is not
+ covered by Java EE container and we need some specification of transaction?
+ What that transaction for?
+ What the JTA could offer to me?
+--
+
+== Quiz - Answer
+
+ * Managing transactions :)
+ ** High-level API that allows application and application server to demarcate transaction boundaries
+ * Machinery of two phase commit protocol
+ ** Java mapping of X/Open XA protocol
+ * Recovery management
+ * Timeout setting
+ * Could force rollback-only behaviour
+ * Distributed transactions
+
+[NOTE.speaker]
+--
+ It's standardized way how container can communicate with transaction.
+ Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
+ It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
+ setRollbackOnly() - this know to do EntityTransaction as well but it's just for one resource
+--
+
 == JTA a bit on history
  * Implementation of X/Open XA architecture (JSR 907)
  * Versions
@@ -546,41 +577,12 @@ JTA is to JDBC as JTS is to the database driver
 
 [NOTE.speaker]
 --
- JTA is higher level api which uses application server, JTS is internal api of TM how to communicate and manage transactional context
+ JTA is higher level api which uses application server, JTS is internal (low-level) api of TM how to communicate and manage transactional context.
  The JTA is the interface developers use to manage transactions.
  The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
  The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
  Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
  JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
---
-
-== Quiz
-
-What is the JTA/Transaction Manager for?
-
-[NOTE.speaker]
---
- We know that we can manage database or jms resource directly why such thing is not
- covered by Java EE container and we need some specification of transaction?
- What that transaction for?
- What the JTA could offer to me?
---
-
-== Quiz - Answer
-
- * Managing transactions :)
- * Machinery of two phase commit protocol
- * Recovery management
- * Timeout setting
- * Could force rollback-only behaviour
- * Distributed transactions
-
-[NOTE.speaker]
---
- It's standardized way how container can communicate with transaction.
- Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
- It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
- setRollbackOnly() - this know to do EntityTransaction as well but it's just for one resource
 --
 
 == JTA API overview
@@ -852,21 +854,26 @@ What is the JTA/Transaction Manager for?
  TODO:
  Example of extended context from servlet to ejb and back
  SFSB has to be saved in session from webservlet (@Inject or old way)
- Does @Inject support injecting transaction?
- MDB and BMT
  JMS closing connection during the XA transaction - will be msg commited or not?
 --
 
-== Where the transactions live
+== How to get the method being transactional
 
  * EJB method is transactional by default
  * CDI - `@Transactional`
- * When you want to touch it
- ** `@Resource/@Inject
-    private UserTransaction utx;`
- ** `@Resource
-    private SessionContext ctx;`
+ * Tog get it
+ ** `@Resource/@Inject  UserTransaction utx;`
+ ** `@Resource  SessionContext ctx;`
  ** `java:comp/UserTransaction`
+ ** `java:jboss/TransactionManager`
+
+[NOTE.speaker]
+--
+ There could be one difference in @Resource and @Inject. WildFly checks whether @Resource annotation is used in EJB sesion or message driven bean when bean demarcation is specifie. 
+ UserTransaction is not permitted to be used in any other location (EjbExeption - IllegalStateException -JBAS011048: Failed to construct component instance)
+ You can't access UserTransaction interface either with use of SessionContext when you are not in bean managed demarcation (WildFly 8.2)
+ But by @Inject you can inject transaction in whatever location you want in general.
+--
 
 = EJB Bean-managed transactions
 
@@ -1064,7 +1071,7 @@ What is the JTA/Transaction Manager for?
  * REQUIRES_NEW - new transaction is started anytime
     - outer transaction is put to sleep until the inner EJB call finishes
     - note that the inner transaction does not share the managed entities of the outer transaction, they are completely isolated
- * MANDATORY - no txn then TransactionRequiredException or joining the existing txn
+ * MANDATORY - no txn then EjbTransactionRequiredException or joining the existing txn
    - powerful tool that can help you to make your transactional code so much more robust - e.g. mark storage DAO methods that accept (managed) entities as a parameter as MANDATORY
  * NOT_SUPPORTED - method runs without transaction anytime (no txn then nothing is done or suspend running txn)
    What could be useful for:
@@ -1073,7 +1080,7 @@ What is the JTA/Transaction Manager for?
    - decreased whoops factor.  you'll catch transaction mistakes far sooner in your development cycle
  * SUPPORTS - no txn then nothing is done (method runs without txn) or joining the existing txn
     - container is lazy :)
- * NEVER - no txn then nothing is done (method runs without txn) or TransactionRequiredException if calling method propagates some started txn
+ * NEVER - no txn then nothing is done (method runs without txn) or EjbException if calling method propagates some started txn
     - can be a useful tool to catch programming mistakes early on
     - when you make a call to another EJB, that EJB may safely create its own isolated transaction - NEVER may actually become a performance hog because of many mini-transactions being created
 
@@ -1144,14 +1151,17 @@ What is the JTA/Transaction Manager for?
 
 == Exception handling
 
- Exception which causes rollback (setRollbackOnly called) of current transaction
+ Exception which causes rollback (setRollbackOnly is called)
 
  * RuntimeException
  * EjbException
- * @ApplicationException(rollback = true)
+ * @ApplicationException(rollback = true, inherited = true)
 
 [NOTE.speaker]
 --
+ EjbException extends RuntimeException, so...
+ intherited is from EJB 3.1
+
  TODO: test this :)
 --
 
@@ -1162,6 +1172,22 @@ What is the JTA/Transaction Manager for?
  ** transaction from BMT is suspended
 
 = CDI transactional management
+
+== @Transactional and @TransactionScoped
+
+ * @Transactional
+ ** javax.transaction.TxType value
+ ** Class[] rollbackOn
+ ** Class[] dontRollbackOn
+
+ * @TransactionScoped
+
+[NOTE.speaker]
+--
+ Exception handling - RuntimeException should cause the rollback is provided. But there is a question that I do not know
+   that injected CDI bean inside other CDI bean does not cause that the transaction would be marked as rollback only.
+--
+
 
 = Additional information
 
