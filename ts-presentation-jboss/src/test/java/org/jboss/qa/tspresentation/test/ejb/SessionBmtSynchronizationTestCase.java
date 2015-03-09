@@ -21,8 +21,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Used for being able to check that container is started and that arquillian extension
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Arquillian.class)
 public class SessionBmtSynchronizationTestCase {
-    private static final Logger log = LoggerFactory.getLogger(SessionBmtSynchronizationTestCase.class);
     private static final String DEPLOYMENT_BMT_STATEFUL = "ejb-stateless-bmt-synchro";
 
     @EJB StatefulBmtSynchronizationAnnotationsBean statefulBmtSynchro;
@@ -60,10 +57,24 @@ public class SessionBmtSynchronizationTestCase {
 
     }
 
+    /**
+     * As bean manages the transaction on its own the context synchronization callbacks
+     * are not called (are ignored).
+     */
     @Test
     public void statefulBmtSynchro() throws Exception {
-        Assert.fail("abc");
         statefulBmtSynchro.doWorkBmt();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+
+        TxnDTO txn = getTxn("afterBegin");
+        Assert.assertNull(txn);
+        txn = getTxn("beforeCompletion");
+        Assert.assertNull(txn);
+        txn = getTxn("afterCompletion");
+        Assert.assertNull(txn);
+
+        statefulBmtSynchro.remove();
     }
 
     private TxnDTO getTxn(final String key) {

@@ -23,6 +23,9 @@ import org.jboss.qa.tspresentation.utils.TxnDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Stateful bean managed - callbacks are not called
+ */
 @Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
 public class StatefulBmtSynchronizationAnnotationsBean {

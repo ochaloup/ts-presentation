@@ -21,8 +21,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Used for being able to check that container is started and that arquillian extension
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Arquillian.class)
 public class SessionSynchronizationTestCase {
-    private static final Logger log = LoggerFactory.getLogger(SessionSynchronizationTestCase.class);
     private static final String DEPLOYMENT_STATEFUL = "ejb-stateful-synchro";
 
     @EJB StatefulSynchronizationAnnotationsBean statefulSynchro;

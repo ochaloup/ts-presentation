@@ -86,7 +86,8 @@ public class ExceptionThrownCdiTestCase {
     }
 
     /**
-     * RuntimeException thrown from CDI bean does not mark for rollback - TODO: against spec?
+     * RuntimeException thrown from CDI bean does not mark for rollback
+     * TODO: against spec? maybe not
      */
     @Ignore
     @Test

@@ -73,6 +73,11 @@ public class ExceptionWorkerBmtEjbBean {
         }
     }
 
+    /**
+     * TODO: is this against spec as setRollbackOnly is available for BMT?
+     * 8.3.3.1: An enterprise bean with bean-managed transaction demarcation must not use the getRollbackOnly
+     * and setRollbackOnly methods of the EJBContext interface.
+     */
     public void setRollbackOnly() throws Exception {
         utx.begin();
 

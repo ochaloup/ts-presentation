@@ -8,6 +8,7 @@ import javax.ejb.BeforeCompletion;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Remove;
+import javax.ejb.SessionSynchronization;
 import javax.ejb.Stateful;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -20,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Stateful
-public class StatefulSynchronizationAnnotationsBean {
+public class StatefulSynchronizationAnnotationsBean implements SessionSynchronization {
     private static final Logger log = LoggerFactory.getLogger(StatefulSynchronizationAnnotationsBean.class);
 
     @EJB
@@ -35,20 +36,23 @@ public class StatefulSynchronizationAnnotationsBean {
         // just hook to release sfsb
     }
 
+    @Override
     @AfterBegin
-    private void afterBegin() throws EJBException, RemoteException {
+    public void afterBegin() throws EJBException, RemoteException {
         log.info("afterBegin");
         results.addStorageValue("afterBegin", new TxnDTO(getTransaction()));
     }
 
+    @Override
     @BeforeCompletion
-    private void beforeCompletion() throws EJBException, RemoteException {
+    public void beforeCompletion() throws EJBException, RemoteException {
         log.info("beforeCompletion");
         results.addStorageValue("beforeCompletion", new TxnDTO(getTransaction()));
     }
 
+    @Override
     @AfterCompletion
-    private void afterCompletion(final boolean committed) throws EJBException, RemoteException {
+    public void afterCompletion(final boolean committed) throws EJBException, RemoteException {
         log.info("afterCompletion");
         results.addStorageValue("afterCompletion", new TxnDTO(getTransaction()));
         results.addStorageValue("committed", committed);
