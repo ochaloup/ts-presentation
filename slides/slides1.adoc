@@ -27,6 +27,11 @@ public class TestBean {
 
 image:{images}/tagcloud.png[]
 
+[NOTE.speaker]
+--
+ Taken by http://www.wordle.net/create
+--
+
 == Agenda
  * Terminology
  * Resource local transactions in Java SE
@@ -39,7 +44,7 @@ image:{images}/tagcloud.png[]
  ** Container managed transactions (CMT)
 
 
-= Terminology corner
+== Terminology corner
 
 == A transaction
 A transaction is a group of business logic statements with certain shared properties.
@@ -194,7 +199,7 @@ Atomic, Consistent, Isolated, Durable
  * Declarative - transactions are hidden behind of JEE layer
 --
 
-= Databases and JDBC
+== Databases and JDBC
 
 == Database transaction
 [ source, language="sql" ]
@@ -252,7 +257,7 @@ image:{images}/db/02-dirty-reads.jpg[]
 
 == Non-repeatable reads
 
-image:{images}/db/03-non-repeatable-reads[]
+image:{images}/db/03-non-repeatable-reads.jpg[]
 
 [small]#shamelessly stolen from http://what-when-how.com#
 
@@ -358,7 +363,7 @@ Resource:
  e.g. Oracle (probably - not up-to-date info) first commits currently running DML and then does DDL in separate transaction
 --
 
-= JMS
+== JMS
 
 == Transactions and redelivery
 image:{images}/jms/jms-transaction-redelivery.png[]
@@ -420,7 +425,7 @@ What happens on JMS transaction rollback?
 --
 
 
-= Java EE
+== Java EE
 
 [NOTE.speaker]
 --
@@ -428,7 +433,7 @@ What happens on JMS transaction rollback?
  When speaking about appliation server then JBoss EAP/Wildfly is meant
 --
 
-= JBoss sources configuration
+== JBoss sources configuration
 
 == Datasource
 
@@ -481,14 +486,14 @@ What happens on JMS transaction rollback?
 
 == JMS configuration (HornetQ)
 
- See standalone-full.xml
+See standalone-full.xml
 
 [NOTE.speaker]
 --
  Messaging is configured only in -full profiles
 --
 
-= JTA
+== JTA
 
 [NOTE.speaker]
 --
@@ -611,7 +616,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  Transaction instance means the transaction context in fact (flows from one bean to another)
 --
 
-= JPA
+== JPA
 
 == JPA overview in short
 
@@ -853,7 +858,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  * Pesimistic
  ** `em.lock(persion, LockModeType.PESIMISTIC_WRITE)`
 
-= Transactions in Application Server
+== Transactions in Application Server
 
 [NOTE.speaker]
 --
@@ -882,7 +887,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  Jndi for user transaction is defined by spec. Jndi for transaction manager is container specific.
 --
 
-= EJB Bean-managed transactions
+== EJB Bean-managed transactions
 
 [NOTE.speaker]
 --
@@ -890,7 +895,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  Programatic approach
 --
 
-= Bean-managed transaction
+== Bean-managed transaction
 
 [ source, language="java" ]
 ----
@@ -909,7 +914,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  }
 ----
 
-= Limitation of usage
+== Limitation of usage
 
  * Session beans (@Stateful, @Stateless, @Singleton)
  * Message driven beans (@MessageDriven)
@@ -1057,7 +1062,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  ** NOT_SUPPORTED - no transaction - acknowledge mode
 
 
-= EJB Container-managed transactions
+== EJB Container-managed transactions
 
 [NOTE.speaker]
 --
@@ -1433,7 +1438,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
  }
 ----
 
-= CDI transactional management
+== CDI transactional management
 
 == @Transactional and @TransactionScoped
 
