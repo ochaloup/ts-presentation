@@ -1019,7 +1019,7 @@ JTA is to JDBC as JTS is to the database driver
 
 == Quiz - Answer
 
- Nothing will happen (TODO: ensure this as there could be transaction thrown in fact :). Transaction timeout has to be set before transaction is started.
+ Nothing will happen. Transaction timeout has to be set before transaction is started.
 
 [NOTE.speaker]
 --

@@ -161,4 +161,27 @@ public class BmtEjbTestCase {
         log.info("Searching for entity with id {}", id);
         Assert.assertNull(em.find(JBossTestEntity.class, id));
     }
+
+    /**
+     * If transaction timeout is set after txn began then there is no affect in such settings.
+     */
+    @Test
+    public void setTransactionTimeoutAfterTxnBegins() throws Exception {
+        statelessBmtBean.setTimeoutWrong();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+
+        int id = (Integer) results.getStorageValue("id");
+        log.info("Searching for entity with id {}", id);
+        Assert.assertNotNull(em.find(JBossTestEntity.class, id));
+    }
+
+    @Test
+    public void setTransactionTimeoutBeforeTxnBegins() throws Exception {
+        statelessBmtBean.setTimeoutCorrect();
+
+        Assert.assertEquals(Status.STATUS_NO_TRANSACTION, txManager.getStatus());
+
+        Assert.assertNull(results.getStorageValue("id"));
+    }
 }
