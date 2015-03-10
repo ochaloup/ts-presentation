@@ -37,4 +37,13 @@ Do not forget
 --------------
  * presentation template to Eclipse
  * take a notebook with a pencil to make a note of some question from audience
+ * open JTA spec in browser
+
+Reveal.js keyboard shortcuts
+----------------------------
+ * `s` - show window with notes (chrome does have trouble with it?)
+ * `o` - show slides one by one (as when AlT-TAB is used for windows), back to slides by touching `o` once again
+ * `b` - pause - screen will go dark
+ * `f` - full screen (escape by ESC)
+ * `END/HOME` - first slide/last slide
 
