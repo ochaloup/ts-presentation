@@ -574,7 +574,8 @@ image:{images}/narayana-logo.png[]
 
 == JTA vs. JTS
 
-JTA is to JDBC as JTS is to the database driver
+
+Difference of JTA and JTS has some parallel in difference JDBC to the database driver.
 
 [NOTE.speaker]
 --
@@ -584,6 +585,8 @@ JTA is to JDBC as JTS is to the database driver
  The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
  Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
  JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs
+
+ JTA is to JDBC as JTS is to the database driver
 --
 
 == JTA API overview
@@ -853,8 +856,6 @@ JTA is to JDBC as JTS is to the database driver
 [NOTE.speaker]
 --
  TODO:
- Example of extended context from servlet to ejb and back
- SFSB has to be saved in session from webservlet (@Inject or old way)
  JMS closing connection during the XA transaction - will be msg commited or not?
 --
 
@@ -862,18 +863,19 @@ JTA is to JDBC as JTS is to the database driver
 
  * EJB method is transactional by default
  * CDI - `@Transactional`
- * Tog get it
- ** `@Resource/@Inject  UserTransaction utx;`
- ** `@Resource  SessionContext ctx;`
+ * To get it
+ ** `@Resource/@Inject UserTransaction utx;`
+ ** `@Resource SessionContext ctx;`
  ** `java:comp/UserTransaction`
  ** `java:jboss/TransactionManager`
 
 [NOTE.speaker]
 --
- There could be one difference in @Resource and @Inject. WildFly checks whether @Resource annotation is used in EJB sesion or message driven bean when bean demarcation is specifie. 
+ There could be one difference in @Resource and @Inject. WildFly checks whether @Resource annotation is used in EJB sesion or message driven bean when bean demarcation is specified.
  UserTransaction is not permitted to be used in any other location (EjbExeption - IllegalStateException -JBAS011048: Failed to construct component instance)
  You can't access UserTransaction interface either with use of SessionContext when you are not in bean managed demarcation (WildFly 8.2)
  But by @Inject you can inject transaction in whatever location you want in general.
+ @Resource could be used in Servlet.
 --
 
 = EJB Bean-managed transactions
@@ -1107,8 +1109,6 @@ JTA is to JDBC as JTS is to the database driver
     - when you make a call to another EJB, that EJB may safely create its own isolated transaction - NEVER may actually become a performance hog because of many mini-transactions being created
 
  When there is not transaction context active (ie. NOT_SUPPORTED) then for JMS autoack should be used and for database autoCommit is true.
-
- TODO: see http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html and This code will fail. Can you spot where?
 --
 
 == Easy peasy
