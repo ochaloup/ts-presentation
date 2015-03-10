@@ -93,6 +93,15 @@ public class BmtEjbTestCase {
         Assert.assertNull(em.find(JBossTestEntity.class, id));
     }
 
+    /**
+     * TODO: this is failing as Hibernate check that persist is done in transaction
+     *       try to change it for raw datasource sql query
+     */
+    @Test(expected = EJBException.class)
+    public void withoutTransaction() throws Exception {
+        statelessBmtBean.doWithoutTransaction();
+    }
+
     @Test
     public void statefulTransactionOverSeveralCalls() throws Exception {
         statefulBmtBean.beginTransaction();

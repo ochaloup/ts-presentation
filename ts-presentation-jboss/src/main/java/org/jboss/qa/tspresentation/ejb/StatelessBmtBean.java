@@ -42,6 +42,12 @@ public class StatelessBmtBean {
         results.addStorageValue("id", entity.getId());
     }
 
+    public void doWithoutTransaction() throws Exception {
+        JBossTestEntity entity = new JBossTestEntity("without-txn");
+        em.persist(entity);
+        results.addStorageValue("id", entity.getId());
+    }
+
     public void setTimeoutWrong() throws Exception {
         try {
             utx.begin();

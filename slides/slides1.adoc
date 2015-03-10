@@ -515,6 +515,7 @@ What is the JTA/Transaction Manager for?
  ** High-level API that allows application and application server to demarcate transaction boundaries
  * Machinery of two phase commit protocol
  ** Java mapping of X/Open XA protocol
+ * Local managers are not thread safe
  * Recovery management
  * Timeout setting
  * Rollback-only behaviour setting
@@ -526,6 +527,7 @@ What is the JTA/Transaction Manager for?
  Specialized thread (in background or foreground) which is able to stop running transaction after specified amount of time.
  It's way how more then one resource could be part of one ACID transaction (DB + JMS + Mail service create one txn)
  setRollbackOnly() - this know to do EntityTransaction as well but it's just for one resource
+ Transaction is tread safe as the Transaction uses java `ThreadLocal` type
 --
 
 == JTA a bit on history
@@ -876,6 +878,8 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  You can't access UserTransaction interface either with use of SessionContext when you are not in bean managed demarcation (WildFly 8.2)
  But by @Inject you can inject transaction in whatever location you want in general.
  @Resource could be used in Servlet.
+
+ Jndi for user transaction is defined by spec. Jndi for transaction manager is container specific.
 --
 
 = EJB Bean-managed transactions
@@ -1373,6 +1377,61 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
  * propagation works from BMT to CMT
  * NOT propagated to BMT
  ** transaction from BMT is suspended
+
+== CMT -> BMT - not propagated
+
+[ source, language="java" ]
+----
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void BmtBean {
+   public void do() {
+     // do something
+   }
+ }
+
+ @Stateless
+ public class CmtBean {
+    @EJB
+    private BmtBean bean;
+
+    public void work() {
+      bean.do();
+    }
+ }
+----
+
+== BMT -> CMT - propagated
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class CmtBean {
+    public void work() {
+      // do something
+    }
+ }
+
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void BmtBean {
+   @Resource
+   UserTransaction utx;
+
+   @EJB
+   private CmtBean bean;
+
+   public void method() {
+     try {
+        utx.begin();
+        bean.work();
+        utx.commit();
+     } catch(Exception e) {
+        ut.rollback();
+     }
+   }
+ }
+----
 
 = CDI transactional management
 

@@ -11,7 +11,7 @@ import javax.enterprise.context.SessionScoped;
 /**
  * Shamelessly taken from http://www.adam-bien.com/roller/abien/entry/does_cdi_injection_of_sessionscoped
  */
-@Stateful
+@Stateful // note: all methods on stateful bean is defined as synchronized
 @SessionScoped
 public class SessionStore implements Serializable {
     private static final long serialVersionUID = 1L;
