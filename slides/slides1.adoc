@@ -441,6 +441,7 @@ What happens on JMS transaction rollback?
           <user-name>crashrec</user-name>
           <password>crashrec</password>
       </security>
+      <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
   </datasource>
 ----
 
@@ -933,7 +934,7 @@ JTA is to JDBC as JTS is to the database driver
 [NOTE.speaker]
 --
  A bit tricky :) here. Session bean is CONTAINER managed by default.
- This will throw an EjbException
+ This will throw an EJBException
 --
 
 == Quiz
@@ -983,7 +984,7 @@ JTA is to JDBC as JTS is to the database driver
 == Quiz - Answer
 
  * Stateless, Singleton, MDB: EJB container ensures that transaction won't leave a method uncommitted
- ** EjbException ("should complete transaction before returning") + rollback done by container
+ ** EJBException ("should complete transaction before returning") + rollback done by container
  * Stateful: transaction can flow over several method invocations on the same SFSB instance
 
 [NOTE.speaker]
@@ -1033,7 +1034,7 @@ JTA is to JDBC as JTS is to the database driver
 [NOTE.speaker]
 --
  When RuntimeException is thrown from another bean - ie. when setRollbackOnly flag is set then then transaction can't be commited.
- When you run commit you got Throwable and when you catch it and try to rollback then you get EjbException - no transaction!
+ When you run commit you got Throwable and when you catch it and try to rollback then you get EJBException - no transaction!
  But in fact transaction seems to be really rollbacked. So some automatic handling is available.
 --
 
@@ -1101,11 +1102,12 @@ JTA is to JDBC as JTS is to the database driver
    - decreased whoops factor.  you'll catch transaction mistakes far sooner in your development cycle
  * SUPPORTS - no txn then nothing is done (method runs without txn) or joining the existing txn
     - container is lazy :)
- * NEVER - no txn then nothing is done (method runs without txn) or EjbException if calling method propagates some started txn
+ * NEVER - no txn then nothing is done (method runs without txn) or EJBException if calling method propagates some started txn
     - can be a useful tool to catch programming mistakes early on
     - when you make a call to another EJB, that EJB may safely create its own isolated transaction - NEVER may actually become a performance hog because of many mini-transactions being created
 
- TODO: does overloaded method in child class inherits the transaction attribute from parent?
+ When there is not transaction context active (ie. NOT_SUPPORTED) then for JMS autoack should be used and for database autoCommit is true.
+
  TODO: see http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html and This code will fail. Can you spot where?
 --
 
@@ -1114,6 +1116,7 @@ JTA is to JDBC as JTS is to the database driver
 [ source, language="java" ]
 ----
  @Stateless
+ // @TransactionAttribute(TransactionAttributeType.REQUIRED)
  public class MyBean {
     public void method() {
         // work with application managed resource
@@ -1129,35 +1132,141 @@ JTA is to JDBC as JTS is to the database driver
 ----
  @Stateless
  public class MyBean {
+
+    public void createNewUser(String name) {
+      UserEntity entity = new UserEntity(name);
+      em.persist(entity);
+
+      long numberOfUsersBeforeCommit = getNumberOfUsers();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public long getNumberOfUsers() {
+      String sql = "SELECT COUNT(u.id) FROM UserEntity u";
+      Query q = em.createQuery(sql);
+      return (long) q.getSingleResult();
+    }
+ }
+----
+
+[NOTE.speaker]
+--
+ Will the getNumberOfUsers know about newly created entity user from createNewUser?
+--
+
+== Quiz - Answer
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class MyBean {
+    @EJB
+    private MyBean thisBean;
+
+    public void createNewUser(String name) {
+      UserEntity entity = new UserEntity(name);
+      em.persist(entity);
+
+      long numberOfUsersBeforeCommit = thisBean.getNumberOfUsers();
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public long getNumberOfUsers() {
+      String sql = "SELECT COUNT(u.id) FROM UserEntity u";
+      Query q = em.createQuery(sql);
+      return (long) q.getSingleResult();
+    }
+ }
+----
+
+[NOTE.speaker]
+--
+  As method was called internally there was no container callback available so the
+  new transaction was not created.
+  We need to inject bean for container would hook to it and could process annotations.
+--
+
+== Exception handling
+
+Exception which causes rollback
+
+ * RuntimeException
+ * EJBException
+ * @ApplicationException(rollback = true, inherited = true)
+
+[NOTE.speaker]
+--
+ EJBException extends RuntimeException, so...
+ intherited added to spec from EJB 3.1
+--
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class MyBean {
+    @EJB
+    private MyBean thisBean;
+
+    public void createNewUser(String name) {
+      try {
+        thisBean.doSomeWork();
+      } catch (Exception e) {
+        log.warn("The work failed but we will create user for you either");
+      }
+
+      UserEntity entity = new UserEntity(name);
+      em.persist(entity);
+    }
+
+    public long doSomeWork() {
+      // do some business but unfortunatelly something goes wrong...
+      throw new RuntimeException();
+    }
+ }
+----
+
+== Quiz - Answer
+
+The transaction is marked as setRollbackOnly.
+
+As RuntimeException surpassed the bean boundaries container will marked it as rollback and
+the whole transaction will be rollbacked nevertheless the exception was caught.
+
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class TableCreator {
     @Resource
     DataSource datasource;
 
-    public void insertMethod() {
+    public void create() {
         try(Connection connection = datasource.getConnection()) {
             Statement st = connection.createStatement();
-            st.execute("INSERT INTO table VALUES (1, 'EAP')");
+            st.execute(""CREATE TABLE user (id INTEGER NOT NULL UNIQUE, name VARCHAR(255))"");
+        } catch (SQLException sqle) {
+           // ignore this as table already exists
         }
-        updateMethod();
     }
+ }
 
-    public void updateMethod() {
-        try(Connection connection = datasource.getConnection()) {
-            PreparedStatement ps = c.prepareStatement("SELECT " + columnNameToReturn + " FROM " + tableName + " WHERE id = ?");
-            ps.setInt(1, idValue);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                return rs.getObject(1).toString();
+ @Stateless
+ public class Inserter {
+   @PersistenceContext
+   private EntityManager em;
 
-            ResultSet rs = st.executeQuery("SELECT name FROM table WHERE id = 1");
-            String eapName = null;
-            if(rs.next()) {
-              eapName = rs.getString(1) + " 7";
-            } else {
-              eapName = "WildFly";
-            }
+   @EJB
+   private TableCreator creator;
 
-            st.execute("UPDATE table SET text = '" + eapString + "' WHERE id = 1)");
-        }
+    public void call() {
+        creator.create();
+
+        UserEntity entity = new UserEntity("EAP QE");
+        em.persist(entity);
     }
  }
 ----
@@ -1167,23 +1276,48 @@ JTA is to JDBC as JTS is to the database driver
  We should close the connection on ours own. But in case the application server should close it for us at the end.
  Btw. closing does not mean real closing. It just returns connection to pool.
 
- TODO: try this example as a real testcase! (I would like know what cannection we will get by datasource - the same one?)
+ Expecting that datasource and the entityt manager are configured to use the same datasource (sharing connection in fact).
 --
 
-== Exception handling
+== Quiz - Answer
 
- Exception which causes rollback (setRollbackOnly is called)
+[ source, language="java" ]
+----
+ @Stateless
+ public class TableCreator {
+    @Resource
+    DataSource datasource;
 
- * RuntimeException
- * EjbException
- * @ApplicationException(rollback = true, inherited = true)
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void create() {
+        try(Connection connection = datasource.getConnection()) {
+            Statement st = connection.createStatement();
+            st.execute(""CREATE TABLE user (id INTEGER NOT NULL UNIQUE, name VARCHAR(255))"");
+        } catch (SQLException sqle) {
+           // ignore this as table already exists
+        }
+    }
+ }
+
+ @Stateless
+ public class Inserter {
+   @EJB
+   private TableCreator creator;
+
+    public void call() {
+        creator.create();
+
+        UserEntity entity = new UserEntity("EAP QE");
+        em.persist(entity);
+    }
+ }
+----
 
 [NOTE.speaker]
 --
- EjbException extends RuntimeException, so...
- intherited is from EJB 3.1
-
- TODO: test this :)
+ If table already existed then as same database is used the internal DB transction is aborted and when we try to do some actions we
+ would get information that it's not possible as the DB transaction is in abort state.
+   Caused by: org.postgresql.util.PSQLException: ERROR: current transaction is aborted, commands ignored until end of transaction block
 --
 
 == Transaction context propagation
@@ -1208,18 +1342,6 @@ JTA is to JDBC as JTS is to the database driver
  Exception handling - RuntimeException should cause the rollback is provided. But there is a question that I do not know
    that injected CDI bean inside other CDI bean does not cause that the transaction would be marked as rollback only.
 --
-
-
-= Additional information
-
-[NOTE.speaker]
---
- JCA multiple datasources in XA
- JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
---
-
-
-
 
 == References
  * Presentation https://github.com/ochaloup/ts-presentation

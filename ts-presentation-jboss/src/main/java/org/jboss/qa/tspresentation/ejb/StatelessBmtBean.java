@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 @TransactionManagement(TransactionManagementType.BEAN)
 public class StatelessBmtBean {
     private static final Logger log = LoggerFactory.getLogger(StatelessBmtBean.class);
-    
+
     @PersistenceContext
     private EntityManager em;
 

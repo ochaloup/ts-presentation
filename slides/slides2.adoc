@@ -22,6 +22,8 @@ Ondra Chaloupka / ochaloup@redhat.com
  ** LRCO vs. CMR
  * Narayana log store types (filesystem, hornetq, jdbc)
  * Operation with log store and jboss cli
+ * JCA multiple datasources in XA
+ JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
 --
 
 == References

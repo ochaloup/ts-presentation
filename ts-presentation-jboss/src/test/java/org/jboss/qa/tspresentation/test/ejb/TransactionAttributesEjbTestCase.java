@@ -12,6 +12,7 @@ import javax.transaction.TransactionManager;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.qa.tspresentation.ejb.TransactionAttributeEjbBean;
+import org.jboss.qa.tspresentation.ejb.TransactionAttributeEjbChildBean;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.jboss.qa.tspresentation.utils.ResultsBean;
 import org.jboss.qa.tspresentation.utils.TxnDTO;
@@ -34,6 +35,7 @@ public class TransactionAttributesEjbTestCase {
     private static final Logger log = LoggerFactory.getLogger(TransactionAttributesEjbTestCase.class);
 
     @EJB TransactionAttributeEjbBean ejbBean;
+    @EJB TransactionAttributeEjbChildBean childEjbBean;
 
     @EJB ResultsBean results;
 
@@ -45,6 +47,7 @@ public class TransactionAttributesEjbTestCase {
                 .addPackage("org.jboss.qa.tspresentation.utils")
                 .addClass(ProjectProperties.class)
                 .addClass(TransactionAttributeEjbBean.class)
+                .addClass(TransactionAttributeEjbChildBean.class)
                 .addAsManifestResource("beans.xml");
         return jar;
     }
@@ -150,6 +153,22 @@ public class TransactionAttributesEjbTestCase {
     public void mandatory() throws Exception {
         ejbBean.mandatory();
         Assert.fail("Expected that this throws exception as transaction was started by test");
+    }
+
+    @Test(expected = EJBTransactionRequiredException.class)
+    public void mandatoryChild() throws Exception {
+        childEjbBean.mandatory();
+        Assert.fail("Expected that this throws exception as transaction was started by test");
+    }
+
+    /**
+     * When method overriden then it does not inherit the transaction attribute
+     */
+    @Test
+    public void neverStartedChildOverriden() throws Exception {
+        txManager.begin();
+        childEjbBean.never();
+        txManager.commit();
     }
 
     // TODO: in case add tests for all attributes
