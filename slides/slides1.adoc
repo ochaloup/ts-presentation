@@ -517,7 +517,7 @@ What is the JTA/Transaction Manager for?
  ** Java mapping of X/Open XA protocol
  * Recovery management
  * Timeout setting
- * Could force rollback-only behaviour
+ * Rollback-only behaviour setting
  * Distributed transactions
 
 [NOTE.speaker]
@@ -549,7 +549,7 @@ What is the JTA/Transaction Manager for?
  * XA spec from year 1991 by The Open Group
  * JTS spec maps OTS spec to Java
  * OTS spec by Object management Group (OMG)
- * JCA, JMS, JDBC, Java EE Platform spec contains sections on TM
+ * JCA, JMS, JDBC, EJB contains sections about transactions
  * WS-AT and WS-BA under OASIS standard
 
 [NOTE.speaker]
@@ -1134,8 +1134,8 @@ JTA is to JDBC as JTS is to the database driver
  public class MyBean {
 
     public void createNewUser(String name) {
-      UserEntity entity = new UserEntity(name);
-      em.persist(entity);
+      UserEntity user = new UserEntity(name);
+      em.persist(user);
 
       long numberOfUsersBeforeCommit = getNumberOfUsers();
     }
@@ -1164,8 +1164,8 @@ JTA is to JDBC as JTS is to the database driver
     private MyBean thisBean;
 
     public void createNewUser(String name) {
-      UserEntity entity = new UserEntity(name);
-      em.persist(entity);
+      UserEntity user = new UserEntity(name);
+      em.persist(user);
 
       long numberOfUsersBeforeCommit = thisBean.getNumberOfUsers();
     }
@@ -1185,6 +1185,54 @@ JTA is to JDBC as JTS is to the database driver
   new transaction was not created.
   We need to inject bean for container would hook to it and could process annotations.
 --
+
+== Quiz
+
+[ source, language="java" ]
+----
+ @Stateless
+ public class MyBean {
+    @EJB
+    private CityFinder cityBean;
+
+    public void create(String name, String cityName) {
+      UserEntity user = new UserEntity(name);
+      em.persist(user);
+
+      CityEntity city = cityBean.findCity(cityName);
+      user.setHomeTown(city);
+    }
+ }
+
+ @Stateless
+ @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+ public class CityFinder {
+    public CityEntity findCity(String cityName) {
+      String q = "select c from CityEntity c where c.name=:name";
+      Query query = Query.createQuery(q).setParameter("name", cityName);
+
+      try{
+        return (CityEntity) query.getSingleResult();
+      } catch(NoResultException nre){
+        return null;
+      }
+    }
+ }
+----
+
+[NOTE.speaker]
+--
+  Will this work?
+  Inspired at http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html
+--
+
+== Quiz - Answer
+
+This fails as city was found in new transaction where em was closed at the end.
+Entity became detached 
+
+You set detached city entity reference to managed user entity.
+
 
 == Exception handling
 
@@ -1276,7 +1324,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
  We should close the connection on ours own. But in case the application server should close it for us at the end.
  Btw. closing does not mean real closing. It just returns connection to pool.
 
- Expecting that datasource and the entityt manager are configured to use the same datasource (sharing connection in fact).
+ Expecting that datasource and the entity manager are configured to use the same datasource (sharing connection in fact).
 --
 
 == Quiz - Answer
