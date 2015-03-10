@@ -40,6 +40,10 @@ body {
   background: #f7f3dc;
   text-shadow: none; }
 
+.reveal .small {
+  font-size: 65%;
+  color: #909090; }
+
 /*********************************************
  * HEADERS
  *********************************************/
