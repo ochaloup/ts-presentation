@@ -276,6 +276,7 @@ image:{images}/db/03-non-repeatable-reads.jpg[]
 --
  when first transaction does two reads of some data already saved! in transaction - one after another - and between these two actions second transaction does commit
  the second read of the first transaction will get another data then the first read
+A special case of unrepeatable read is the second lost updates problem. Imagine that two concurrent transactions both read a row: One writes to it and commits, and then the second writes to it and commits. The changes made by the first writer are lost. This issue is especially relevant if you think about application conversations that need several database transactions to complete.
 --
 
 == Phantom reads

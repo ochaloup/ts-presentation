@@ -122,8 +122,9 @@ COMMIT;</code></pre></div></div>
 despite the fact that the first transaction is rollbacked in a while</pre></div></div></aside></section>
 <section id="_non_repeatable_reads"><h2>Non-repeatable reads</h2><div class="paragraph"><p><span class="image"><img src="./misc/db/03-non-repeatable-reads.jpg" alt="03-non-repeatable-reads"></span></p></div>
 <div class="paragraph"><p><span class="small">shamelessly stolen from <a href="http://what-when-how.com" class="bare">http://what-when-how.com</a></span></p></div>
-<aside class="notes"><div class="literalblock"><div class="content"><pre>when first transaction does two reads of some data already saved! in transaction - one after another - and between these two actions second transaction does commit
-the second read of the first transaction will get another data then the first read</pre></div></div></aside></section>
+<aside class="notes"><div class="literalblock"><div class="content"><pre> when first transaction does two reads of some data already saved! in transaction - one after another - and between these two actions second transaction does commit
+ the second read of the first transaction will get another data then the first read
+A special case of unrepeatable read is the second lost updates problem. Imagine that two concurrent transactions both read a row: One writes to it and commits, and then the second writes to it and commits. The changes made by the first writer are lost. This issue is especially relevant if you think about application conversations that need several database transactions to complete.</pre></div></div></aside></section>
 <section id="_phantom_reads"><h2>Phantom reads</h2><div class="paragraph"><p><span class="image"><img src="./misc/db/04-phantom-reads.jpg" alt="04-phantom-reads"></span></p></div>
 <div class="paragraph"><p><span class="small">shamelessly stolen from <a href="http://what-when-how.com" class="bare">http://what-when-how.com</a></span></p></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>when transaction does select over more rows it could reads different count of rows in two subsequent queries when another transaction was meanwhile commited and
