@@ -8,3 +8,4 @@ sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat
 sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' slides*.html
 sed -i 's|<code>|<code class="stretch">|' slides*.html
 
+asciidoctor -T ./asciidoctor-reveal.js/templates/slim slides1.adoc; sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' slides1.html; sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' slides1.html; sed -i 's|<code>|<code class="stretch">|' slides1.html; firefox slides1.html

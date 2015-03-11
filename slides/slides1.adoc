@@ -9,7 +9,7 @@
 = Transactions in Java
 Ondra Chaloupka / ochaloup@redhat.com
 
-== Transactions in Java ?
+== Transactions in Java
 
 [ source, language="java" ]
 ----
@@ -23,7 +23,11 @@ public class TestBean {
 }
 ----
 
-== Transactions in Java !?
+== There is a transaction?
+
+image:{images}/entertain/wtf.jpg[]
+
+== Transactions in Java
 
 image:{images}/tagcloud.png[]
 
@@ -31,6 +35,10 @@ image:{images}/tagcloud.png[]
 --
  Taken by http://www.wordle.net/create
 --
+
+== There is a transaction!
+
+image:{images}/entertain/wtf2.jpg[]
 
 == Agenda
  * Terminology
@@ -47,7 +55,7 @@ image:{images}/tagcloud.png[]
 == Terminology corner
 
 == A transaction
- * A transaction is a group of business logic statements with certain shared properties.
+ * A transaction is a group of business logic statements with certain shared properties
  * Which are one or more of:
  ** Atomic
  ** Consistent
@@ -65,7 +73,7 @@ image:{images}/tagcloud.png[]
  Transactions tries to make programmer's life easier to give him some assurances (zaruky)
 --
 
-=== ACID
+== ACID
  * Atomicity
  * Consistency
  * Isolation
@@ -92,7 +100,7 @@ image:{images}/tagcloud.png[]
   * durability means that once a transaction completes, all changes made during that transaction become persistent and aren’t lost even if the system subsequently fails
 --
 
-== Other transaction "types"
+== Yet another transactions
 
  * BA (Business Activities)
  * BTP
@@ -149,10 +157,10 @@ image:{images}/tagcloud.png[]
 --
  Types
  * Top-level transaction - transaction as we understand it
- * Nested - transaction contains other transaction. When nested rollbacks it does not mean that top-one will rollback. 
-            If nested commits then the overall result depends on the top-level transaction.
- * Nested top-level - nested is invoked in context of another txn but if top-level commits 
-                      it's commited independently on the outcome of the caller transaction.
+ * Nested - transaction contains other transaction. When nested rollbacks it does not mean that top-one will rollback.
+            If nested commits then the overall result depends on the top-level transaction
+ * Nested top-level - nested is invoked in context of another txn but if nested commits
+                      it's commited independently on the outcome of the caller (top-level) transaction
  * Concurrently running nested transaction - result has to be the same as they would be run in arbitrary serial order
 --
 
@@ -173,7 +181,7 @@ image:{images}/tagcloud.png[]
 == XA vs. Distributed transaction
 
  * XA - XA/Open XA architecture - multiple resources
- * Distributed - multiple transaction managers
+ * Distributed - pass over multiple transaction managers
 
 [NOTE.speaker]
 --
@@ -202,6 +210,8 @@ image:{images}/tagcloud.png[]
 
 == Databases and JDBC
 
+image:{images}/entertain/kartoteka2.jpg[]
+
 == Database transaction
 [ source, language="sql" ]
 ----
@@ -228,7 +238,7 @@ image:{images}/db/isolation-levels-base.png[]
  Transaction isolation is a function of database cocurrency and database consistency - more isolation, means more consistency but less concurrency
  Hibernate increase level of isolation to moving control to application layer
   * optimistic locking adds versioning and so non-repeatable reads can't occur - meaning repeatable read isolation level is supported
-     (or the special case when second commit replaces data of first commit)
+(or the special case when second commit replaces data of first commit)
   * pesimistic locking uses SELECT ... FOR UPDATE to lock particular record in database - this is other way how support read isolation level
      but it's hard support as the concurrent user has to wait till previous transaction will not release the resource
 --
@@ -287,6 +297,7 @@ java.sql.Connection connection = DriverManager.getConnection(...)
 Statement st = connection.createStatement();
 st.execute("INSERT INTO table VALUES (1, 'EAP QE')");
 ----
+[small]#consider usage of PostgreSQL#
 
 [NOTE.speaker]
 --
@@ -294,6 +305,7 @@ st.execute("INSERT INTO table VALUES (1, 'EAP QE')");
 --
 
 == Quiz - Answer
+
 [ source, language="java" ]
 ----
 java.sql.Connection connection = DriverManager.getConnection(...)
@@ -354,7 +366,7 @@ connection.commit();
 == Be aware of DDL commands
  * DDL - data definition language (CREATE, DROP...)
  * DML - data manipulation language (INSERT, UPDATE...)
- * lot of Databases does not support transactional DDL
+ * lot of databases does not support transactional DDL
 
 [NOTE.speaker]
 --
@@ -365,6 +377,8 @@ Resource:
 --
 
 == JMS
+
+image:{images}/entertain/dopis.jpg[]
 
 == Transactions and redelivery
 image:{images}/jms/jms-transaction-redelivery.png[]
@@ -410,10 +424,11 @@ Connection.createSession(boolean transacted, int acknowledgeMode)
 What happens on JMS transaction rollback?
 
 == Quiz - Answer
- * automatic redelivery rollbacked messages
- * redelivery count could be defined
+
+ * rollbacked messages are automaticaly redelivered
+ * max redelivery count could be defined
  * redelivery timeout could be defined
- * exceptional destination (message is non-deliverable)
+ * when message is non-deliverable - exceptional destination
  ** message is only logged
  ** message is forwarded to an error destination
  ** message is forgotten
@@ -440,7 +455,8 @@ What happens on JMS transaction rollback?
 
 [ source, language="java" ]
 ----
-  <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test" enabled="true" use-java-context="true" spy="true">
+  <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test"
+              enabled="true" use-java-context="true" spy="true">
       <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
       <driver>database-jdbc-driver.jar</driver>
       <security>
@@ -460,7 +476,8 @@ What happens on JMS transaction rollback?
 
 [ source, language="java" ]
 ----
-  <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test" enabled="true" spy="true">
+  <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test"
+                 enabled="true" spy="true">
       <xa-datasource-property name="PortNumber">
           5432
       </xa-datasource-property>
@@ -495,6 +512,8 @@ See standalone-full.xml
 --
 
 == JTA
+
+image:{images}/entertain/chobotnice.jpg[]
 
 [NOTE.speaker]
 --
@@ -570,20 +589,17 @@ What is the JTA/Transaction Manager for?
 
 == Implementations
 
- *Transaction Manager*
-
  * Narayana JBoss TM (Arjuna formerly)
  * Atomikos
  * Bitronix
- * Glassfish reference implementation
- * ...
+ * Glassfish (reference)
 
 image:{images}/narayana-logo.png[]
 
 == JTA vs. JTS
 
 
-Difference of JTA and JTS has some parallel in difference JDBC to the database driver.
+Difference of JTA to JTS has parallel in difference of JDBC to database driver.
 
 [NOTE.speaker]
 --
@@ -618,6 +634,8 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 --
 
 == JPA
+
+image:{images}/entertain/kartoteka1.jpg[]
 
 == JPA overview in short
 
@@ -733,8 +751,10 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
       <class>org.jboss.qa.tspresentation.Person</class>
 
       <properties>
-          <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/crashrec?loglevel=2"/>
-          <!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>  -->
+          <property name="hibernate.connection.url"
+                    value="jdbc:postgresql://localhost:5432/crashrec?loglevel=2"/>
+          <property name="hibernate.dialect"
+                    value="org.hibernate.dialect.PostgreSQL82Dialect"/>
           <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
           <property name="hibernate.connection.username" value="crashrec"/>
           <property name="hibernate.connection.password" value="crashrec"/>
@@ -755,7 +775,8 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
       <jta-data-source>java:jboss/datasource-test</jta-data-source>
 
       <properties>
-          <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+          <property name="hibernate.dialect"
+                    value="org.hibernate.dialect.PostgreSQL82Dialect"/>
           <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" />
 
           <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -814,7 +835,9 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 == Transactions in JPA
 
  * Transaction management defined by transaction-type (persistence.xml)
- * Connected with persistence context type
+ ** RESOURCE_LOCAL
+ ** JTA
+ * Relatet to type of persistence context
  * Any update operation has to be proceeded inside of a transaction
  * Read operation could be proceeded out of the transaction
 
@@ -833,9 +856,9 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  * Application-managed
  ** RESOURCE_LOCAL/Java SE
  ** ends (is cleared) on manual call of clear method or em.remove(entity)
- * Container-managed Transaction-scoped
+ * Container-managed: Transaction-scoped
  ** ends at the end of transaction
- * Container-managed Extended
+ * Container-managed: Extended
  ** used only with SFSB
  ** ends when SFSB method `@Remove` is called
  ** during the time several transactions could be committed
@@ -859,7 +882,9 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  * Pesimistic
  ** `em.lock(persion, LockModeType.PESIMISTIC_WRITE)`
 
-== Transactions in Application Server
+== Transactions in Java EE
+
+image:{images}/entertain/pocitac.jpg[]
 
 [NOTE.speaker]
 --
@@ -867,13 +892,14 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  JMS closing connection during the XA transaction - will be msg commited or not?
 --
 
-== How to get the method being transactional
+== How to be transactional
 
  * EJB method is transactional by default
  * CDI - `@Transactional`
- * To get it
- ** `@Resource/@Inject UserTransaction utx;`
- ** `@Resource SessionContext ctx;`
+ * How to touch it
+ ** `@Resource/@Inject UserTransaction utx`
+ ** `@Resource SessionContext ctx
+     ctx.getUserTransaction()`
  ** `java:comp/UserTransaction`
  ** `java:jboss/TransactionManager`
 
@@ -900,22 +926,26 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 
 [ source, language="java" ]
 ----
- @Resource
- SessionContext ctx;
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void MyBean {
+   @Resource
+   SessionContext ctx;
 
- public void method(){
-   try {
-      UserTransaction utx = ctx.getUserTransaction();
-      utx.begin();
-      ...
-      utx.commit();
-   } catch(Exception e) {
-      utx.rollback();
+   public void method(){
+     try {
+        UserTransaction utx = ctx.getUserTransaction();
+        utx.begin();
+        ...
+        utx.commit();
+     } catch(Exception e) {
+        utx.rollback();
+     }
    }
  }
 ----
 
-== Limitation of usage
+== Bean-managed limitations
 
  * Session beans (@Stateful, @Stateless, @Singleton)
  * Message driven beans (@MessageDriven)
@@ -1032,7 +1062,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 
 == Quiz - Answer
 
- Nothing will happen. Transaction timeout has to be set before transaction is started.
+Nothing will happen. Transaction timeout has to be set before the transaction is started.
 
 [NOTE.speaker]
 --
@@ -1041,7 +1071,7 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 
 == Exception handling
 
- In difference from CMT you need to handled it on your own (at least partly).
+For bean-managed beans you are on your own in exception handling.
 
 [NOTE.speaker]
 --
@@ -1050,13 +1080,39 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
  But in fact transaction seems to be really rollbacked. So some automatic handling is available.
 --
 
-== Message Driven Bean
+== Message Driven Bean - example
+
+[ source, language="java" ]
+----
+ @MessageDriven(name = "MyMDB",
+   activationConfig = {
+      @ActivationConfigProperty( propertyName = "destinationType",
+                                 propertyValue = "javax.jms.Queue"),
+      @ActivationConfigProperty( propertyName = "destination", 
+                                 propertyValue ="/queue/testQueue")
+   }
+)
+public class LibraryMessageBean implements MessageListener {
+
+   @Resource
+   private MessageDrivenContext mdctx;
+
+   @EJB
+   MyBean bean;
+
+   public void onMessage(Message message) {
+      // do something with the received message
+   }
+}
+----
+
+== Message Driven Bean - Bean-managed transactions
 
  * transaction context does not flow with a JMS message
  * handled by JCA in-flow protocol
 
  * Bean managed transaction
- ** message receive is not part of tranaction
+ ** message receive is not part of transaction
  ** you can start new transaction inside of onMessage method but received message is already acknowledged
  * Container managed transaction
  ** REQUIRED - new transaction at onMessage method start
@@ -1073,6 +1129,8 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 == Annotations under use
 
  * @TransactionManagement
+ ** CONTAINER
+ ** BEAN
  * @TransactionAttribute
  * @TransactionTimeout
  * @ApplicationException
@@ -1126,12 +1184,12 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 [ source, language="java" ]
 ----
  @Stateless
- // @TransactionAttribute(TransactionAttributeType.REQUIRED)
+ @TransactionAttribute(TransactionAttributeType.REQUIRED)
  public class MyBean {
     public void method() {
         // work with application managed resource
-        // working directly with a database connection or
-        // jms session won't bring you any transactional advantages
+        // working directly e.g. with a database connection or
+        // jms session won't bring you transactional guarantees
     }
  }
 ----
@@ -1238,19 +1296,20 @@ Difference of JTA and JTS has some parallel in difference JDBC to the database d
 
 == Quiz - Answer
 
-This fails as city was found in new transaction where em was closed at the end.
-Entity became detached 
+City is found in a new transaction. Entity manager is closed at the end of that transaction -
+at the end of method `findCity`.
 
-You set detached city entity reference to managed user entity.
+*Result:* Entity became detached.
+
+Detached `CityEntity` reference is being set to managed `UserEntity`.
 
 
 == Exception handling
 
-Exception which causes rollback
-
- * RuntimeException
- * EJBException
- * @ApplicationException(rollback = true, inherited = true)
+* Exceptions which cause rollback
+** RuntimeException
+** EJBException
+** @ApplicationException(rollback = true, inherited = true)
 
 [NOTE.speaker]
 --
@@ -1271,7 +1330,7 @@ Exception which causes rollback
       try {
         thisBean.doSomeWork();
       } catch (Exception e) {
-        log.warn("The work failed but we will create user for you either");
+        log.warn("The work failed but we will still create user for you");
       }
 
       UserEntity entity = new UserEntity(name);
@@ -1289,8 +1348,9 @@ Exception which causes rollback
 
 The transaction is marked as setRollbackOnly.
 
-As RuntimeException surpassed the bean boundaries container will marked it as rollback and
-the whole transaction will be rollbacked nevertheless the exception was caught.
+As RuntimeException surpassed the bean boundaries and container will mark it for rollback.
+
+*Result:* transaction will be rollbacked despite catching the exception.
 
 
 == Quiz
@@ -1305,7 +1365,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
     public void create() {
         try(Connection connection = datasource.getConnection()) {
             Statement st = connection.createStatement();
-            st.execute(""CREATE TABLE user (id INTEGER NOT NULL UNIQUE, name VARCHAR(255))"");
+            st.execute("CREATE TABLE user (id INTEGER NOT NULL, name VARCHAR(255))");
         } catch (SQLException sqle) {
            // ignore this as table already exists
         }
@@ -1323,7 +1383,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
     public void call() {
         creator.create();
 
-        UserEntity entity = new UserEntity("EAP QE");
+        UserEntity entity = new UserEntity(1, "EAP QE");
         em.persist(entity);
     }
  }
@@ -1350,7 +1410,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
     public void create() {
         try(Connection connection = datasource.getConnection()) {
             Statement st = connection.createStatement();
-            st.execute(""CREATE TABLE user (id INTEGER NOT NULL UNIQUE, name VARCHAR(255))"");
+            st.execute("CREATE TABLE user (id INTEGER NOT NULL, name VARCHAR(255))");
         } catch (SQLException sqle) {
            // ignore this as table already exists
         }
@@ -1365,7 +1425,7 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
     public void call() {
         creator.create();
 
-        UserEntity entity = new UserEntity("EAP QE");
+        UserEntity entity = new UserEntity(1, "EAP QE");
         em.persist(entity);
     }
  }
@@ -1380,32 +1440,9 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
 
 == Transaction context propagation
 
- * propagation works from BMT to CMT
- * NOT propagated to BMT
- ** transaction from BMT is suspended
-
-== CMT -> BMT - not propagated
-
-[ source, language="java" ]
-----
- @Stateless
- @TransactionManagement(TransactionManagementType.BEAN)
- public void BmtBean {
-   public void do() {
-     // do something
-   }
- }
-
- @Stateless
- public class CmtBean {
-    @EJB
-    private BmtBean bean;
-
-    public void work() {
-      bean.do();
-    }
- }
-----
+ * transaction is propagated from Bean-managed transaction to Container-managed transaction
+ * transaction is *not* propagated from Container-managed transaction to Bean-managed transaction
+ ** transaction in BMT is suspended and CMT (possibly) starts new one
 
 == BMT -> CMT - propagated
 
@@ -1439,6 +1476,29 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
  }
 ----
 
+== CMT -> BMT - not propagated
+
+[ source, language="java" ]
+----
+ @Stateless
+ @TransactionManagement(TransactionManagementType.BEAN)
+ public void BmtBean {
+   public void do() {
+     // do something
+   }
+ }
+
+ @Stateless
+ public class CmtBean {
+    @EJB
+    private BmtBean bean;
+
+    public void work() {
+      bean.do();
+    }
+ }
+----
+
 == CDI transactional management
 
 == @Transactional and @TransactionScoped
@@ -1457,10 +1517,14 @@ the whole transaction will be rollbacked nevertheless the exception was caught.
 --
 
 == References
- * Presentation https://github.com/ochaloup/ts-presentation
+
+ * Presentation https://github.com/ochaloup/ts-presentation/blob/master/slides/slides1.adoc
  * Java Transaction Design Strategies http://www.infoq.com/minibooks/JTDS
  * Transakce v Java EE (Kamil Ševeček) https://www.youtube.com/watch?v=6q9NIRBHd5I
  * Java Transaction Processing http://www.amazon.com/Java-Transaction-Processing-Design-Implementation/dp/013035290X
 
- * My bookmarks on http://delicious.com/chalda/ts.presentation
+ * Bookmarks at http://delicious.com/chalda/ts.presentation
 
+== ?!
+
+image:{images}/entertain/cajk.jpg[]
