@@ -13,7 +13,7 @@
    height="744.09448"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="jms-transaction-redelivery.svg"
    inkscape:export-filename="/home/ochaloup/my-testing/ts-presentation/slides/misc/jms-transaction-redelivery.png"
    inkscape:export-xdpi="90"
@@ -42,7 +42,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3388927"
-     inkscape:cx="433.1938"
+     inkscape:cx="311.45141"
      inkscape:cy="611.03973"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -321,7 +321,7 @@
        y="488.8317" />
     <text
        xml:space="preserve"
-       style="font-size:14.33035183px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.33035183px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#f9f9f9;fill-opacity:1;stroke:none"
        x="880.47968"
        y="509.38095"
        id="text2987-0-1-7-6"
@@ -329,7 +329,7 @@
          sodipodi:role="line"
          x="880.47968"
          y="509.38095"
-         id="tspan3160-35-1">JPA managed transacted</tspan><tspan
+         id="tspan3160-35-1">JTA managed transacted</tspan><tspan
          sodipodi:role="line"
          x="880.47968"
          y="527.29388"
