@@ -381,7 +381,7 @@ Resource:
 
 image:{images}/entertain/dopis.jpg[]
 
-== Transactions and redelivery
+== JMS - transaction and redelivery
 image:{images}/jms/jms-transaction-redelivery.png[]
 
 
