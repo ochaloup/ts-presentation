@@ -78,8 +78,8 @@ public class WebServletTestCase {
     }
 
     @Test
-    public void statefulBeanWithResourceAnnotation() throws Exception {
-        URL url = WebUtils.concatUrl(baseUrl, "stateful-resource");
+    public void statefulBeanWithEJBAnnotation() throws Exception {
+        URL url = WebUtils.concatUrl(baseUrl, "stateful-ejb");
 
         String responseString1 = WebUtils.readUrl(url);
         log.info("From {} got '{}'", url, responseString1);
@@ -87,7 +87,7 @@ public class WebServletTestCase {
         String responseString2 = WebUtils.readUrl(url);
         log.info("From {} got '{}'", url, responseString2);
 
-        Assert.assertEquals("Resource *is not* session scoped so the both beans should be the same",
+        Assert.assertEquals("@EJB *is not* session scoped so the both beans should be the same",
                 responseString1, responseString2);
     }
 
@@ -101,7 +101,7 @@ public class WebServletTestCase {
         String responseString2 = WebUtils.readUrl(url);
         log.info("From {} got '{}'", url, responseString2);
 
-        Assert.assertNotEquals("Inject *is* session scoped so the both beans should *not* be the same",
+        Assert.assertNotEquals("@Inject *is* session scoped so the both beans should *not* be the same",
                 responseString1, responseString2);
     }
 

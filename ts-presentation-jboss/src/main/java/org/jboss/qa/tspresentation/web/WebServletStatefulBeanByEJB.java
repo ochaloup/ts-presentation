@@ -3,7 +3,7 @@ package org.jboss.qa.tspresentation.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebServlet(name="WebTestServletBeanByResource", urlPatterns={"/stateful-resource"})
-public class WebServletStatefulBeanByResource extends HttpServlet{
+@WebServlet(name="WebTestServletBeanByEJB", urlPatterns={"/stateful-ejb"})
+public class WebServletStatefulBeanByEJB extends HttpServlet{
         private static final long serialVersionUID = 1L;
-        private static final Logger log = LoggerFactory.getLogger(WebServletStatefulBeanByResource.class);
+        private static final Logger log = LoggerFactory.getLogger(WebServletStatefulBeanByEJB.class);
 
-        @Resource
+        @EJB
         private SessionStore store;
 
         @Override
