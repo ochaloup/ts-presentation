@@ -136,6 +136,26 @@ public class JdbcTest {
         }
     }
 
+    @Test
+    public void autocommitFalse2() throws SQLException {
+        try (Connection conn = JdbcDriver.getConnection()) {
+            PreparedStatement ps = getInsert(conn, id, text);
+
+            // saying that I will manage transaction on the connection
+            conn.setAutoCommit(false);
+            ps.executeUpdate(); // if autocommit is false then execute starts new transaction as well
+            conn.commit(); // transaction committed
+
+            ps = getInsert(conn, id + 1, text);
+            ps.executeUpdate(); // next new transaction started here
+            conn.commit(); // transaction committed
+
+            // commited - text is in db
+            Assert.assertEquals(text, selectById(id));
+            Assert.assertEquals(text, selectById(id + 1));
+        }
+    }
+
     /**
      * Transaction is not commited when Connection.rollback is called
      */
