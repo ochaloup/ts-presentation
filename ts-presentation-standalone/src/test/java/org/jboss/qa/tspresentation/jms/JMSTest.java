@@ -85,6 +85,7 @@ public class JMSTest {
             connection.start();
             MessageConsumer consumer = session.createConsumer(testQueue);
             TextMessage received = (TextMessage) consumer.receive(3000); // 3s
+            session.commit();
             connection.stop();
 
             Assert.assertEquals("hello there", received.getText());
