@@ -94,7 +94,7 @@ public class JMSTest {
 
     @Test
     public void sessionWithAutoAck() throws JMSException {
-        log.debug("Sending message {} to through connection {}", message, jmsConnection);
+        log.info("Sending message {} to through connection {}", message, jmsConnection);
         Session session = jmsConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         JmsProvider.sendMessage(message, session);
