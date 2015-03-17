@@ -10,9 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.qa.tspresentation.test.web.WebServletTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Running with {@link WebServletTestCase#statefulBeanWithEJBAnnotation()}
+ */
 @WebServlet(name="WebTestServletBeanByEJB", urlPatterns={"/stateful-ejb"})
 public class WebServletStatefulBeanByEJB extends HttpServlet{
         private static final long serialVersionUID = 1L;
