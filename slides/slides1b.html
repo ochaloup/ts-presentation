@@ -1,25 +1,23 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="author" content="Ondra Chaloupka / ochaloup@redhat.com"><title>Transaction Management in Java EE</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.min.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script type="text/javascript">document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section><h2>Transaction Management in Java EE</h2><p><small>Ondra Chaloupka / ochaloup@redhat.com</small></p></section><section id="_there_is_a_transaction"><h2>There is a transaction?</h2><div class="paragraph"><p><span class="image"><img src="./misc/entertain/wtf.jpg" alt="wtf"></span></p></div></section>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="author" content="Ondra Chaloupka / ochaloup@redhat.com"><title>Java EE Transaction Management</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.min.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script type="text/javascript">document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section><h2>Java EE Transaction Management</h2><p><small>Ondra Chaloupka / ochaloup@redhat.com</small></p></section><section id="_there_is_a_transaction"><h2>There is a transaction?</h2><div class="paragraph"><p><span class="image"><img src="./misc/entertain/wtf.jpg" alt="wtf"></span></p></div></section>
 <section id="_summary_terminology"><h2>Summary - Terminology</h2><div class="ulist"><ul><li><p>ACID (Atomic, Consistent, Isolated, Durable)</p></li><li><p>Resource local vs. Global vs. Distributed</p></li><li><p>XA is (not) Distributed transaction</p></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Transactions summary from slides1.adoc session
 * We are talking about ACID transactions - need to know - no other txn is discussed here
 * Resource local is transaction of resource (DB, JMS), Global is txn managed by outter entity (e.g. TM), distributed is having transaction context flowing through multiple TMs
 * for Narayana speak we difference XA and Distributed - more resources could be part of a XA transaction, distributed means the transaction is spread over more TM</pre></div></div></aside></section>
-<section id="_summary_db_and_jms"><h2>Summary - DB and JMS</h2><div class="ulist"><ul><li><p>Databases</p><div class="ulist"><ul><li><p>relaxing isolation for better concurrency</p></li><li><p><code>setAutoCommit(false)</code></p></li><li><p>DDL commands are not transactional in all DBs</p></li></ul></div></li><li><p>JMS</p><div class="ulist"><ul><li><p>Connection.createSession(boolean transacted, int acknowledgeMode)</p></li></ul></div></li></ul></div>
+<section id="_summary_db_and_jms"><h2>Summary - DB and JMS</h2><div class="ulist"><ul><li><p>Databases</p><div class="ulist"><ul><li><p>relaxing isolation for better concurrency</p></li><li><p><code>setAutoCommit(false)</code></p></li><li><p>DDL commands are not transactional in all DBs</p></li></ul></div></li><li><p>JMS</p><div class="ulist"><ul><li><p><code>Connection.createSession(boolean transacted, int acknowledgeMode)</code></p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Databases and JMS
 * Transaction isolation is a function of database cocurrency and database consistency - more isolation, means more consistency but less concurrency
 * how to start longer transaction by JDBC call - setautocommit (e.g. postgres run any SQL query in transaction but if we want a transaction being spread over more SQL commands then we use setautocommit to false)</pre></div></div></aside></section>
-<section id="_summary_jta"><h2>Summary - JTA</h2><div class="ulist"><ul><li><p>XA specification in Java</p><div class="ulist"><ul><li><p>XA means more resource enlisted in one global transaction</p></li></ul></div></li><li><p>implemented by Transaction manager</p></li><li><p>TM works with XAResource</p></li><li><p>in Java EE transaction should be hidden from developer</p></li></ul></div>
-<aside class="notes"><div class="literalblock"><div class="content"><pre>Java app server hides transaction from developer
+<section><section id="_summary_jta"><h2>Summary - JTA</h2><div class="ulist"><ul><li><p>XA specification in Java</p><div class="ulist"><ul><li><p>more resources enlisted in one global transaction</p></li></ul></div></li><li><p>implemented by Transaction manager &#8482;</p></li><li><p>Transaction manager works with XAResource</p></li><li><p>Java EE hides transactions from developer</p></li></ul></div><aside class="notes"><div class="literalblock"><div class="content"><pre>Java app server hides transaction from developer
 * CMT - you are expected not to touch anything and just define behaviour by annotations
-* BMT - you are exepected to inject UserTransaction and use it</pre></div></div></aside></section>
-<section id="_jta_vs_jts"><h2>JTA vs. JTS</h2><div class="paragraph"><p>Difference of JTA to JTS has parallel in difference of JDBC to database driver.</p></div>
+* BMT - you are exepected to inject UserTransaction and use it</pre></div></div></aside></section><section id="_jta_vs_jts"><h2>JTA vs. JTS</h2><div class="paragraph"><p>Difference of JTA to JTS has parallel in difference of JDBC to database driver.</p></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>JTA is higher level api which uses application server, JTS is internal (low-level) api of TM how to communicate and manage transactional context.
 The JTA is the interface developers use to manage transactions.
 The Java Transaction Service (JTS) is the Java language mapping of the CORBA OTS 1.1 Specification (Object Transaction Service) - defines how to propagate transactions between multiple JTS transaction managers.
 The Java Transaction Service (JTS), on the other hand, is an underlying transaction service that implements JTA.
 Think of the relationship between JTA and JTS as similar to the relationship between JDBC and the corresponding underlying database driver; JTA is to JDBC as JTS is to the database driver.
 JTS - used in CORBA where IIOP protocol to propagate transaction between multipe JTS TMs</pre></div></div>
-<div class="literalblock"><div class="content"><pre>JTA is to JDBC as JTS is to the database driver</pre></div></div></aside></section>
+<div class="literalblock"><div class="content"><pre>JTA is to JDBC as JTS is to the database driver</pre></div></div></aside></section></section>
 <section id="_transactions_in_java_ee"><h2>Transactions in Java EE</h2><div class="paragraph"><p><span class="image"><img src="./misc/entertain/pocitac.jpg" alt="pocitac"></span></p></div></section>
 <section id="_how_to_be_transactional"><h2>How to be transactional</h2><div class="ulist"><ul><li><p>EJB</p><div class="ulist"><ul><li><p>CMT - transactional by default</p></li><li><p>BMT - not transactional: <code>UserTransaction</code></p></li></ul></div></li><li><p>CDI - not transactional: <code>@Transactional</code></p></li><li><p>WebServlet - not transactional: <code>UserTransaction</code></p></li></ul></div></section>
 <section id="_how_to_get_transaction"><h2>How to get transaction</h2><div class="ulist"><ul><li><p><code>@Resource/@Inject UserTransaction utx</code></p></li><li><p><code>@Resource SessionContext ctx
@@ -32,7 +30,7 @@ But by @Inject you can inject transaction in whatever location you want in gener
 <div class="literalblock"><div class="content"><pre>UserTransaction can't be injected to EJB when it's CMT - you will get EjbException and application won't work
 CMT could inject TransactionManager though</pre></div></div>
 <div class="literalblock"><div class="content"><pre>Jndi for user transaction is defined by spec. Jndi for transaction manager is container specific.</pre></div></div></aside></section>
-<section id="_ejb_bean_managed_transactions"><h2>EJB Bean-managed transactions</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section><section id="_ejb_bean_managed_transactions"><h2>EJB Bean-managed transactions</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  @TransactionManagement(TransactionManagementType.BEAN)
  public void MyBean {
    @Resource
@@ -48,30 +46,25 @@ CMT could inject TransactionManager though</pre></div></div>
         utx.rollback();
      }
    }
- }</code></pre></div></div>
-<aside class="notes"><div class="literalblock"><div class="content"><pre>Either in BMT or CMT we still touches global transaction managed by transaction manager. That's important to understand.
-Programatic approach</pre></div></div></aside></section>
-<section id="_bean_managed_limitations"><h2>Bean-managed limitations</h2><div class="ulist"><ul><li><p>Session beans (@Stateful, @Stateless, @Singleton)</p></li><li><p>Message driven beans (@MessageDriven)</p></li><li><p>Entity bean (EJB 2.0) can only be CMT</p></li><li><p>Stateful beans can&#8217;t use SessionSynchronization</p></li></ul></div></section>
-<section id="_ejb_container_managed_transactions"><h2>EJB Container-managed transactions</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+ }</code></pre></div></div><aside class="notes"><div class="literalblock"><div class="content"><pre>Either in BMT or CMT we still touches global transaction managed by transaction manager. That's important to understand.
+Programatic approach</pre></div></div></aside></section><section id="_bean_managed_limitations"><h2>Bean-managed limitations</h2><div class="ulist"><ul><li><p>Session beans (@Stateful, @Stateless, @Singleton)</p></li><li><p>Message driven beans (@MessageDriven)</p></li><li><p>Entity bean (EJB 2.0) can only be CMT</p></li><li><p>Stateful beans can&#8217;t use SessionSynchronization</p></li></ul></div></section></section>
+<section><section id="_ejb_container_managed_transactions"><h2>EJB Container-managed transactions</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  @TransactionManagement(TransactionManagementType.CONTAINER)
  public class MyBean {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void method() {
         // work with application managed resource
     }
- }</code></pre></div></div>
-<aside class="notes"><div class="literalblock"><div class="content"><pre>Declarative approach
+ }</code></pre></div></div><aside class="notes"><div class="literalblock"><div class="content"><pre>Declarative approach
 * mentioned annotations are not needed as they are default for a bean
 *  work with application managed resource
-   working directly e.g. with a database connection or jms session won't bring you transactional guarantees</pre></div></div></aside></section>
-<section id="_annotations_under_use"><h2>Annotations under use</h2><div class="ulist"><ul><li><p>@TransactionManagement</p><div class="ulist"><ul><li><p>CONTAINER</p></li><li><p>BEAN</p></li></ul></div></li><li><p>@TransactionAttribute</p></li><li><p>@TransactionTimeout</p></li><li><p>@ApplicationException</p></li></ul></div>
+   working directly e.g. with a database connection or jms session won't bring you transactional guarantees</pre></div></div></aside></section><section id="_annotations_under_use"><h2>Annotations under use</h2><div class="ulist"><ul><li><p>@TransactionManagement</p><div class="ulist"><ul><li><p>CONTAINER</p></li><li><p>BEAN</p></li></ul></div></li><li><p>@TransactionAttribute</p></li><li><p>@TransactionTimeout</p></li><li><p>@ApplicationException</p></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>@TransactionManagement - CONTAINER, BEAN (container is by default)
 @TransactionAttribute - REQUIRED, REQUIRES_NEW... (required is by default)
 @TransactionTimeout is jboss specific annotation - not part of EJB spec
 @ApplicationException is put to user exception (standard or runtime) and defines if such exception should cause the rollback or not
   (RuntimeException could be marked for not causing the rollback)</pre></div></div>
-<div class="literalblock"><div class="content"><pre>Each method is associated with *one* transaction. Neither nested or multiple transactions are not permitted.</pre></div></div></aside></section>
-<section id="_transaction_attributes"><h2>Transaction attributes</h2><div class="ulist"><ul><li><p>REQUIRED</p></li><li><p>REQUIRES_NEW</p></li><li><p>MANDATORY</p></li><li><p>NOT_SUPPORTED</p></li><li><p>SUPPORTS</p></li><li><p>NEVER</p></li></ul></div>
+<div class="literalblock"><div class="content"><pre>Each method is associated with *one* transaction. Neither nested or multiple transactions are not permitted.</pre></div></div></aside></section><section id="_transaction_attributes"><h2>Transaction attributes</h2><div class="ulist"><ul><li><p>REQUIRED</p></li><li><p>REQUIRES_NEW</p></li><li><p>MANDATORY</p></li><li><p>NOT_SUPPORTED</p></li><li><p>SUPPORTS</p></li><li><p>NEVER</p></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Resource: http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-going-deeper.html
 Attributes
 * REQUIRED - no txn then new transaction is started or joining to existing txn
@@ -90,9 +83,9 @@ Attributes
 * NEVER - no txn then nothing is done (method runs without txn) or EJBException if calling method propagates some started txn
    - can be a useful tool to catch programming mistakes early on
    - when you make a call to another EJB, that EJB may safely create its own isolated transaction - NEVER may actually become a performance hog because of many mini-transactions being created</pre></div></div>
-<div class="literalblock"><div class="content"><pre>When there is not transaction context active (ie. NOT_SUPPORTED) then for JMS autoack should be used and for database autoCommit is true.</pre></div></div></aside></section>
+<div class="literalblock"><div class="content"><pre>When there is not transaction context active (ie. NOT_SUPPORTED) then for JMS autoack should be used and for database autoCommit is true.</pre></div></div></aside></section></section>
 <section id="_transaction_enlistment"><h2>Transaction enlistment</h2><div class="paragraph"><p><span class="image"><img src="./misc/ee/example-bean-description.png" alt="example-bean-description"></span></p></div></section>
-<section id="_component_iteractions_overview"><h2>Component iteractions overview</h2><div class="paragraph"><p><span class="image"><img src="./misc/ee/ee-component-iteractions.png" alt="ee-component-iteractions"></span></p></div></section>
+<section id="_component_interactions_overview"><h2>Component interactions overview</h2><div class="paragraph"><p><span class="image"><img src="./misc/ee/ee-component-iteractions.png" alt="ee-component-iteractions"></span></p></div></section>
 <section id="_exception_handling"><h2>Exception handling</h2><div class="ulist"><ul><li><p>CMT - Exceptions which cause rollback</p><div class="ulist"><ul><li><p>RuntimeException</p></li><li><p>EJBException</p></li><li><p>@ApplicationException(rollback = true, inherited = true)</p></li></ul></div></li><li><p>BMT</p><div class="ulist"><ul><li><p>exceptions should be managed by developer</p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>CMT:
 EJBException extends RuntimeException, so...
@@ -123,7 +116,7 @@ public class LibraryMessageBean implements MessageListener {
 }</code></pre></div></div></section>
 <section id="_message_driven_bean_bean_managed_transactions"><h2>Message Driven Bean - Bean-managed transactions</h2><div class="ulist"><ul><li><p>handled by JCA in-flow protocol</p></li><li><p>Bean managed transaction</p><div class="ulist"><ul><li><p>message receive is not part of transaction</p></li><li><p>you can start new transaction inside of onMessage method but received message is already acknowledged</p></li></ul></div></li><li><p>Container managed transaction</p><div class="ulist"><ul><li><p>REQUIRED - new transaction at onMessage method start</p></li><li><p>NOT_SUPPORTED - no transaction - acknowledge mode</p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>transaction context does not flow with a JMS message - this means that it should be duty of RA to manage transactions here</pre></div></div></aside></section>
-<section id="_quiz"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_no_commit_in_bmt"><h2>Quiz - no commit in BMT</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public void MyBean {
    @Resource
    UserTransaction utx;
@@ -140,7 +133,7 @@ public class LibraryMessageBean implements MessageListener {
  }</code></pre></div></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>A bit tricky :) here. Session bean is CONTAINER managed by default.
 This will throw an EJBException</pre></div></div></aside></section>
-<section id="_quiz_2"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_continue_1"><h2>Quiz - continue #1</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless // STATELESS
  @TransactionManagement(TransactionManagementType.BEAN)
  public void MyBean {
    @Resource
@@ -156,7 +149,7 @@ This will throw an EJBException</pre></div></div></aside></section>
      }
    }
  }</code></pre></div></div></section>
-<section id="_quiz_contd"><h2>Quiz (contd.)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateful
+<section id="_quiz_continue_2"><h2>Quiz - continue #2</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateful // STATEFUL
  @TransactionManagement(TransactionManagementType.BEAN)
  public void MyBean {
    @Resource
@@ -172,11 +165,11 @@ This will throw an EJBException</pre></div></div></aside></section>
      }
    }
  }</code></pre></div></div></section>
-<section id="_quiz_answer_for_bmt"><h2>Quiz - Answer - for BMT!</h2><div class="ulist"><ul><li><p>Stateless, Singleton, MDB: EJB container ensures that transaction won&#8217;t leave a method uncommitted</p><div class="ulist"><ul><li><p>EJBException ("should complete transaction before returning") + rollback done by container</p></li></ul></div></li><li><p>Stateful: transaction can flow over several method invocations on the same SFSB instance</p></li></ul></div>
+<section id="_quiz_answer_no_commit_bmt"><h2>Quiz - Answer - no commit BMT!</h2><div class="ulist"><ul><li><p>Stateless, Singleton, MDB: EJB container ensures that transaction won&#8217;t leave a method uncommitted</p><div class="ulist"><ul><li><p>EJBException ("should complete transaction before returning") + rollback done by container</p></li></ul></div></li><li><p>Stateful: transaction can flow over several method invocations on the same SFSB instance</p></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Limitation of @Stateless bean to commit transaction came from the fact (probably) that nested transactions
 are not supported by JTA (&lt;- really not sure with this statement)</pre></div></div>
 <div class="literalblock"><div class="content"><pre>For stateful bean the transaction could be span e.g. over several http calls.</pre></div></div></aside></section>
-<section id="_quiz_3"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_timeout_setting"><h2>Quiz - timeout setting</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  @TransactionManagement(TransactionManagementType.BEAN)
  public void MyBean {
    @Resource
@@ -195,14 +188,14 @@ are not supported by JTA (&lt;- really not sure with this statement)</pre></div>
  }</code></pre></div></div></section>
 <section id="_quiz_answer"><h2>Quiz - Answer</h2><div class="paragraph"><p>Nothing will happen. Transaction timeout has to be set before the transaction is started.</p></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Default jboss transaction timeout is 5 minutes (default-timeout of transactions subsystem).</pre></div></div></aside></section>
-<section id="_quiz_4"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_cmt_with_not_supported"><h2>Quiz - CMT with NOT_SUPPORTED</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class MyBean {
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void method() {
         // do some work with database here
     }
  }</code></pre></div></div></section>
-<section id="_quiz_5"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_cmt_with_requires_new"><h2>Quiz - CMT with REQUIRES_NEW</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class MyBean {
 
     public void createNewUser(String name) {
@@ -242,7 +235,7 @@ are not supported by JTA (&lt;- really not sure with this statement)</pre></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>As method was called internally there was no container callback available so the
 new transaction was not created.
 We need to inject bean for container would hook to it and could process annotations.</pre></div></div></aside></section>
-<section id="_quiz_6"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_requires_new_and_jpa"><h2>Quiz - REQUIRES_NEW and JPA</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class MyBean {
     @EJB
     private CityFinder cityBean;
@@ -276,7 +269,7 @@ Inspired at http://entjavastuff.blogspot.cz/2011/02/ejb-transaction-management-g
 at the end of method <code>findCity</code>.</p></div>
 <div class="paragraph"><p><strong>Result:</strong> Entity became detached.</p></div>
 <div class="paragraph"><p>Detached <code>CityEntity</code> reference is being set to managed <code>UserEntity</code>.</p></div></section>
-<section id="_quiz_7"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_cmt_exception_handling"><h2>Quiz - CMT exception handling</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class MyBean {
     @EJB
     private MyBean thisBean;
@@ -300,7 +293,7 @@ at the end of method <code>findCity</code>.</p></div>
 <section id="_quiz_answer_4"><h2>Quiz - Answer</h2><div class="paragraph"><p>The transaction is marked as setRollbackOnly.</p></div>
 <div class="paragraph"><p>As RuntimeException surpassed the bean boundaries and container will mark it for rollback.</p></div>
 <div class="paragraph"><p><strong>Result:</strong> transaction will be rollbacked despite catching the exception.</p></div></section>
-<section id="_quiz_8"><h2>Quiz</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section id="_quiz_cmt_exception_handling_2"><h2>Quiz - CMT exception handling #2</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class TableCreator {
     @Resource
     DataSource datasource;
@@ -380,12 +373,13 @@ Stateful will be injected only once and as Servlet behaves as singleton - one in
 then you can be surprised that not each session or http request gets its own SFSB
 The similar is for @Inject as default scope is @Dependent that behaves like @EJB - it injects CDI bean to servlet
 and the CDI bean is removed when the component (WebServlet) is removed</pre></div></div></aside></section>
-<section id="_quiz_webservlet_anser_1"><h2>Quiz - WebServlet - Anser #1</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @WebServlet(name="transaction", urlPatterns={"/transaction"})
+<section id="_quiz_webservlet_answer_1"><h2>Quiz - WebServlet - Answer #1</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @WebServlet(name="transaction", urlPatterns={"/transaction"})
  public class WebServletTransactionRun extends HttpServlet {
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request,
+       final HttpServletResponse response)
+       throws ServletException, IOException {
 
       StatefulBean bean = (StatefulBean) request.getSession().getAttribute("sfsb");
 
@@ -445,8 +439,7 @@ and the CDI bean is removed when the component (WebServlet) is removed</pre></di
 <aside class="notes"><div class="literalblock"><div class="content"><pre>User transaction object is thread safe and the transaction is used from different threads
 so this will work fine thread safe means that transaction is bound to a thread {@link ThreadLocal} and it's
 not problem for TM that one single instance of WebServlet manages more user requests</pre></div></div></aside></section>
-<section id="_transaction_context_propagation"><h2>Transaction context propagation</h2><div class="ulist"><ul><li><p>transaction is propagated from Bean-managed transaction to Container-managed transaction</p></li><li><p>transaction is <strong>not</strong> propagated from Container-managed transaction to Bean-managed transaction</p><div class="ulist"><ul><li><p>transaction in BMT is suspended and CMT (possibly) starts new one</p></li></ul></div></li></ul></div></section>
-<section id="_bmt_cmt_propagated"><h2>BMT &#8594; CMT - propagated</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+<section><section id="_transaction_context_propagation"><h2>Transaction context propagation</h2><div class="ulist"><ul><li><p>transaction is propagated from Bean-managed transaction to Container-managed transaction</p></li><li><p>transaction is <strong>not</strong> propagated from Container-managed transaction to Bean-managed transaction</p><div class="ulist"><ul><li><p>transaction in BMT is suspended and CMT (possibly) starts new one</p></li></ul></div></li></ul></div></section><section id="_bmt_cmt_propagated"><h2>BMT &#8594; CMT - propagated</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  public class CmtBean {
     public void work() {
       // do something
@@ -471,8 +464,7 @@ not problem for TM that one single instance of WebServlet manages more user requ
         ut.rollback();
      }
    }
- }</code></pre></div></div></section>
-<section id="_cmt_bmt_not_propagated"><h2>CMT &#8594; BMT - not propagated</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+ }</code></pre></div></div></section><section id="_cmt_bmt_not_propagated"><h2>CMT &#8594; BMT - not propagated</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
  @TransactionManagement(TransactionManagementType.BEAN)
  public void BmtBean {
    public void do() {
@@ -488,13 +480,72 @@ not problem for TM that one single instance of WebServlet manages more user requ
     public void work() {
       bean.do();
     }
- }</code></pre></div></div></section>
+ }</code></pre></div></div></section></section>
 <section id="_cdi_transactional_management"><h2>CDI transactional management</h2></section>
 <section id="__transactional_and_transactionscoped"><h2>@Transactional and @TransactionScoped</h2><div class="ulist"><ul><li><p>@Transactional</p><div class="ulist"><ul><li><p>javax.transaction.TxType value</p></li><li><p>Class[] rollbackOn</p></li><li><p>Class[] dontRollbackOn</p></li></ul></div></li><li><p>@TransactionScoped</p></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Exception handling - RuntimeException should cause the rollback is provided. But there is a question that I do not know
   that injected CDI bean inside other CDI bean does not cause that the transaction would be marked as rollback only.</pre></div></div></aside></section>
-<section id="_jboss_sources_configuration"><h2>JBoss sources configuration</h2></section>
-<section id="_datasource"><h2>Datasource</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test"
+<section><section id="_transaction_synchronization"><h2>Transaction synchronization</h2><div class="ulist"><ul><li><p><code>@Stateful</code> and <code>SessionSynchronization</code></p></li><li><p><code>TransactionSynchronizationRegistry</code></p></li><li><p><code>Synchronization</code> for <code>Transaction</code></p></li></ul></div></section><section id="_sessionsynchronization_with_annotations"><h2>SessionSynchronization with annotations</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateful
+ public class StatefulSynchro implements SessionSynchronization {
+
+    @Override
+    @AfterBegin
+    public void afterBegin() throws EJBException, RemoteException {
+       // new transaction started
+    }
+
+    @Override
+    @BeforeCompletion
+    public void beforeCompletion() throws EJBException, RemoteException {
+      // txn is about to be committed
+    }
+
+    @Override
+    @AfterCompletion
+    public void afterCompletion(final boolean committed) throws EJBException, RemoteException {
+      // txn was committed/rollbacked
+    }
+
+ }</code></pre></div></div></section><section id="_transactionsynchronizationregistry"><h2>TransactionSynchronizationRegistry</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+ public class BeanSynchro {
+
+    @Resource
+    private TransactionSynchronizationRegistry synchroRegistry;
+
+    public void synchronize() {
+        synchroRegistry.registerInterposedSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {
+              // transaction is about to be committed
+            }
+            @Override
+            public void afterCompletion(final int status) {
+              // transaction was committed/rollbacked
+            }
+        });
+    }
+ }</code></pre></div></div>
+<aside class="notes"><div class="literalblock"><div class="content"><pre>Synchronization defined with TransactionSynchronizationRegistry should go at the end of
+interceptor chain - after all synchronizations defined from Transaction</pre></div></div></aside></section><section id="_transaction_and_synchronization"><h2>Transaction and Synchronization</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="java language-java"> @Stateless
+ public class BeanSynchro {
+
+    @Resource(lookup = "java:jboss/TransactionManager")
+    private TransactionManager tm;
+
+    public void synchronize() throws IllegalStateException, RollbackException, SystemException {
+        tm.getTransaction().registerSynchronization(new Synchronization() {
+            @Override
+            public void beforeCompletion() {
+              // transaction is about to be committed
+            }
+            @Override
+            public void afterCompletion(final int status) {
+              // transaction was committed/rollbacked
+            }
+        });
+    }
+ }</code></pre></div></div></section></section>
+<section><section id="_jboss_sources_configuration"><h2>JBoss sources configuration</h2><div class="ulist"><ul><li><p>Database</p><div class="ulist"><ul><li><p>non-jta datasource</p></li><li><p>jta datasource</p></li><li><p>xa jta datasource</p></li></ul></div></li><li><p>JMS (HornetQ)</p><div class="ulist"><ul><li><p>ConnectionFactory</p><div class="ulist"><ul><li><p>not-pooled</p></li><li><p>pooled</p></li><li><p>pooled xa</p></li></ul></div></li><li><p>Destination (queue, topic)</p></li></ul></div></li></ul></div></section><section id="_datasource"><h2>Datasource</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test"
               enabled="true" use-java-context="true" spy="true"&gt;
       &lt;connection-url&gt;jdbc:postgresql://localhost:5432/crashrec&lt;/connection-url&gt;
       &lt;driver&gt;database-jdbc-driver.jar&lt;/driver&gt;
@@ -504,8 +555,7 @@ not problem for TM that one single instance of WebServlet manages more user requ
       &lt;/security&gt;
       &lt;transaction-isolation&gt;TRANSACTION_READ_COMMITTED&lt;/transaction-isolation&gt;
   &lt;/datasource&gt;</code></pre></div></div>
-<aside class="notes"><div class="literalblock"><div class="content"><pre>Note datasource attribute jta here which could be true/false - jta datasource or non-jta datasource</pre></div></div></aside></section>
-<section id="_xa_datasource"><h2>XA Datasource</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test"
+<aside class="notes"><div class="literalblock"><div class="content"><pre>Note datasource attribute jta here which could be true/false - jta datasource or non-jta datasource</pre></div></div></aside></section><section id="_xa_datasource"><h2>XA Datasource</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test"
                  enabled="true" spy="true"&gt;
       &lt;xa-datasource-property name="PortNumber"&gt;
           5432
@@ -524,8 +574,7 @@ not problem for TM that one single instance of WebServlet manages more user requ
       &lt;/security&gt;
   &lt;/xa-datasource&gt;</code></pre></div></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>From testing point of view where different databases are used is necessary to know which xa-datasource-property is used
-in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)</pre></div></div></aside></section>
-<section><section id="_jms_configuration_hornetq"><h2>JMS configuration (HornetQ)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;jms-connection-factories&gt;
+in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)</pre></div></div></aside></section><section id="_jms_configuration_hornetq"><h2>JMS configuration (HornetQ)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;jms-connection-factories&gt;
       &lt;connection-factory name="InVmConnectionFactory"&gt;
           &lt;connectors&gt;
               &lt;connector-ref connector-name="in-vm"/&gt;
@@ -561,7 +610,9 @@ in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url a
       &lt;jms-queue name="DLQ"&gt;
           &lt;entry name="java:/jms/queue/DLQ"/&gt;
       &lt;/jms-queue&gt;
-  &lt;/jms-destinations&gt;</code></pre></div></div><aside class="notes"><div class="literalblock"><div class="content"><pre>Messaging is configured only in -full profiles</pre></div></div></aside></section><section id="_bonus_jpa"><h2>Bonus: JPA</h2><div class="paragraph"><p><span class="image"><img src="./misc/entertain/kartoteka1.jpg" alt="kartoteka1"></span></p></div></section><section id="_jpa_overview_in_short"><h2>JPA overview in short</h2><div class="ulist"><ul><li><p>ORM (Object-relational mapping)</p></li><li><p>EclipseLink (reference), Hibernate (JBoss)</p></li><li><p>Benefits (theoretically)</p><div class="ulist"><ul><li><p>staying in object oriented world</p></li><li><p>independent on underlaying database</p></li><li><p>simplified CRUD</p></li><li><p>JPQL (db independent + simplified join queries)</p></li><li><p>automatic table creation (hbm2dll)</p></li><li><p>performance (lazy dml, batching sql, 2nd level cache)</p></li></ul></div></li></ul></div>
+  &lt;/jms-destinations&gt;</code></pre></div></div>
+<aside class="notes"><div class="literalblock"><div class="content"><pre>Messaging is configured only in -full profiles</pre></div></div></aside></section></section>
+<section><section id="_bonus_jpa"><h2>Bonus: JPA</h2><div class="paragraph"><p><span class="image"><img src="./misc/entertain/kartoteka1.jpg" alt="kartoteka1"></span></p></div></section><section id="_jpa_overview_in_short"><h2>JPA overview in short</h2><div class="ulist"><ul><li><p>ORM (Object-relational mapping)</p></li><li><p>EclipseLink (reference), Hibernate (JBoss)</p></li><li><p>Benefits (theoretically)</p><div class="ulist"><ul><li><p>staying in object oriented world</p></li><li><p>independent on underlaying database</p></li><li><p>simplified CRUD</p></li><li><p>JPQL (db independent + simplified join queries)</p></li><li><p>automatic table creation (hbm2dll)</p></li><li><p>performance (lazy dml, batching sql, 2nd level cache)</p></li></ul></div></li></ul></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Resource: http://www.javatpoint.com/hibernate-tutorial, http://www.journaldev.com/2882/hibernate-tutorial-for-beginners-using-xml-annotations-and-property-configurations</pre></div></div></aside></section><section id="_sql_table_creation"><h2>SQL table creation</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="sql language-sql"> CREATE TABLE PERSON (
    id INTEGER NOT NULL DEFAULT ('person_seq'),
    username VARCHAR(255),

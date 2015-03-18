@@ -6,7 +6,7 @@
 :images: ./misc
 
 
-= Transaction Management in Java EE
+= Java EE Transaction Management
 Ondra Chaloupka / ochaloup@redhat.com
 
 == There is a transaction?
@@ -60,7 +60,7 @@ image:{images}/entertain/wtf.jpg[]
  * BMT - you are exepected to inject UserTransaction and use it
 --
 
-== JTA vs. JTS
+=== JTA vs. JTS
 
 
 Difference of JTA to JTS has parallel in difference of JDBC to database driver.
@@ -142,7 +142,7 @@ image:{images}/entertain/pocitac.jpg[]
  Programatic approach
 --
 
-== Bean-managed limitations
+=== Bean-managed limitations
 
  * Session beans (@Stateful, @Stateless, @Singleton)
  * Message driven beans (@MessageDriven)
@@ -171,7 +171,7 @@ image:{images}/entertain/pocitac.jpg[]
     working directly e.g. with a database connection or jms session won't bring you transactional guarantees
 --
 
-== Annotations under use
+=== Annotations under use
 
  * @TransactionManagement
  ** CONTAINER
@@ -191,7 +191,7 @@ image:{images}/entertain/pocitac.jpg[]
  Each method is associated with *one* transaction. Neither nested or multiple transactions are not permitted.
 --
 
-== Transaction attributes
+=== Transaction attributes
 
  * REQUIRED
  * REQUIRES_NEW
@@ -684,7 +684,7 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  and the CDI bean is removed when the component (WebServlet) is removed
 --
 
-== Quiz - WebServlet - Anser #1
+== Quiz - WebServlet - Answer #1
 
 [ source, language="java" ]
 ----
@@ -692,8 +692,9 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  public class WebServletTransactionRun extends HttpServlet {
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request,
+       final HttpServletResponse response)
+       throws ServletException, IOException {
 
       StatefulBean bean = (StatefulBean) request.getSession().getAttribute("sfsb");
 
@@ -777,7 +778,7 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  * transaction is *not* propagated from Container-managed transaction to Bean-managed transaction
  ** transaction in BMT is suspended and CMT (possibly) starts new one
 
-== BMT -> CMT - propagated
+=== BMT -> CMT - propagated
 
 [ source, language="java" ]
 ----
@@ -809,7 +810,7 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  }
 ----
 
-== CMT -> BMT - not propagated
+=== CMT -> BMT - not propagated
 
 [ source, language="java" ]
 ----
@@ -1052,7 +1053,7 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  Messaging is configured only in -full profiles
 --
 
-=== Bonus: JPA
+== Bonus: JPA
 
 image:{images}/entertain/kartoteka1.jpg[]
 
