@@ -31,6 +31,8 @@ Standalone part
 Application server part
 -----------------------
  1. Set JBOSS_HOME to WildFly 8.2.0 and Arquillian should do the setting on its own
+ 2. If you want to run with EAP6 then use `-Deap6 -Dno.wildfly` as parameters and set JBOSS_HOME to EAP6 instance
+    (tests were run on wildfly so there could be some incompatibilites ;)
 
 
 Do not forget
