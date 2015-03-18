@@ -13,12 +13,17 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.Session;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 
 @Stateless
@@ -66,6 +71,17 @@ public class BeanToCheckEnlistment {
         sendMessage();
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void requiresNewJmsWithClose() {
+        log.info("Sending message under requires new and close");
+        sendMessageAndClose();
+    }
+
+    public void useUserTransaction() throws SystemException {
+        UserTransaction utx = getUserTransaction();
+        log.info("Status of TX by UserTransaction is {}", utx.getStatus());
+    }
+
     private void insertData() {
         try(Connection c = datasource.getConnection()) {
             PreparedStatement ps = c.prepareStatement("INSERT INTO " + JBossTestEntity.TABLE_NAME + " VALUES (?,?)");
@@ -92,6 +108,30 @@ public class BeanToCheckEnlistment {
             producer.send(session.createTextMessage(message));
         } catch (Exception e) {
             log.error("Error in sending a message", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void sendMessageAndClose() {
+        try (javax.jms.Connection connection = qcf.createConnection()) {
+            String message = "enlist-message";
+            Session session = connection.createSession();
+            MessageProducer producer = session.createProducer(queue);
+            log.info("Sending message {} to queue {}", message, queue);
+            producer.send(session.createTextMessage(message));
+            connection.close();
+            log.info("Message {} was sent and connection {} closed", message, connection);
+        } catch (Exception e) {
+            log.error("Error in sending a message", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private UserTransaction getUserTransaction() {
+        try {
+            Context jndiCtx = new InitialContext();
+            return (UserTransaction) jndiCtx.lookup("java:comp/UserTransaction");
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

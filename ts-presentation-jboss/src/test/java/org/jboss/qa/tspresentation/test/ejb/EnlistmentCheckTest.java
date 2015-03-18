@@ -1,6 +1,7 @@
 package org.jboss.qa.tspresentation.test.ejb;
 
 import javax.ejb.EJB;
+import javax.transaction.UserTransaction;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -14,6 +15,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -74,5 +76,27 @@ public class EnlistmentCheckTest {
         bean.requiresNewJms();
         Thread.sleep(2 * 1000);
         Assert.assertNotNull(results.getStorageValue("mdb"));
+    }
+
+    /**
+     * By debug we can see what happens when jms connection is closed
+     */
+    @Test
+    public void requiresNewJmsClose() throws InterruptedException {
+        log.info("test requiresNewJms");
+        bean.requiresNewJmsWithClose();
+        Thread.sleep(2 * 1000);
+        Assert.assertNotNull(results.getStorageValue("mdb"));
+    }
+
+    /**
+     * Taking {@link UserTransaction} from JNDI is guarded by container
+     * as well - so no possibility to take it.
+     */
+    @Ignore
+    @Test
+    public void useUserTransactionInCMT() throws Exception {
+        log.info("test useUserTransactionInCMT");
+        bean.useUserTransaction();
     }
 }
