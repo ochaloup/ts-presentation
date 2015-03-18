@@ -23,6 +23,8 @@ public class WebServletTransactionRun extends HttpServlet {
         /**
          * User transaction object is thread safe and the transaction is used from different threads
          * so this will work fine
+         * thread safe means that transaction is bound to a thread {@link ThreadLocal} and it's
+         * not problem for TM that one single instance of WebServlet manages more user requests
          */
         @Resource
         private UserTransaction utx;
