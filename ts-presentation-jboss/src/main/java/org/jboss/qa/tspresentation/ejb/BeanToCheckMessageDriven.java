@@ -2,6 +2,7 @@ package org.jboss.qa.tspresentation.ejb;
 
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
 import javax.jms.JMSException;
@@ -10,6 +11,7 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
+import org.jboss.qa.tspresentation.utils.ResultsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +22,17 @@ import org.slf4j.LoggerFactory;
 public class BeanToCheckMessageDriven implements MessageListener {
     private static final Logger log = LoggerFactory.getLogger(BeanToCheckMessageDriven.class);
 
+    @EJB
+    private ResultsBean results;
+
     @Resource
     private MessageDrivenContext context;
 
     public void onMessage(final Message message) {
         try {
-            log.info("Message '{}' received", ((TextMessage) message).getText());
+            String text = ((TextMessage) message).getText();
+            log.info("Message '{}' received", text);
+            results.addStorageValue("mdb", text);
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }

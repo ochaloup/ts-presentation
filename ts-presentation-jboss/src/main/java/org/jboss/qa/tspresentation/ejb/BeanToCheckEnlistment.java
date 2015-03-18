@@ -31,7 +31,10 @@ public class BeanToCheckEnlistment {
     @Resource(lookup = ProjectProperties.NON_XA_NON_JTA_DATASOURCE_JNDI)
     DataSource nonJtaDatasource;
 
-    @Resource(name = "java:/ConnectionFactory")
+    // for JMS factory would be transactional (managed by jca) we need to use
+    // pooled-connection-factory as the connection-factory is managed just by
+    // hornetq and no application interceptors (security, transactions...) are applied
+    @Resource(name = "java:/JmsXA")
     private QueueConnectionFactory qcf;
 
     @Resource(name = ProjectProperties.JMS_QUEUE_JNDI)
@@ -79,12 +82,14 @@ public class BeanToCheckEnlistment {
     private void sendMessage() {
         try (javax.jms.Connection connection = qcf.createConnection()) {
             String message = "enlist-message";
+            // as we can run this from NOT_SUPPORTED CMT bean then we can't use this settings
+            // we can then get javax.jms.JMSRuntimeException: HQ159004: Invalid Session Mode SESSION_TRANSACTED
             // Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
+            // this is not working in EAP6
             Session session = connection.createSession();
             MessageProducer producer = session.createProducer(queue);
             log.info("Sending message {} to queue {}", message, queue);
             producer.send(session.createTextMessage(message));
-            // session.commit();
         } catch (Exception e) {
             log.error("Error in sending a message", e);
             throw new RuntimeException(e);

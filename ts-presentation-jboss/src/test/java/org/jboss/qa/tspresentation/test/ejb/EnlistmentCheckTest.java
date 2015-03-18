@@ -8,9 +8,12 @@ import org.jboss.qa.tspresentation.ejb.BeanToCheckEnlistment;
 import org.jboss.qa.tspresentation.ejb.BeanToCheckMessageDriven;
 import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
+import org.jboss.qa.tspresentation.utils.ResultsBean;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -24,6 +27,9 @@ public class EnlistmentCheckTest {
     @EJB
     private BeanToCheckEnlistment bean;
 
+    @EJB
+    private ResultsBean results;
+
     @Deployment(name = DEPLOYMENT)
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, DEPLOYMENT + ".jar")
@@ -32,8 +38,14 @@ public class EnlistmentCheckTest {
                 .addClass(BeanToCheckEnlistment.class)
                 .addClass(BeanToCheckMessageDriven.class)
                 .addClass(JBossTestEntity.class)
+                .addAsManifestResource("beans.xml")
                 .addAsManifestResource("jta-ds-persistence.xml", "persistence.xml");
         return jar;
+    }
+
+    @Before
+    public void setUp() {
+        results.clear();
     }
 
     @Test
@@ -47,6 +59,7 @@ public class EnlistmentCheckTest {
         log.info("test notSupportedJms");
         bean.notSupportedJms();
         Thread.sleep(2 * 1000);
+        Assert.assertNotNull(results.getStorageValue("mdb"));
     }
 
     @Test
@@ -60,5 +73,6 @@ public class EnlistmentCheckTest {
         log.info("test requiresNewJms");
         bean.requiresNewJms();
         Thread.sleep(2 * 1000);
+        Assert.assertNotNull(results.getStorageValue("mdb"));
     }
 }
