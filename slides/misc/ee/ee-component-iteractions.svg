@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 1052.3622 744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="ee-component-iteractions.svg">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:persp3d-origin="526.1811 : 248.03149 : 1"
+       id="perspective3653" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="562.95794"
+     inkscape:cy="333.76402"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
+     inkscape:window-x="-2"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.26772)">
+    <rect
+       style="fill:#ffeeaa;stroke:#ffe680;stroke-width:1.80502832;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3336"
+       width="704.98938"
+       height="608.72528"
+       x="57.102806"
+       y="340.87909" />
+    <g
+       id="g3870"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,108.44679)">
+      <g
+         transform="translate(8.5714286,64.285706)"
+         id="g3344">
+        <rect
+           style="fill:#de8787;stroke:#de8787;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338"
+           width="197.47572"
+           height="84.618599"
+           x="81.227257"
+           y="382.19577" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="147.14285"
+           y="436.64789"
+           id="text3340"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342"
+             x="147.14285"
+             y="436.64789">EJB</tspan></text>
+      </g>
+      <g
+         id="g3344-7"
+         transform="translate(222.89202,64.285706)">
+        <rect
+           style="fill:#de8787;stroke:#de8787;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-9"
+           width="197.47572"
+           height="84.618599"
+           x="81.227257"
+           y="382.19577" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="147.14285"
+           y="436.64789"
+           id="text3340-3"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-9"
+             x="147.14285"
+             y="436.64789">CDI</tspan></text>
+      </g>
+      <g
+         transform="translate(-25.714285,66.428559)"
+         id="g3400">
+        <rect
+           style="fill:#de8787;stroke:#de8787;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-9-2"
+           width="197.47572"
+           height="84.618599"
+           x="550.05121"
+           y="380.05292" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="577.17773"
+           y="434.50504"
+           id="text3340-3-1"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-9-1"
+             x="577.17773"
+             y="434.50504">Servlet</tspan></text>
+      </g>
+      <g
+         transform="translate(8.5714286,66.428559)"
+         id="g3448">
+        <rect
+           style="fill:#de8787;stroke:#de8787;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-9-0"
+           width="197.47572"
+           height="84.618599"
+           x="735.54785"
+           y="380.05292" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="815.21344"
+           y="434.50504"
+           id="text3340-3-8"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-9-17"
+             x="815.21344"
+             y="434.50504">...</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3744"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,112.46066)">
+      <rect
+         y="553.72833"
+         x="96.366112"
+         height="82.982071"
+         width="841.55347"
+         id="rect3338-1"
+         style="fill:#cdde87;stroke:#cdde87;stroke-width:3.20363903;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3340-30"
+         y="607.36218"
+         x="488.09988"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="607.36218"
+           x="488.09988"
+           id="tspan3342-98"
+           sodipodi:role="line">JTA</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.79653549px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="259.15927"
+       y="402.64291"
+       id="text3340-30-5"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0569154,0.94614951)"><tspan
+         sodipodi:role="line"
+         id="tspan3342-98-9"
+         x="259.15927"
+         y="402.64291">Application Server</tspan></text>
+    <g
+       id="g3739"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,122.79947)">
+      <rect
+         y="650.05292"
+         x="96.171455"
+         height="84.618599"
+         width="197.47572"
+         id="rect3338-97"
+         style="fill:#ddafe9;stroke:#ddafe9;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3340-36"
+         y="704.505"
+         x="165.74916"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="704.505"
+           x="165.74916"
+           id="tspan3342-5"
+           sodipodi:role="line">JPA</tspan></text>
+    </g>
+    <g
+       id="g3888"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,108.44679)">
+      <g
+         transform="translate(-2.8571656,0)"
+         id="g3831">
+        <rect
+           style="fill:#ac939d;stroke:#ac939d;stroke-width:1.56711316;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-97-7"
+           width="197.47572"
+           height="84.618599"
+           x="106.97643"
+           y="1122.91" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="159.22015"
+           y="1177.3622"
+           id="text3340-36-5"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-5-8"
+             x="159.22015"
+             y="1177.3622">JDBC</tspan></text>
+      </g>
+      <g
+         transform="translate(87.142866,4.2857311)"
+         id="g3826">
+        <rect
+           style="fill:#ffaacc;stroke:#ffaacc;stroke-width:1.86758399;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-97-7-4"
+           width="281.46097"
+           height="84.31813"
+           x="584.26947"
+           y="1118.7745" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="626.36713"
+           y="1173.0764"
+           id="text3340-36-5-3"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-5-8-8"
+             x="626.36713"
+             y="1173.0764">JMS Client</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3795"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,125.84031)">
+      <rect
+         y="758.44647"
+         x="104.65569"
+         height="306.40289"
+         width="847.83142"
+         id="rect3579"
+         style="fill:#c8beb7;stroke:#c8beb7;stroke-width:2.63996482;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text3581"
+         y="808.07648"
+         x="144.28572"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="808.07648"
+           x="144.28572"
+           id="tspan3583"
+           sodipodi:role="line">JCA</tspan></text>
+    </g>
+    <rect
+       style="fill:#e3dedb;stroke:#c8beb7;stroke-width:7.88272429;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3633"
+       width="601.52002"
+       height="146.87141"
+       x="114.64656"
+       y="694.92554" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.79653549px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="126.15607"
+       y="775.00226"
+       id="text3581-8"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0569154,0.94614951)"><tspan
+         sodipodi:role="line"
+         id="tspan3583-4"
+         x="126.15607"
+         y="775.00226">RA</tspan></text>
+    <g
+       id="g3771"
+       transform="matrix(0.76088757,0,0,0.68114571,-18.130005,130.70564)">
+      <g
+         id="g3768">
+        <rect
+           style="fill:#6f8a91;stroke:#6f8a91;stroke-width:1.94085848;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-7"
+           width="304.24484"
+           height="84.24485"
+           x="201.64014"
+           y="925.9541" />
+      </g>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3340-9"
+         y="980.2193"
+         x="238.60631"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="980.2193"
+           x="238.60631"
+           id="tspan3342-3"
+           sodipodi:role="line">Datasource</tspan></text>
+    </g>
+    <g
+       id="g3969"
+       transform="matrix(0.76088757,0,0,0.68114571,13.39248,33.520765)">
+      <g
+         transform="translate(-32.857155,64.285714)"
+         id="g3696">
+        <rect
+           style="fill:#aaccff;stroke:#aaccff;stroke-width:1.98962259;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-0"
+           width="319.91037"
+           height="84.196091"
+           x="90.044823"
+           y="1314.5499" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="153.63281"
+           y="1368.7908"
+           id="text3340-5"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-0"
+             x="153.63281"
+             y="1368.7908">Database</tspan></text>
+      </g>
+      <g
+         transform="translate(87.098199,12.857261)"
+         id="g3728">
+        <rect
+           style="fill:#afdde9;stroke:#afdde9;stroke-width:2.10024643;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3338-0-3"
+           width="356.94263"
+           height="84.085464"
+           x="540.14478"
+           y="1366.0337" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="595.0614"
+           y="1420.2192"
+           id="text3340-5-1"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan3342-0-6"
+             x="595.0614"
+             y="1420.2192">JMS Provider</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
