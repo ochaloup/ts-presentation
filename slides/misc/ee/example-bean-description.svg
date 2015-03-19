@@ -104,7 +104,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="380.04867"
+     inkscape:cx="263.6201"
      inkscape:cy="762.52838"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -122,7 +122,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -133,13 +133,13 @@
     <image
        sodipodi:absref="/home/ochaloup/my-testing/ts-presentation/slides/misc/ee/example-bean.png"
        xlink:href="example-bean.png"
-       width="615.8139"
-       height="411.83035"
-       preserveAspectRatio="none"
-       style="image-rendering:optimizeQuality"
-       id="image11391"
+       y="8.2327375"
        x="7.1205311"
-       y="8.2327375" />
+       id="image11391"
+       style="image-rendering:optimizeQuality"
+       preserveAspectRatio="none"
+       height="411.83035"
+       width="615.8139" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -221,12 +221,12 @@
     <path
        inkscape:connector-curvature="0"
        id="path7999"
-       d="m 423.57144,323.0765 102.85715,-2.14286"
+       d="m 499.28573,338.0765 27.14286,-17.14286"
        style="fill:#c8ab37;fill-rule:evenodd;stroke:#c8ab37;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker8001)"
        sodipodi:nodetypes="cc" />
     <path
        style="fill:#c8ab37;fill-rule:evenodd;stroke:#c8ab37;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker8589)"
-       d="m 120.7143,369.50507 383.57143,-3.57143"
+       d="M 70.7143,388.79078 507.14287,369.50507"
        id="path8587"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
