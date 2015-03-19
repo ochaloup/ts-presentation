@@ -838,7 +838,7 @@ image:{images}/entertain/kartoteka1.jpg[]
  * Transaction management defined by transaction-type (persistence.xml)
  ** RESOURCE_LOCAL
  ** JTA
- * Relatet to type of persistence context
+ * Related to type of persistence context
  * Any update operation has to be proceeded inside of a transaction
  * Read operation could be proceeded out of the transaction
 
@@ -934,8 +934,9 @@ image:{images}/entertain/pocitac.jpg[]
    SessionContext ctx;
 
    public void method(){
+     UserTransaction utx = null;
      try {
-        UserTransaction utx = ctx.getUserTransaction();
+        utx = ctx.getUserTransaction();
         utx.begin();
         ...
         utx.commit();
@@ -1055,7 +1056,7 @@ image:{images}/entertain/pocitac.jpg[]
         ...
         utx.commit();
      } catch(Exception e) {
-        ut.rollback();
+        utx.rollback();
      }
    }
  }

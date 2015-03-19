@@ -124,8 +124,9 @@ image:{images}/entertain/pocitac.jpg[]
    SessionContext ctx;
 
    public void method(){
+     UserTransaction utx = null;
      try {
-        UserTransaction utx = ctx.getUserTransaction();
+        utx = ctx.getUserTransaction();
         utx.begin();
         ...
         utx.commit();
@@ -296,7 +297,7 @@ public class LibraryMessageBean implements MessageListener {
  transaction context does not flow with a JMS message - this means that it should be duty of RA to manage transactions here
 --
 
-== Quiz - no commit in BMT
+== Quiz - no commit
 
 [ source, language="java" ]
 ----
@@ -398,7 +399,7 @@ public class LibraryMessageBean implements MessageListener {
         ...
         utx.commit();
      } catch(Exception e) {
-        ut.rollback();
+        utx.rollback();
      }
    }
  }
@@ -452,6 +453,7 @@ Nothing will happen. Transaction timeout has to be set before the transaction is
 [NOTE.speaker]
 --
  Will the getNumberOfUsers know about newly created entity user from createNewUser?
+ Expecting the database isolation level READ_COMMITTED (default behaviour on most of the dbs)
 --
 
 == Quiz - Answer
@@ -1255,9 +1257,9 @@ image:{images}/entertain/kartoteka1.jpg[]
 === Transactions in JPA
 
  * Transaction management defined by transaction-type (persistence.xml)
- ** RESOURCE_LOCAL
- ** JTA
- * Relatet to type of persistence context
+ ** `RESOURCE_LOCAL`
+ ** `JTA`
+ * Related to type of persistence context
  * Any update operation has to be proceeded inside of a transaction
  * Read operation could be proceeded out of the transaction
 
@@ -1275,13 +1277,13 @@ image:{images}/entertain/kartoteka1.jpg[]
 
  * Application-managed
  ** RESOURCE_LOCAL/Java SE
- ** ends (is cleared) on manual call of clear method or em.remove(entity)
+ ** ends (is cleared) on manual call of `em.clear()` method or `em.remove(entity)`
  * Container-managed: Transaction-scoped
  ** ends at the end of transaction
  * Container-managed: Extended
  ** used only with SFSB
  ** ends when SFSB method `@Remove` is called
- ** during the time several transactions could be committed
+ ** during duration of xpc several global transactions could be committed
 
 [NOTE.speaker]
 --
