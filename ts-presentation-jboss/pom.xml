@@ -21,7 +21,7 @@
         <version.ironjacamar>1.2.0.Beta3</version.ironjacamar>
         <version.javaee.spec>1.0.2.Final</version.javaee.spec>
         <version.jboss.logging>3.2.1.Final</version.jboss.logging>
-        <version.narayana>5.0.3.Final</version.narayana>
+        <version.narayana>5.0.0.Final</version.narayana>
         <version.transaction.spi>7.1.0.Final</version.transaction.spi>
         
         <!-- Other configuration -->

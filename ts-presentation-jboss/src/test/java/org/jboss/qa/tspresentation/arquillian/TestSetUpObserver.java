@@ -117,6 +117,35 @@ public class TestSetUpObserver {
             wasChangeDone = true;
         }
 
+        // XA DATASOURCE #2
+        if(!operations.isDefinedNoOutput("/subsystem=datasources", new String[] {"xa-data-source", ProjectProperties.XA_DATASOURCE_2})) {
+
+            Properties connectionProperties = new Properties();
+            connectionProperties.setProperty("user-name", ProjectProperties.get(ProjectProperties.DB_USERNAME_2));
+            connectionProperties.setProperty("password", ProjectProperties.get(ProjectProperties.DB_PASSWORD_2));
+            connectionProperties.setProperty("spy", "true");
+
+            DatabaseType dbType = DatabaseType.convert(ProjectProperties.get(ProjectProperties.DB_URL_2));
+            String jdbcUrl = ProjectProperties.get(ProjectProperties.DB_URL_2);
+            String dbHost = DatasourceSetupUtil.getHost(dbType, jdbcUrl);
+            int dbPort = DatasourceSetupUtil.getPort(dbType, jdbcUrl);
+            String dbName = DatasourceSetupUtil.getDatabaseName(dbType, jdbcUrl);
+
+            Properties xaDatasourceProperties = operations.prepareXADatasourceProperties(
+                    DatabaseType.convert(ProjectProperties.get(ProjectProperties.DB_URL_2)),
+                    jdbcUrl, dbHost, dbPort, dbName);
+
+            operations.addXADataSource(
+                    ProjectProperties.XA_DATASOURCE_2,
+                    ProjectProperties.XA_DATASOURCE_2_JNDI,
+                    dbType,
+                    ProjectProperties.get(ProjectProperties.DB_JDBC_XA_CLASS),
+                    JDBC_DRIVER_NAME,
+                    connectionProperties,
+                    xaDatasourceProperties);
+            wasChangeDone = true;
+        }
+
         // JMS queue
         if(!operations.isDefinedNoOutput("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
             operations.addJmsQueue(ProjectProperties.get(ProjectProperties.JMS_QUEUE), ProjectProperties.JMS_QUEUE_JNDI);

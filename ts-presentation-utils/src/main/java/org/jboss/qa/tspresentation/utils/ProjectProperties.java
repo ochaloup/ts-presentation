@@ -22,6 +22,9 @@ public class ProjectProperties {
     public static final String DB_URL = "db.jdbc_url";
     public static final String DB_PASSWORD = "db.password";
     public static final String DB_USERNAME = "db.username";
+    public static final String DB_URL_2 = "db2.jdbc_url";
+    public static final String DB_PASSWORD_2 = "db2.password";
+    public static final String DB_USERNAME_2 = "db2.username";
 
     // Persistence unit properties
     public static final String PERSISTENCE_UNIT_RESOURCE_LOCAL = "ResourceLocalPersistenceUnit";
@@ -41,6 +44,8 @@ public class ProjectProperties {
     public static final String NON_XA_NON_JTA_DATASOURCE_JNDI = "java:jboss/" + NON_XA_NON_JTA_DATASOURCE;
     public static final String XA_DATASOURCE = "xa-datasource-test";
     public static final String XA_DATASOURCE_JNDI = "java:jboss/" + XA_DATASOURCE;
+    public static final String XA_DATASOURCE_2 = "xa-datasource-test-2";
+    public static final String XA_DATASOURCE_2_JNDI = "java:jboss/" + XA_DATASOURCE_2;
     public static final String JMS_QUEUE_JNDI = "java:jboss/queue/testQueue";
 
     // -----------------------------
