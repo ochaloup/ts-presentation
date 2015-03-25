@@ -1,0 +1,277 @@
+InterceptorContext.proceed() line: 285	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 272	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+InterceptorContext.proceed() line: 288	
+CurrentInvocationContextInterceptor.processInvocation(InterceptorContext) line: 41	
+InterceptorContext.proceed() line: 288	
+TCCLInterceptor.processInvocation(InterceptorContext) line: 45	
+InterceptorContext.proceed() line: 288	
+ChainedInterceptor.processInvocation(InterceptorContext) line: 61	
+SingletonComponent(BasicComponent).constructComponentInstance(ManagedReference, boolean, InterceptorFactoryContext) line: 161	
+SingletonComponent(BasicComponent).createInstance() line: 85	
+SingletonComponent.getComponentInstance() line: 126	
+SingletonComponent.start() line: 141	
+ComponentStartService$1.run() line: 54	
+Executors$RunnableAdapter<T>.call() line: 471	
+FutureTask<V>.run() line: 262	
+ThreadPoolExecutor.runWorker(ThreadPoolExecutor$Worker) line: 1145	
+ThreadPoolExecutor$Worker.run() line: 615	
+JBossThread(Thread).run() line: 744	
+JBossThread.run() line: 122	
+
+
+TransactionImple.commitAndDisassociate() line: 1142	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+InterceptorContext.proceed() line: 288	
+CurrentInvocationContextInterceptor.processInvocation(InterceptorContext) line: 41	
+InterceptorContext.proceed() line: 288	
+TCCLInterceptor.processInvocation(InterceptorContext) line: 45	
+InterceptorContext.proceed() line: 288	
+ChainedInterceptor.processInvocation(InterceptorContext) line: 61	
+SingletonComponent(BasicComponent).constructComponentInstance(ManagedReference, boolean, InterceptorFactoryContext) line: 161	
+SingletonComponent(BasicComponent).createInstance() line: 85	
+SingletonComponent.getComponentInstance() line: 126	
+SingletonComponent.start() line: 141	
+ComponentStartService$1.run() line: 54	
+Executors$RunnableAdapter<T>.call() line: 471	
+FutureTask<V>.run() line: 262	
+ThreadPoolExecutor.runWorker(ThreadPoolExecutor$Worker) line: 1145	
+ThreadPoolExecutor$Worker.run() line: 615	
+JBossThread(Thread).run() line: 744	
+JBossThread.run() line: 122	
+
+
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 87	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+
+TransactionManagerImple(BaseTransaction).commit() line: 119	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+
+TransactionImple.commitAndDisassociate() line: 1148	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 90	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+
+AtomicAction(BasicAction).End(boolean) line: 1432	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+
+AtomicAction(BasicAction).removeChildThread(String) line: 645	
+ThreadActionData.popAction(String, boolean) line: 173	
+ThreadActionData.popAction() line: 142	
+AtomicAction(AtomicAction).commit(boolean) line: 168	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).endTransaction(TransactionManager, Transaction) line: 92	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+
+AtomicAction(BasicAction).removeChildThread(String) line: 645	
+ThreadActionData.purgeActions(Thread, boolean) line: 246	
+ThreadActionData.purgeActions() line: 222	
+AtomicAction.suspend() line: 334	
+TransactionManagerImple.suspend() line: 71	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).suspend() line: 143	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 361	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+InterceptorContext.proceed() line: 288	
+CurrentInvocationContextInterceptor.processInvocation(InterceptorContext) line: 41	
+InterceptorContext.proceed() line: 288	
+TCCLInterceptor.processInvocation(InterceptorContext) line: 45	
+InterceptorContext.proceed() line: 288	
+ChainedInterceptor.processInvocation(InterceptorContext) line: 61	
+StatelessSessionComponent(BasicComponent).constructComponentInstance(ManagedReference, boolean, InterceptorFactoryContext) line: 161	
+StatelessSessionComponent(BasicComponent).createInstance() line: 85	
+StatelessSessionComponent$1.create() line: 67	
+StatelessSessionComponent$1.create() line: 64	
+StrictMaxPool<T>(AbstractPool<T>).create() line: 60	
+StrictMaxPool<T>.get() line: 123	
+PooledInstanceInterceptor.processInvocation(InterceptorContext) line: 47	
+InterceptorContext.proceed() line: 288	
+CMTTxInterceptor.invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 272	
+CMTTxInterceptor.required(InterceptorContext, EJBComponent, int) line: 339	
+CMTTxInterceptor.processInvocation(InterceptorContext) line: 238	
+InterceptorContext.proceed() line: 288	
+EJBRemoteTransactionPropagatingInterceptor.processInvocation(InterceptorContext) line: 79	
+InterceptorContext.proceed() line: 288	
+CurrentInvocationContextInterceptor.processInvocation(InterceptorContext) line: 41	
+InterceptorContext.proceed() line: 288	
+ShutDownInterceptorFactory$1.processInvocation(InterceptorContext) line: 64	
+InterceptorContext.proceed() line: 288	
+LoggingInterceptor.processInvocation(InterceptorContext) line: 59	
+InterceptorContext.proceed() line: 288	
+EjbExceptionTransformingInterceptorFactories$1.processInvocation(InterceptorContext) line: 65	
+InterceptorContext.proceed() line: 288	
+NamespaceContextInterceptor.processInvocation(InterceptorContext) line: 50	
+InterceptorContext.proceed() line: 288	
+AdditionalSetupInterceptor.processInvocation(InterceptorContext) line: 55	
+InterceptorContext.proceed() line: 288	
+TCCLInterceptor.processInvocation(InterceptorContext) line: 45	
+InterceptorContext.proceed() line: 288	
+ChainedInterceptor.processInvocation(InterceptorContext) line: 61	
+ViewService$View.invoke(InterceptorContext) line: 165	
+MethodInvocationMessageHandler.invokeMethod(short, ComponentView, Method, Object[], EJBLocator<?>, Map<String,Object>) line: 329	
+MethodInvocationMessageHandler.access$100(MethodInvocationMessageHandler, short, ComponentView, Method, Object[], EJBLocator, Map) line: 70	
+MethodInvocationMessageHandler$1.run() line: 203	
+Executors$RunnableAdapter<T>.call() line: 471	
+FutureTask<V>.run() line: 262	
+JBossThreadPoolExecutor(ThreadPoolExecutor).runWorker(ThreadPoolExecutor$Worker) line: 1145	
+ThreadPoolExecutor$Worker.run() line: 615	
+JBossThread(Thread).run() line: 744	
+JBossThread.run() line: 122	
+
+GO NOW::
+
+AtomicAction(TwoPhaseCoordinator).beforeCompletion() line: 223	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 93	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+CMTTxInterceptor.endTransaction(TransactionManager, Transaction) line: 92	
+CMTTxInterceptor.invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+CMTTxInterceptor.required(InterceptorContext, EJBComponent, int) line: 339	
+CMTTxInterceptor.processInvocation(InterceptorContext) line: 238	
+
+
+SynchronizationImple.beforeCompletion() line: 76	
+AtomicAction(TwoPhaseCoordinator).beforeCompletion() line: 273	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 93	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+CMTTxInterceptor.endTransaction(TransactionManager, Transaction) line: 92	
+CMTTxInterceptor.invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+
+org.jboss.as.test.jbossts.common.TestSynchronization
+org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization
+org.jboss.as.jpa.transaction.TransactionUtil$SessionSynchronization
+org.jboss.jca.core.connectionmanager.transaction.TransactionSynchronizer
+
+AtomicAction(BasicAction).End(boolean) line: 1440	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+CMTTxInterceptor.endTransaction(TransactionManager, Transaction) line: 92	
+CMTTxInterceptor.invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 276	
+CMTTxInterceptor.required(InterceptorContext, EJBComponent, int) line: 339	
+CMTTxInterceptor.processInvocation(InterceptorContext) line: 238	
+InterceptorContext.proceed() line: 288	
+
+
+AtomicAction(TwoPhaseCoordinator).afterCompletion(int, boolean) line: 348	 HEURISTIC checked here in the method afterCompletion
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 103	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+TransactionManagerImple(BaseTransaction).commit() line: 126	
+TransactionManagerDelegate(BaseTransactionManagerDelegate).commit() line: 75	
+
+AtomicAction(BasicAction).doPrepare(boolean) line: 2473	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+AtomicAction(BasicAction).End(boolean) line: 1481	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2520	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+AtomicAction(BasicAction).End(boolean) line: 1481	
+
+XAResourceRecord.topLevelPrepare() line: 191	
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2522	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+
+<unknown receiving type>(TestXAResource).end(Xid, int) line: 42	
+XAResourceRecord.topLevelPrepare() line: 208	
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2522	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+
+LastResourceRecord.topLevelPrepare() line: 149	
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2522	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+AtomicAction(BasicAction).End(boolean) line: 1481	
+
+XAOnePhaseResource.commit() line: 107	
+LastResourceRecord.topLevelPrepare() line: 152	
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2522	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+AtomicAction(BasicAction).End(boolean) line: 1481	
+
+LocalXAResourceImpl.commit(Xid, boolean) line: 175	
+XAOnePhaseResource.commit() line: 113	
+LastResourceRecord.topLevelPrepare() line: 152	
+AtomicAction(BasicAction).doPrepare(boolean, AbstractRecord) line: 2522	
+AtomicAction(BasicAction).doPrepare(boolean) line: 2489	
+AtomicAction(BasicAction).prepare(boolean) line: 2066	
+
+---
+cl.getManagedConnection().getLocalTransaction().commit();
+
+
+XAResourceRecord.doSave() line: 1024	
+AtomicAction(BasicAction).prepare(boolean) line: 2124	
+AtomicAction(BasicAction).End(boolean) line: 1481	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+
+
+AtomicAction(BasicAction).phase2Commit(boolean) line: 1795	
+AtomicAction(BasicAction).End(boolean) line: 1504	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+TransactionImple.commitAndDisassociate() line: 1165	
+
+AtomicAction(BasicAction).doCommit(RecordList, boolean) line: 2656	
+AtomicAction(BasicAction).phase2Commit(boolean) line: 1820	
+AtomicAction(BasicAction).End(boolean) line: 1504	
+AtomicAction(TwoPhaseCoordinator).end(boolean) line: 98	
+AtomicAction(AtomicAction).commit(boolean) line: 162	
+
+
+LastResourceRecord.topLevelCommit() line: 136	
+AtomicAction(BasicAction).doCommit(boolean, AbstractRecord) line: 2746	
+AtomicAction(BasicAction).doCommit(RecordList, boolean) line: 2662	
+AtomicAction(BasicAction).phase2Commit(boolean) line: 1820	
+AtomicAction(BasicAction).End(boolean) line: 1504	
+
+
+TransactionReaper.transactionReaper().remove(this);

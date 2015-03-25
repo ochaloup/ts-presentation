@@ -1,0 +1,247 @@
+Starting like - thread dump on proceeding:
+InterceptorContext.proceed() line: 285	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).invokeInOurTx(InterceptorContext, TransactionManager, EJBComponent) line: 272	
+LifecycleCMTTxInterceptor(CMTTxInterceptor).requiresNew(InterceptorContext, EJBComponent, int) line: 368	
+LifecycleCMTTxInterceptor.processInvocation(InterceptorContext) line: 66	
+InterceptorContext.proceed() line: 288	
+CurrentInvocationContextInterceptor.processInvocation(InterceptorContext) line: 41	
+InterceptorContext.proceed() line: 288	
+TCCLInterceptor.processInvocation(InterceptorContext) line: 45	
+InterceptorContext.proceed() line: 288	
+ChainedInterceptor.processInvocation(InterceptorContext) line: 61	
+SingletonComponent(BasicComponent).constructComponentInstance(ManagedReference, boolean, InterceptorFactoryContext) line: 161	
+SingletonComponent(BasicComponent).createInstance() line: 85	
+SingletonComponent.getComponentInstance() line: 126	
+SingletonComponent.start() line: 141	
+ComponentStartService$1.run() line: 54	
+Executors$RunnableAdapter<T>.call() line: 471	
+FutureTask<V>.run() line: 262	
+ThreadPoolExecutor.runWorker(ThreadPoolExecutor$Worker) line: 1145	
+ThreadPoolExecutor$Worker.run() line: 615	
+JBossThread(Thread).run() line: 744	
+JBossThread.run() line: 122	
+
+
+17:38:11,636 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.begin
+17:38:11,636 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) StateManager::StateManager( 2, 0 )
+17:38:11,636 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::BasicAction()
+17:38:11,636 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::Begin() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+17:38:11,636 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::actionInitialise() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ActionHierarchy::ActionHierarchy(5) [called from BasicAction.actionInitialise()]
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ActionHierarchy::add(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, 1)
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a adding Thread[EJB default - 5,5,EJB default] [this is one call - befor and after method addChildThread]
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a adding Thread[EJB default - 5,5,EJB default] result = true
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) TransactionReaper::insert ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1a status: ActionStatus.RUNNING, 300 )
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ReaperElement::ReaperElement ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1a status: ActionStatus.RUNNING, 300 )
+
+[[->> SLSB is not in the pool - creating new one - PostConstruct method needs new transaction]]
+17:38:11,637 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImpleManager.suspend
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a removing TSThread:5
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a removing TSThread:5 result = true
+17:38:11,637 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.begin
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) StateManager::StateManager( 2, 0 )
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::BasicAction()
+17:38:11,637 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::Begin() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1b
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::actionInitialise() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1b
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ActionHierarchy::ActionHierarchy(5)
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ActionHierarchy::add(0:ffff7f000001:-2ec9729f:52ea7fbb:1b, 1)
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1b adding Thread[EJB default - 5,5,EJB default]
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1b adding Thread[EJB default - 5,5,EJB default] result = true
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) TransactionReaper::insert ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1b status: ActionStatus.RUNNING, 300 )
+17:38:11,638 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ReaperElement::ReaperElement ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1b status: ActionStatus.RUNNING, 300 )
+17:38:11,639 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:11,639 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.commit
+17:38:11,640 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.commitAndDisassociate
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::End() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1b
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::End() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1b) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1b removing TSThread:5
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1b removing TSThread:5 result = true
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) TransactionReaper::remove ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1b status: ActionStatus.COMMITTED )
+17:38:11,640 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImpleManager.resume
+
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a adding Thread[EJB default - 5,5,EJB default]
+17:38:11,640 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::addChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a adding Thread[EJB default - 5,5,EJB default] result = true
+17:38:11,641 INFO  [org.jboss.as.test.jbossts.crashrec.jpa.JPACrashBean] (EJB default - 5) testXA called with testEntityPK=none
+17:38:11,641 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:11,651 INFO  [stdout] (EJB default - 5) Default helper activated
+17:38:11,663 INFO  [org.jboss.as.test.jbossts.crashrec.common.CrashBeanCommon] (EJB default - 5) CrashBeanCommon.enlistSynchronization
+17:38:11,670 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.registerSynchronization
+17:38:11,670 INFO  [org.jboss.as.test.jbossts.crashrec.common.CrashBeanCommon] (EJB default - 5) CrashBeanCommon.enlistXAResource
+17:38:12,209 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.enlistResource ( TestXAResource(TestXAResourceCommon(0, null)) )
+17:38:12,209 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,215 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.setTransactionTimeout(i=300)
+17:38:12,215 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) StateManager::StateManager( 1, 0 )
+17:38:12,215 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) AbstractRecord::AbstractRecord (0:ffff7f000001:-2ec9729f:52ea7fbb:1e, 1)
+17:38:12,215 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) InputObjectState::InputObjectState()
+17:38:12,215 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.allObjUids(EISNAME, InputObjectState Uid   : 0:0:0:0:0
+17:38:12,215 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) OutputObjectState::OutputObjectState()
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.read_committed(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.read_state(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, StateType.OS_ORIGINAL)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, StateType.OS_SHADOW)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, 10)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, StateType.OS_ORIGINAL)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, 11)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.currentState(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME) - returning StateStatus.OS_COMMITTED
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, StateType.OS_ORIGINAL)
+17:38:12,216 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME, 11)
+17:38:12,217 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.openAndLock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/EISNAME/0_ffff7f000001_-2ec9729f_52ea7fbb_18, FileLock.F_RDLCK, false)
+17:38:12,217 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) InputObjectState::InputObjectState(0:ffff7f000001:-2ec9729f:52ea7fbb:18, EISNAME)
+17:38:12,217 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.closeAndUnlock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/EISNAME/0_ffff7f000001_-2ec9729f_52ea7fbb_18, java.io.FileInputStream@2ea19aa8, null)
+17:38:12,219 TRACE [com.arjuna.ats.jta] (EJB default - 5) XAResourceRecord.XAResourceRecord ( < formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, TestXAResource(TestXAResourceCommon(300, null)) ), record id=0:ffff7f000001:-2ec9729f:52ea7fbb:1e
+17:38:12,224 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.start(Xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, i=0)
+17:38:12,225 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) RecordList::insert(RecordList: empty) : appending /StateManager/AbstractRecord/XAResourceRecord for 0:ffff7f000001:-2ec9729f:52ea7fbb:1e
+17:38:12,225 INFO  [org.jboss.as.test.jbossts.crashrec.common.CrashBeanCommon] (EJB default - 5) CrashBeanCommon.beforeEntityUpdate
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.getResource
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.getTransactionStatus
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.getStatus
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,225 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.getRollbackOnly
+17:38:12,228 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,228 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.registerInterposedSynchronization
+17:38:12,228 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+
+
+[[->> JPA resource registering synchronization to get to know that the commit is proceeding]]
+TransactionImple.enlistResource(XAResource, Object[]) line: 404	
+TransactionImple.enlistResource(XAResource) line: 397	
+TxConnectionListener$TransactionSynchronization.enlist() line: 647	
+TxConnectionListener.enlist() line: 305	
+TxConnectionManagerImpl.managedConnectionReconnected(ConnectionListener) line: 467	
+TxConnectionManagerImpl(AbstractConnectionManager).reconnectManagedConnection(ConnectionListener) line: 599	
+TxConnectionManagerImpl(AbstractConnectionManager).allocateConnection(ManagedConnectionFactory, ConnectionRequestInfo) line: 467	
+WrapperDataSource.getConnection() line: 139	
+InjectedDataSourceConnectionProvider.getConnection() line: 70	
+AbstractSessionImpl$NonContextualJdbcConnectionAccess.obtainConnection() line: 292	
+LogicalConnectionImpl.obtainConnection() line: 214	
+LogicalConnectionImpl.getConnection() line: 157	
+StatementPreparerImpl.connection() line: 56	
+StatementPreparerImpl$5.doPrepare() line: 161	
+StatementPreparerImpl$5(StatementPreparerImpl$StatementPreparationTemplate).prepareStatement() line: 182	
+StatementPreparerImpl.prepareQueryStatement(String, boolean, ScrollMode) line: 159	
+EntityLoader(Loader).prepareQueryStatement(String, QueryParameters, LimitHandler, boolean, SessionImplementor) line: 1859	
+EntityLoader(Loader).executeQueryStatement(String, QueryParameters, boolean, List<AfterLoadAction>, SessionImplementor) line: 1836	
+EntityLoader(Loader).executeQueryStatement(QueryParameters, boolean, List<AfterLoadAction>, SessionImplementor) line: 1816	
+EntityLoader(Loader).doQuery(SessionImplementor, QueryParameters, boolean, ResultTransformer) line: 900	
+EntityLoader(Loader).doQueryAndInitializeNonLazyCollections(SessionImplementor, QueryParameters, boolean, ResultTransformer) line: 342	
+EntityLoader(Loader).doQueryAndInitializeNonLazyCollections(SessionImplementor, QueryParameters, boolean) line: 312	
+EntityLoader(Loader).loadEntity(SessionImplementor, Object, Type, Object, String, Serializable, EntityPersister, LockOptions) line: 2121	
+EntityLoader(AbstractEntityLoader).load(SessionImplementor, Object, Object, Serializable, LockOptions) line: 82	
+EntityLoader(AbstractEntityLoader).load(Serializable, Object, SessionImplementor, LockOptions) line: 72	
+SingleTableEntityPersister(AbstractEntityPersister).load(Serializable, Object, LockOptions, SessionImplementor) line: 3941	
+DefaultLoadEventListener.loadFromDatasource(LoadEvent, EntityPersister, EntityKey, LoadEventListener$LoadType) line: 460	
+DefaultLoadEventListener.doLoad(LoadEvent, EntityPersister, EntityKey, LoadEventListener$LoadType) line: 429	
+DefaultLoadEventListener.load(LoadEvent, EntityPersister, EntityKey, LoadEventListener$LoadType) line: 206	
+DefaultLoadEventListener.proxyOrLoad(LoadEvent, EntityPersister, EntityKey, LoadEventListener$LoadType) line: 262	
+DefaultLoadEventListener.onLoad(LoadEvent, LoadEventListener$LoadType) line: 150	
+SessionImpl.fireLoad(LoadEvent, LoadEventListener$LoadType) line: 1098	
+SessionImpl.access$2000(SessionImpl, LoadEvent, LoadEventListener$LoadType) line: 175	
+SessionImpl$IdentifierLoadAccessImpl.load(Serializable) line: 2482	
+SessionImpl.get(Class, Serializable) line: 994	
+EntityManagerImpl(AbstractEntityManagerImpl).find(Class<A>, Object, LockModeType, Map<String,Object>) line: 807	
+EntityManagerImpl(AbstractEntityManagerImpl).find(Class<A>, Object) line: 781	
+TransactionScopedEntityManager(AbstractEntityManager).find(Class<T>, Object) line: 193	
+TestEntityHelper.getTestEntity(String) line: 70	
+17:38:12,228 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.enlistResource ( LocalXAResourceImpl@59860c8f[connectionListener=761c6681 connectionManager=6fa2ae33 warned=false currentXid=null productName=Oracle productVersion=Oracle Database 12c Enterprise Edition Release 12.1.0.1.0 - 64bit Production
+17:38:12,228 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,233 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.isSameRM(xaResource=LocalXAResourceImpl@59860c8f[connectionListener=761c6681 connectionManager=6fa2ae33 warned=false currentXid=null productName=Oracle productVersion=Oracle Database 12c Enterprise Edition Release 12.1.0.1.0 - 64bit Production
+17:38:12,234 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) StateManager::StateManager( 0:0:0:0:1 )
+17:38:12,234 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) AbstractRecord::AbstractRecord (0:0:0:0:1)
+17:38:12,234 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) LastResourceRecord()
+17:38:12,234 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) RecordList::insert(RecordList: 0:ffff7f000001:-2ec9729f:52ea7fbb:1e) : appending /StateManager/AbstractRecord/LastResourceRecord for 0:0:0:0:1
+17:38:12,234 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.getStatus
+17:38:12,234 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,409 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:12,409 INFO  [org.jboss.as.test.jbossts.crashrec.common.CrashBeanCommon] (EJB default - 5) CrashBeanCommon.afterEntityUpdate
+17:38:12,409 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+
+
+17:38:12,410 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.commit
+17:38:12,410 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.commitAndDisassociate
+[[->> we have two resources enlisted and both registered synchronizations - now calling their handlers]]
+17:38:12,410 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.beforeCompletion
+17:38:12,418 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.beforeCompletion
+17:38:12,418 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.getStatus
+17:38:12,418 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.getTransactionKey
+17:38:12,418 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionSynchronizationRegistryImple.getResource
+17:38:12,593 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+[[->> plus there are registered some other synchronizations handlers like:]]
+[[->>> org.jboss.as.test.jbossts.common.TestSynchronization]]
+[[->>> org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization (org.hibernate.engine.transaction.synchronization.internal.SynchronizationCallbackCoordinatorImpl and flush())]]
+[[->>> org.jboss.as.jpa.transaction.TransactionUtil$SessionSynchronization]]
+[[->>> org.jboss.jca.core.connectionmanager.transaction.TransactionSynchronizer]]
+17:38:12,593 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.beforeCompletion
+17:38:12,593 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.beforeCompletion
+[[->> BasicAction.End providing 2PC handling]]
+17:38:12,593 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::End() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+[[->> first phase of 2PC protocol is on it's way]]
+17:38:12,593 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::prepare () for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+[[->> handling of the first resource: Test XA resource]]
+17:38:12,597 TRACE [com.arjuna.ats.jta] (EJB default - 5) XAResourceRecord.topLevelPrepare for XAResourceRecord < resource:TestXAResource(TestXAResourceCommon(300, < formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >)), txid:< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, heuristic: TwoPhaseOutcome.FINISH_OK com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord@3b924c13 >, record id=0:ffff7f000001:-2ec9729f:52ea7fbb:1e
+17:38:12,604 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.end(Xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, b=67108864)
+17:38:12,609 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.prepare(Xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >) returning 0
+17:38:12,609 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) logPrepared(xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >)
+17:38:12,610 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) Using file /home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/TestXAResourceStateStore/TestXAResource.ser for saving state of the org.jboss.as.test.jbossts.common.TestXAResource XA resource
+17:38:12,610 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) logging 1 records to /home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/TestXAResourceStateStore/TestXAResource.ser
+17:38:12,612 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doPrepare() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1a) on record id: (0:ffff7f000001:-2ec9729f:52ea7fbb:1e) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+17:38:12,612 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) RecordList::insert(RecordList: empty) : appending /StateManager/AbstractRecord/XAResourceRecord for 0:ffff7f000001:-2ec9729f:52ea7fbb:1e
+[[->> handling of the second resource: Local resource (LRCO DB resource) - the prepare here means in fact commit]]
+17:38:12,613 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) LastResourceRecord::topLevelPrepare() for 0:0:0:0:1
+17:38:12,785 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doPrepare() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1a) on record id: (0:0:0:0:1) is (TwoPhaseOutcome.PREPARE_OK) node id: (1)
+17:38:12,786 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) RecordList::insert(RecordList: 0:ffff7f000001:-2ec9729f:52ea7fbb:1e) : appending /StateManager/AbstractRecord/LastResourceRecord for 0:0:0:0:1
+[[->> saving info for crash recovery - saving BasicAction object to object store ]]
+17:38:12,786 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) OutputObjectState::OutputObjectState(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction)
+17:38:12,786 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::save_state ()
+17:38:12,786 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) StateManager.packHeader for object-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a birth-date 1391099892786
+17:38:12,786 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::save_state - next record to pack is a 171 record /StateManager/AbstractRecord/XAResourceRecord should save it? = true
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) Packing a 171 record
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::save_state - next record to pack is a 2147483647 record /StateManager/AbstractRecord/LastResourceRecord should save it? = false
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) Packing a NONE_RECORD
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) Packing action status of ActionStatus.COMMITTING
+[[->> saving infor about prepared resources (records) to object store - persist it ]]
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.write_committed(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction)
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.write_state(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_ORIGINAL)
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_ORIGINAL)
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, 11)
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.openAndLock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/0_ffff7f000001_-2ec9729f_52ea7fbb_1a, FileLock.F_WRLCK, true)
+17:38:12,787 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.createHierarchy(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/0_ffff7f000001_-2ec9729f_52ea7fbb_1a)
+17:38:13,032 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.closeAndUnlock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/0_ffff7f000001_-2ec9729f_52ea7fbb_1a, null, java.io.FileOutputStream@5ca68ee6)
+[[->> second phase of 2PC protocol is on it's way]]
+17:38:13,032 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::phase2Commit() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+[[->> first resource commit (Test XA resource)]]
+17:38:13,037 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doCommit (XAResourceRecord < resource:TestXAResource(TestXAResourceCommon(300, < formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >)), txid:< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, heuristic: TwoPhaseOutcome.FINISH_OK com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord@3b924c13 >)
+17:38:13,042 TRACE [com.arjuna.ats.jta] (EJB default - 5) XAResourceRecord.topLevelCommit for XAResourceRecord < resource:TestXAResource(TestXAResourceCommon(300, < formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >)), txid:< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, heuristic: TwoPhaseOutcome.FINISH_OK com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord@3b924c13 >, record id=0:ffff7f000001:-2ec9729f:52ea7fbb:1e
+17:38:13,051 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceCommon] (EJB default - 5) TestXAResourceCommon.commit(Xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >, b=false)
+17:38:13,052 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) removeLog(xid=< formatId=131077, gtrid_length=29, bqual_length=36, tx_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1a, node_name=1, branch_uid=0:ffff7f000001:-2ec9729f:52ea7fbb:1d, subordinatenodename=null, eis_name=unknown eis name >
+17:38:13,052 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) Using file /home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/TestXAResourceStateStore/TestXAResource.ser for saving state of the org.jboss.as.test.jbossts.common.TestXAResource XA resource
+17:38:13,052 INFO  [org.jboss.as.test.jbossts.common.TestXAResourceRecoveryHelper] (EJB default - 5) logging 0 records to /home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/TestXAResourceStateStore/TestXAResource.ser
+17:38:13,053 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doCommit() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1a) on record id: (0:ffff7f000001:-2ec9729f:52ea7fbb:1e) is (TwoPhaseOutcome.FINISH_OK) node id: (1)
+[[->> second resource commit (LRCO) - in fact doing nothing - all is already commited]]
+17:38:13,053 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doCommit (LastResourceRecord(XAOnePhaseResource(LocalXAResourceImpl@59860c8f[connectionListener=761c6681 connectionManager=6fa2ae33 warned=false currentXid=null productName=Oracle productVersion=Oracle Database 12c Enterprise Edition Release 12.1.0.1.0 - 64bit Production
+17:38:13,053 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) LastResourceRecord::topLevelCommit() for 0:0:0:0:1
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::doCommit() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1a) on record id: (0:0:0:0:1) is (TwoPhaseOutcome.FINISH_OK) node id: (1)
+[[ ->> removing information from object store - everything went well so info from object store is removed ]]
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::updateState() for action-id 0:ffff7f000001:-2ec9729f:52ea7fbb:1a
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.remove_committed(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction)
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.remove_state(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_ORIGINAL)
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_SHADOW)
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, 10)
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_ORIGINAL)
+17:38:13,054 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, 11)
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.currentState(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction) - returning StateStatus.OS_COMMITTED
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) ShadowingStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, StateType.OS_ORIGINAL)
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.genPathName(0:ffff7f000001:-2ec9729f:52ea7fbb:1a, /StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction, 11)
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.openAndLock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/0_ffff7f000001_-2ec9729f_52ea7fbb_1a, FileLock.F_WRLCK, false)
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) FileSystemStore.closeAndUnlock(/home/ochaloup/Transactions/eap-tests-transactions/integration/jbossts/target/jbossas-jbossts/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/AtomicAction/0_ffff7f000001_-2ec9729f_52ea7fbb_1a, null, null)
+17:38:13,055 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::End() result for action-id (0:ffff7f000001:-2ec9729f:52ea7fbb:1a) is (TwoPhaseOutcome.FINISH_OK) node id: (1)
+[[->> registered synchronizations are now running (see beforeCompletion above)]]
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.afterCompletion
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.afterCompletion
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) BaseTransaction.getStatus
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) TransactionImple.getStatus
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.afterCompletion
+17:38:13,056 TRACE [com.arjuna.ats.jta] (EJB default - 5) SynchronizationImple.afterCompletion
+17:38:13,064 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a removing TSThread:5
+17:38:13,064 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) BasicAction::removeChildThread () action 0:ffff7f000001:-2ec9729f:52ea7fbb:1a removing TSThread:5 result = true
+17:38:13,064 TRACE [com.arjuna.ats.arjuna] (EJB default - 5) TransactionReaper::remove ( BasicAction: 0:ffff7f000001:-2ec9729f:52ea7fbb:1a status: ActionStatus.COMMITTED )

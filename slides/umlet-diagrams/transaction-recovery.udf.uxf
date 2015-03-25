@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.SequenceDiagram</type>
+    <coordinates>
+      <x>150</x>
+      <y>0</y>
+      <w>2660</w>
+      <h>1610</h>
+    </coordinates>
+    <panel_attributes>title: TRANSACTION RECOVERY
+
+// for (RecoveryModule recoveryModule : ((Vector&lt;RecoveryModule&gt;) RecoveryManager.manager().getModules())) {
+//   if (recoveryModule instanceof XARecoveryModule) {
+//     return (XARecoveryModule) recoveryModule;
+//   }
+// }
+
+
+_RecoveryManagerService~recmngrservice_|_RecoveryManager~recmngr_|_RecoveryManagerImple~recmngrimple_|_ExpiredEntryMonitor~expiredMonitor_|_ExpiryScanner~escanner_|_PeriodicRecovery~periodicrec_|_RecoveryModule~recmodule_|_RecoveryStore (extends TxLog)~recstore_|_XAResource~xaresource_
+
+
+// RecoveryManagerService.start()
+// getting tag id: ConfigurationInfo.getSourceId();
+// showing log trace
+// ARJUNA032010: JBossTS Recovery Service (tag: 3f9b44699deb61e5026704dd957ef3848cb0db81) - JBoss Inc.
+
+iframe{:Recovery SETUP
+
+recmngrservice-&gt;&gt;recmngr:delayRecoveryManagerThread()
+// getting singleton of RecoveryManager under the VM
+// getting instance with periodic recovery functionality
+// possibly not able to switch off the periodic recovery here
+// check method: manager(int)
+recmngrservice-&gt;&gt;recmngr:manager()
+
+recmngr-&gt;&gt;recmngrimple:&lt;&lt;new&gt;&gt;
+
+recmngrimple-&gt;&gt;expiredMonitor:static startUp()
+// - load intervals data
+// recoveryPropertyManager.getRecoveryEnvironmentBean().getExpiryScanInterval()
+expiredMonitor-&gt;&gt;expiredMonitor:initialise()
+// recoveryPropertyManager.getRecoveryEnvironmentBean().getExpiryScanners()
+expiredMonitor-&gt;&gt;expiredMonitor:loadScanners()
+// ExpiredTransactionStatusManagerScanner doing StoreManager.getRecoveryStore()
+expiredMonitor-&gt;&gt;escanner:&lt;&lt;new&gt;&gt;
+expiredMonitor-&gt;&gt;escanner:&lt;&lt;new&gt;&gt; ...
+// starting thread
+expiredMonitor-&gt;&gt;expiredMonitor:start()
+
+recmngrimple-&gt;&gt;periodicrec:&lt;&lt;new&gt;&gt;
+// recoveryPropertyManager.getRecoveryEnvironmentBean().getPeriodicRecoveryPeriod()
+// recoveryPropertyManager.getRecoveryEnvironmentBean().getRecoveryBackoffPeriod()
+periodicrec-&gt;&gt;periodicrec:intialise()
+
+// integration setting
+// 6.2.0.ER3-src/transactions/src/main/java/org/jboss/as/txn/service/ArjunaRecoveryManagerService.java
+// for both:
+//   AtomicActionRecoveryModule
+//   TORecoveryModule
+// jta: com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule
+// jts: 
+//   TopLevelTransactionRecoveryModule
+//   ServerTransactionRecoveryModule
+//   com.arjuna.ats.internal.jta.recovery.jts.XARecoveryModule
+periodicrec-&gt;&gt;periodicrec:loadModules()
+
+periodicrec-&gt;&gt;recmodule:&lt;&lt;new&gt;&gt;
+// instatiante the XAResourceRecovery classes (see ArjunaRecoveryManagerService.java)
+recmodule-&gt;&gt;recmodule:getJTAEnvironmentBean().getXaResourceRecoveries()
+// instantiate the XAResourceOrphanFilter classes
+recmodule-&gt;&gt;recmodule:getJTAEnvironmentBean().getXaResourceOrphanFilters()
+
+// starting listener for socket and put there WorkerService to listen
+// log info ARJUNA012310: Recovery manager listening on endpoint 127.0.0.1:4712
+periodicrec-&gt;&gt;periodicrec:new WorkerService(PeriodicRecovery)
+
+// as recovery manager is already initialized this call does nothing in fact
+recmngrservice-&gt;&gt;recmngr:initialize()
+recmngrservice-&gt;&gt;recmngr:startRecoveryManagerThread()
+recmngr-&gt;&gt;recmngrimple:start()
+// running the thred
+recmngrimple-&gt;&gt;periodicrec:start(){{Thread.run()}}
+iframe}
+
+iframe{:Periodic Recovery Thread
+
+// log info: Periodic recovery first pass at
+periodicrec-&gt;&gt;periodicrec:doWorkInternal()
+
+// For getting Uid from input check
+// com.arjuna.ats.internal.arjuna.common.unpackFrom(InputBuffer)
+
+// foreach recovery module
+periodicrec-&gt;&gt;periodicrec:periodicrec:switchClassLoader()
+periodicrec-&gt;&gt;recmodule:periodicrec:periodicWorkFirstPass()
+// log info: AtomicActionRecoveryModule first pass
+recmodule-&gt;&gt;recstore:periodicrec:AtomicActionRevoeryModule.allObjUids(String, InputObjectState)
+recmodule-&gt;&gt;recmodule:periodicrec:AtomicActionRevoeryModule.processTransactions()
+// log info: TORecoveryModule - first pass
+recmodule-&gt;&gt;recstore:periodicrec:TORecovery.allTypes(InputObjectState)
+recmodule-&gt;&gt;recstore:periodicrec:TORecovery.allObjUids
+// log info:  Local XARecoveryModule - first pass
+recmodule-&gt;&gt;recstore:periodicrec:XARecoveryModule.allObjUids
+// scan using statically configured plugins;
+recmodule-&gt;&gt;recmodule:periodicrec:XARecoveryModule.resourceInitiatedRecovery();
+// scan using dynamically configured plugins:
+recmodule-&gt;&gt;recmodule:periodicrec:XARecoveryModule.resourceInitiatedRecoveryForRecoveryHelpers()
+recmodule-&gt;&gt;recmodule:periodicrec:XARecoveryModule.xaRecoveryFirstPass()
+// log info: Found X xids in doubt
+recmodule-&gt;&gt;xaresource:periodicrec:XARecoveryModule.recover(XAResource.TMSTARTRSCAN)
+recmodule-&gt;&gt;xaresource:periodicrec:XARecoveryModule.isSameRM(XAResource)
+periodicrec-&gt;&gt;periodicrec:periodicrec:restoreClassLoader()
+// end foreach
+
+periodicrec-&gt;&gt;periodicrec:periodicrec:doBackOffWait()
+
+// foreach recovery module
+periodicrec-&gt;&gt;periodicrec:periodicrec:switchClassLoader()
+periodicrec-&gt;&gt;recmodule:periodicrec:periodicWorkSecondPass()
+// log info: AtomicActionRecoveryModule second pass
+recmodule-&gt;&gt;recmodule:periodicrec:AtomicActionRecoveryModule.processTransactionsStatus
+// log info: TORecoveryModule - second pass
+// log info: Local XARecoveryModule - second pass
+recmodule-&gt;&gt;recmodule:periodicrec:XARecoveryModule.transactionInitiatedRecovery()
+recmodule-&gt;&gt;recmodule:periodicrec:XARecoveryModule.bottomUpRecovery()
+recmodule-&gt;&gt;recmodule:periodicrec,recmodule:XARecoveryModule.xaRecoverySecondPass()
+recmodule-&gt;&gt;xaresource:periodicrec,recmodule:XARecoveryModule.recover(XAResource.TMENDRSCAN)
+recmodule-&gt;&gt;recmodule:periodicrec,recmodule:XARecoveryModule.handleOrphan()
+// dependent on voting
+recmodule-&gt;&gt;xaresource:periodicrec,recmodule:XARecoveryModule.rollback()
+periodicrec-&gt;&gt;periodicrec:periodicrec:restoreClassLoader()
+// end foreach
+
+periodicrec-&gt;&gt;periodicrec:doPeriodicWait()
+
+iframe}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>10</x>
+      <y>30</y>
+      <w>378</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;
+ArjunaRecoveryManagerService calls create()</panel_attributes>
+    <additional_attributes>130;50;250;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>540</y>
+      <w>366</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;
+ArjunaRecoveryManagerService calls start()</panel_attributes>
+    <additional_attributes>120;50;260;50</additional_attributes>
+  </element>
+</diagram>

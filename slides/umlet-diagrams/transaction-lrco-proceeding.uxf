@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.SequenceDiagram</type>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>3830</w>
+      <h>2120</h>
+    </coordinates>
+    <panel_attributes>title: Transaction JTA LRCO
+
+// org.jboss.as.ejb3.tx.CMTTxInterceptor
+// &lt;dependency&gt;
+//   &lt;groupId&gt;org.jboss.as&lt;/groupId&gt;
+//    &lt;artifactId&gt;jboss-as-ejb3&lt;/artifactId&gt;
+//		&lt;version&gt;7.3.0.Final-redhat-SNAPSHOT&lt;/version&gt;
+// &lt;/dependency&gt;
+
+
+// com.arjuna.ats.internal.jta.transaction.arjunacore.BaseTransaction
+// com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple
+// com.arjuna.ats.arjuna.AtomicAction (extends BasicAction!)
+// com.arjuna.ats.arjuna.coordinator.BasicAction
+// com.arjuna.ats.internal.arjuna.threadThreadAction
+// com.arjuna.ats.arjuna.coordinator.TransactionReaper
+_requiresNew:CMTTxInterceptor~ejb_|_BaseTransaction~bt_|_TransactionImple~tximpl_|_AtomicAction~ac_|_TwoPhaseCoordinator_~tpc|_BasicAction_~ba|_XAResourceRecord_~xarecord|_LastResourceRecord_~lastrecord|_XAResource_~xaresource|_RecordList_~rlist|_ActionHierarchy_~ahierarchy|_ThreadActionData_~ta|_TransactionReaper_~reaper
+
+ejb-&gt;&gt;ejb:processInvocation()
+ejb-&gt;&gt;ejb:requresNew()
+ejb-&gt;&gt;ejb:invokeInOurTx()
+
+iframe{:TRANSACTION START
+ejb-&gt;&gt;bt:begin()
+// plus getting reference from BasicTransaction to java.tx.Transaction
+
+// BaseTrasnactionManager:begin() =&gt; bt
+bt-&gt;&gt;bt: checkTransactionState()
+// checks whether some other transaction associated with the thread
+// if yes and subtransactions are not permitted -&gt; throw exception
+
+bt-&gt;&gt;bt: [transaction timeout def]
+// by this time value of default timeout was already set by app server
+// (by somebody else before)
+
+
+bt-&gt;&gt;tximpl:bt:new TransactionImple(int timeout)
+
+tximpl-&gt;&gt;ac:tximpl,bt:new AtomicAction()
+// default constructor of BasicAction is called
+ac-&gt;&gt;tximpl:bt,tximpl:&lt;&lt;new instance&gt;&gt;
+tximpl-&gt;&gt;ac:bt,tximpl:begin(int timeout)
+
+// calling start which calls Begin on paren BasicAction class
+ac-&gt;&gt;ac:bt,tximpl:start
+
+ac-&gt;&gt;ba:bt,tximpl:super.Begin(BasicAction parent)
+
+ba-&gt;&gt;ba:bt,tximpl:actionInitialise
+ba-&gt;&gt;ahierarchy:bt,tximpl:new(5)
+
+// Hierarchy class represent depth of transactions 
+// (in our case not possible to have something like subtxn)
+ahierarchy-&gt;&gt;ba:bt,tximpl:&lt;&lt;new instance&gt;&gt;
+ba-&gt;&gt;ahierarchy:bt,tximpl:add()
+
+// utility class calling - causing adding thread to the transaction
+ac-&gt;&gt;ta:bt,tximpl:ThreadActionData.pushAction(BasicAction)
+ta-&gt;&gt;ac:bt,tximpl:addChildThread(Thread)
+
+// Class to record transactions with non-zero timeout values, and class to
+// implement a transaction reaper thread which terminates these transactions once their timeout elapses.
+ac-&gt;&gt;reaper:bt,tximpl:insert(Reapable, timeout)
+
+tximpl-&gt;&gt;bt:bt,tximpl:&lt;&lt;new instance&gt;&gt;
+iframe}
+
+ejb-&gt;&gt;ejb:InterceptorContext.proceed() ALL BEAN STUFF IS HERE
+// now all the bean code is proceeded + other interceptors like security etc.
+
+// this is called from JCA layer - respectively when it gets the connection
+// XAResource should be get in  org.jboss.jca.core.connectionmanager.tx.TxConnectionManagerImpl createConnectionListener(ManagedConnection, Object)
+// first resource (XA one)
+tximpl-&gt;&gt;tximpl:enlistResource(XaResource, null)
+tximpl-&gt;&gt;xaresource:start(Xid, int)
+tximpl-&gt;&gt;ba:add(AbstractRecord)
+// second resource (LRCO one)
+tximpl-&gt;&gt;tximpl:enlistResource(XaResource, null)
+tximpl-&gt;&gt;xaresource:start(Xid, int)
+tximpl-&gt;&gt;ba:add(AbstractRecord)
+
+
+iframe{:TRANSACTION COMMIT
+ejb-&gt;&gt;ejb:endTransaction(TransactionManager, java.tx.Transaction)
+
+ejb-&gt;&gt;bt:TransactionManagerImple.commit()
+
+bt-&gt;&gt;tximpl:commitAndDisassociate()
+
+tximpl-&gt;&gt;ac:commit(boolean)
+ac-&gt;&gt;tpc:end(boolean)
+
+// cycling through all the synchronizations and check calls the synchronization handlers
+// calling via SynchronizationImple.beforeCompletion(
+tpc-&gt;&gt;tpc:beforeCompletition()
+
+// End the atomic action by committing it. This invokes the prepare() operation
+// If this succeeds then the pendingList should be empty and the
+// Invoke phase2Commit and clean up the object store if necessary
+tpc-&gt;&gt;ba:End(boolean)
+
+// iterate over pendlingList of resources - will run doPrepare on each of it
+ba-&gt;&gt;ba:prepare(boolean)
+
+// for XA prepare is called on the XA resource
+ba-&gt;&gt;ba:ba:doPrepare#{{XAResource}}(boolean, AbstractRecord)
+ba-&gt;&gt;xarecord:ba:topLevelPrepare()
+xarecord-&gt;&gt;xaresource:ba:end(Xid, int)
+xarecord-&gt;&gt;xaresource:ba:prepare(Xid)
+// saving xaresource to list of records to know which were prepared
+ba-&gt;&gt;ba:ba:insertRecord#{{XAResource}}(RecordList, AbstractRecord)
+ba-&gt;&gt;rlist:ba:insert(AbstractRecord)
+
+// for LRCO commiting directly
+ba-&gt;&gt;ba:ba:doPrepare#{{LRCOResource}}(boolean, AbstractRecord)
+ba-&gt;&gt;lastrecord:ba:topLevelPrepare()
+// cl.getManagedConnection().getLocalTransaction().commit();
+lastrecord-&gt;&gt;xaresource:ba:OnePhaseResource.commit()
+// saving that this xaresource was prepared
+ba-&gt;&gt;ba:ba:insertRecord#{{LRCOResource}}(RecordList, AbstractRecord)
+ba-&gt;&gt;rlist:ba:insert(AbstractRecord)
+
+// save BasicAction to object store
+ba-&gt;&gt;ba:ba:save_state(OutputObjectState, int)
+
+// pack the necessary info for crash recovery
+// ba-&gt;&gt;statemngr:ba:packHeader(OutputObjectState, Header)
+ba-&gt;&gt;xarecord:ba:doSave#{{XAResource}}() (=&gt; true)
+// getting info From XAResource (saving to object store is done by write_commited)
+ba-&gt;&gt;xarecord:ba:save_state(OutputObjectState, int)
+// false returned from parent class AbstractRecord
+ba-&gt;&gt;lastrecord:ba:doSave#{{LRCOResource}}() ( =&gt; false)
+
+// write info that some records were prepared - before crash occurs
+ba-&gt;&gt;ba:ba:TxLog.write_commited(Uid, String, OutputObjectState)
+
+ba-&gt;&gt;ba:phase2Commit(boolean)
+ba-&gt;&gt;ba:ba:doCommit(RecordList, boolean)
+
+// commit on all the participants
+// FURST resource
+ba-&gt;&gt;ba:ba:doCommit#{{XAResource}}(boolean, AbstractRecord)
+ba-&gt;&gt;xarecord:ba:topLevelCommit()
+xarecord-&gt;&gt;xaresource:ba:commit()
+// close e.g. jdbc connection to connection could be reused later
+xarecord-&gt;&gt;xarecord:ba:removeConnection()
+
+// SECIBD resource
+ba-&gt;&gt;ba:ba:doCommit#{{LRCOResource}}(boolean, AbstractRecord)
+ba-&gt;&gt;lastrecord:ba:topLevelCommit()
+
+ba-&gt;&gt;ba:ba:updateState()
+ba-&gt;&gt;ba:ba:TxLog.remove_committed(Uid, String)
+
+// HEURISTIC results are checked here (directly in the method)
+// + all the registered synchronizations are invoked
+tpc-&gt;&gt;tpc:afterCompletition(int,boolean)
+iframe}
+
+// cleaning
+ac-&gt;&gt;reaper:remove(AtomicAction)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
