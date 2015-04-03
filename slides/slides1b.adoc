@@ -779,6 +779,12 @@ As RuntimeException surpassed the bean boundaries and container will mark it for
  * transaction is propagated from Bean-managed transaction to Container-managed transaction
  * transaction is *not* propagated from Container-managed transaction to Bean-managed transaction
  ** transaction in BMT is suspended and CMT (possibly) starts new one
+ * transaction is *not* propagated to beans running asynchronously with @Asynchronous
+
+[NOTE.speaker]
+--
+ Info about transaction propagation and @Asynchronous annotated beans could be checked in EJB spec 4.5.3
+--
 
 === BMT -> CMT - propagated
 

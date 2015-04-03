@@ -28,10 +28,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Used for being able to check that container is started and that arquillian extension
- * was triggered.
- */
 @RunWith(Arquillian.class)
 public class BmtEjbTestCase {
     private static final Logger log = LoggerFactory.getLogger(BmtEjbTestCase.class);
