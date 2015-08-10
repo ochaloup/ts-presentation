@@ -172,6 +172,18 @@ image:{images}/entertain/pocitac.jpg[]
     working directly e.g. with a database connection or jms session won't bring you transactional guarantees
 --
 
+== Container-managed limitations
+
+ * Message driven beans (@MessageDriven)
+
+[NOTE.speaker]
+--
+(ejb3.1: 14.6.3) Only the NOT_SUPPORTED and REQUIRED transaction attributes may be used for message-driven
+bean message listener methods. The use of the other transaction attributes is not meaningful for mes-
+sage-driven bean message listener methods because there is no pre-existing client transaction context
+(REQUIRES_NEW, SUPPORTS) and no client to handle exceptions (MANDATORY, NEVER).
+--
+
 === Annotations under use
 
  * @TransactionManagement
