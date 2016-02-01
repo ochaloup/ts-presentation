@@ -1,11 +1,13 @@
 Generate slides:
-asciidoctor -T ./asciidoctor-reveal.js/templates/slim slides*.adoc
-asciidoctor -T ./asciidoctor-reveal.js/templates/slim slides*.adoc && firefox slides*.html &
+SLIDES_FILE=
+asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc
+asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc && firefox ${SLIDES_FILE}.html &
 
 After generation actions:
 TODO: how to do proper hook for asciidoc or how to create my own temlate?
-sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' slides*.html
-sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' slides*.html
-sed -i 's|<code>|<code class="stretch">|' slides*.html
+sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' ${SLIDES_FILE}.html
+sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' ${SLIDES_FILE}.html
+sed -i 's|<code>|<code class="stretch">|' ${SLIDES_FILE}.html
 
-asciidoctor -T ./asciidoctor-reveal.js/templates/slim slides1.adoc; sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' slides1.html; sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' slides1.html; sed -i 's|<code>|<code class="stretch">|' slides1.html; firefox slides1.html
+asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc; sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' ${SLIDES_FILE}.html; sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' ${SLIDES_FILE}.html; sed -i 's|<code>|<code class="stretch">|' ${SLIDES_FILE}.html; firefox ${SLIDES_FILE}.html
+
