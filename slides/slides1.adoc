@@ -98,6 +98,9 @@ image:{images}/entertain/wtf2.jpg[]
   * concurrent execution of transactions results in a system state that would be obtained if transactions were executed serially (one by one)
  Durablitity
   * durability means that once a transaction completes, all changes made during that transaction become persistent and aren’t lost even if the system subsequently fails
+ My question on if XA is ACID: https://developer.jboss.org/thread/268987
+ On isolation and DBs: https://martin.kleppmann.com/2014/11/25/hermitage-testing-the-i-in-acid.html
+                       https://github.com/ept/hermitage
 --
 
 == Yet another transactions
