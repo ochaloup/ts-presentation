@@ -906,6 +906,7 @@ image:{images}/entertain/pocitac.jpg[]
      ctx.getUserTransaction()`
  ** `java:comp/UserTransaction`
  ** `java:jboss/TransactionManager`
+ ** `java:/TransactionManager`
 
 [NOTE.speaker]
 --
