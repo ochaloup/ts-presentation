@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence">
+   <persistence-unit name="jbossts-crash-rec">
+       <jta-data-source>java:jboss/xa-datasources/CrashRecoveryDS</jta-data-source>
+       <properties>
+           <property name="hibernate.hbm2ddl.auto" value="update"/>
+           <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true"/>
+           <property name="jboss.entity.manager.jndi.name" value="java:jboss/jbossts-crash-rec"/>
+       </properties>
+   </persistence-unit>
+</persistence>

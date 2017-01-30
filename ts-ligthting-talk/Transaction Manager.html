@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<link href="Transaction%20Manager_files/mapjs.css" rel="stylesheet">
+		<link href="Transaction%20Manager_files/mindmup-icons.css" rel="stylesheet">
+<script async="" src="Transaction%20Manager_files/analytics.js"></script><script type="text/javascript">
+if (!Function.prototype.bind) {
+	Function.prototype.bind = function (oThis) {
+		'use strict';
+		if (typeof this !== 'function') {
+			// closest thing possible to the ECMAScript 5 internal IsCallable function
+			throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+		}
+		var aArgs = Array.prototype.slice.call(arguments, 1),
+		fToBind = this,
+		FNOP = function () {},
+		fBound = function () {
+			return fToBind.apply(this instanceof FNOP && oThis ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+		};
+		FNOP.prototype = this.prototype;
+		fBound.prototype = new FNOP();
+		return fBound;
+	};
+}
+Math.sign = Math.sign || function (val) {
+	return val >= 0 ? 1 : -1;
+};
+
+</script>
+		<script src="Transaction%20Manager_files/mapjs-browserified.js"></script>
+		
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="description" content="MindMup mind map: Transaction Manager">
+
+<!-- Schema.org markup for Google+ -->
+<meta itemprop="name" content="Transaction Manager">
+<meta itemprop="description" content="MindMup mind map: Transaction Manager">
+<meta itemprop="image" content="https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager/thumb.png">
+
+<!-- Twitter Card data -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:src" content="https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager/thumb.png">
+<meta name="twitter:site" content="@mindmup">
+<meta name="twitter:url" content="https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager/index.html">
+<meta name="twitter:description" content="MindMup mind map: Transaction Manager">
+<meta name="twitter:title" content="Transaction Manager">
+<meta name="twitter:creator" content="@mindmup">
+
+
+<!-- Open Graph data -->
+
+<meta property="fb:app_id" content="621299297886954">
+<meta property="article:publisher" content="https://www.facebook.com/mindmupapp">
+<meta property="og:site_name" content="MindMup Atlas">
+<meta property="og:title" content="Transaction Manager">
+<meta property="og:description" content="MindMup mind map: Transaction Manager">
+<meta property="og:image" content="https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager/thumb.png">
+<meta property="og:url" content="https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager/index.html">
+<meta property="og:type" content="article">
+
+
+	<style id="themeCSS" type="text/css">.mapjs-node{border-radius:10px;background-color:#E0E0E0;border:1px solid #707070;margin:-1px;box-shadow:2px 2px 2px rgba(7,7,7,0.4);padding:5px;text-align:center;color:#4F4F4F;font:normal normal bold 9pt/11.5pt NotoSans, "Helvetica Neue", Roboto, Helvetica, Arial, sans-serif;}.mapjs-node.mapjs-node-light{color:#4F4F4F;}.mapjs-node.mapjs-node-dark{color:#EEEEEE;}.mapjs-node.mapjs-node-white{color:#000000;}.mapjs-node .mapjs-decorations{position:absolute;right:0;top:-15px;}.mapjs-node.level_1{background-color:#22AAE0;}.mapjs-node.activated{border:2px dashed #22AAE0;margin:-2px;}.mapjs-node.selected{box-shadow:2px 2px 2px rgba(0,0,0,0.9);}.mapjs-node.collapsed{box-shadow:0px 1px 0px #888888,0px 3px 0px #FFFFFF,0px 4px 0px #888888,0px 6px 0px #FFFFFF,0px 7px 0px #888888;}.mapjs-node.collapsed.selected{box-shadow:0px 1px 0px #FFFFFF,0px 3px 0px #888888,0px 6px 0px #FFFFFF,0px 7px 0px #555555,0px 10px 0px #FFFFFF,0px 11px 0px #333333;}</style><title>Transaction Manager</title><script>window.config={"staticAtlasUrl":"https://atlas.mindmup.com/_resources/12/","gaCode":"UA-37452180-14","urlPrefix":"https://atlas.mindmup.com/2016/12/cc048610c5e511e6989b4569a2e0be75/transaction_manager"};</script><style type="text/css">/**
+ * Highlight style classes
+ * .a background color
+ * .b underline
+ * .c underline + font color
+ */
+ 
+@media screen{
+em.diigoHighlight {
+	text-align:inherit;
+	text-decoration: inherit;
+	line-height:inherit;
+	font:inherit;
+	color:inherit;
+	display:inline;
+	position:relative;
+}
+em.diigoHighlight.a_style.mouseOvered {
+	background-color: #ffc62a !important;
+}	
+
+em.diigoHighlight.b_style.mouseOvered, em.diigoHighlight.c_style.mouseOvered {
+	border-bottom: solid 2px #ffc62a;
+}
+	
+em.diigoHighlight.c_style {
+	color: #000099;
+}
+em.diigoHighlight.c_style.mouseOvered {
+	color: #ffc62a;
+}	
+
+em.diigoHighlight.a_style.yellow {
+	background-color: #FF9;
+}
+
+em.diigoHighlight.b_style.yellow, em.diigoHighlight.c_style.yellow {
+	border-bottom: solid 2px #FF9;
+}
+	
+img.diigoHighlight.yellow {/*image highlight*/
+	cursor: pointer; 
+	outline:2px solid #FF9;
+}
+	
+em.diigoHighlight.a_style.blue {
+	background-color: #ABD5FF;
+}
+
+em.diigoHighlight.b_style.blue, em.diigoHighlight.c_style.blue {
+	border-bottom: solid 2px #ABD5FF;
+}
+	
+img.diigoHighlight.blue {/*image highlight*/
+	cursor: pointer; 
+	outline:2px solid #ABD5FF;
+}
+	
+	
+em.diigoHighlight.a_style.green {
+	background-color: #B2E57E;
+}
+
+em.diigoHighlight.b_style.green, em.diigoHighlight.c_style.green {
+	border-bottom: solid 2px #B2E57E;
+}
+
+img.diigoHighlight.green {/*image highlight*/
+	cursor: pointer; 
+	outline:2px solid #B2E57E;
+}	
+	
+	
+em.diigoHighlight.a_style.pink {
+	background-color: #ffcccc;
+}
+
+em.diigoHighlight.b_style.pink, em.diigoHighlight.c_style.pink {
+	border-bottom: solid 2px #ffcccc;
+}
+	
+img.diigoHighlight.pink {/*image highlight*/
+	cursor: pointer; 
+	outline:2px solid #ffcccc;
+}	
+	
+img.diigoHighlight.mouseOvered {
+	cursor: pointer; 
+	outline:2px solid #ffc62a;
+}	
+	
+
+div.diigotb-inline-cloud{
+	position:fixed !important;
+	width:440px !important;
+	height:370px !important;
+	left:0;top:0;
+	background-color:#fef5c7 !important;
+	z-index:9999999999 !important;
+	display:none;
+	-moz-border-radius:15px !important;
+}
+/*  capture image */
+
+.diigotb-body #diigotb-upload-cover{
+	cursor:crosshair!important;
+	z-index:1999999!important;
+	position:fixed!important;
+	left:0!important;
+	top:31px;
+}
+	
+.diigotb-body #diigotb-upload-tip{
+    color: #fff!important;
+    padding:2px 4px!important;
+    position:fixed!important;
+    z-index:11000001!important;
+}
+	
+.diigotb-body #diigotb-upload-select{
+	position:fixed!important;
+	z-index:1000001;
+}
+	
+.diigotb-body #diigotb-upload-resizer{
+	z-index:11000002!important;
+	position:fixed!important;
+	cursor:move!important;
+	border:1px dashed black!important;
+}
+	
+.diigotb-body #currentColor{
+  background-color: #fff!important;
+  width: 37px!important;
+  height: 37px!important;
+  padding: 1px!important;
+  border: 1px solid #2e68e6!important;
+  float: left!important;
+  margin: 0 5px 0 0!important;
+}
+	
+.diigotb-body #currentColor div{
+  width: 37px!important;
+  height: 37px!important;	
+  margin:0!important;
+}
+.diigotb-body .selectPanel{
+	margin-top:5px!important;
+}
+	
+.diigotb-body .colorCell{
+  float: left!important;
+  margin: 0 1px 1px 0!important;
+  border: 1px solid #5f92ff!important;
+  width: 18px!important;
+  height: 18px!important;
+}
+	
+.diigotb-body .colorCell:hover{
+  border: 1px solid #FF9900!important;
+}
+.diigotb-body .colorCell.actived{
+  border: 1px solid #FF9900!important;
+}	
+	
+.diigotb-body .colorCell div{
+  width: 18px!important;
+  height: 18px!important;
+  cursor:pointer!important;
+  margin:0!important;
+}
+
+.diigotb-body .capture-black{background-color:#000!important;}
+.diigotb-body .capture-white{background-color:#fff!important;}
+.diigotb-body .capture-gray{background-color:#808080!important;}
+.diigotb-body .capture-light-gray{background-color:#c0c0c0!important;}
+
+.diigotb-body .capture-red{background-color:#ff0000!important;}
+.diigotb-body .capture-cyan{background-color:#00ffff!important;}
+.diigotb-body .capture-orange{background-color:#ff9900!important;}
+.diigotb-body .capture-blue{background-color:#0000ff!important;}
+
+.diigotb-body .capture-yellow{background-color:#ffff00!important;}
+.diigotb-body .capture-purple{background-color:#9900ff!important;}
+.diigotb-body .capture-green{background-color:#00ff00!important;}
+.diigotb-body .capture-pink{background-color:#ff00ff!important;}
+	
+.diigotb-body #diigotb-colorpanel{
+	background:transparent url(chrome://diigotb/skin/ann-bar-palette-bg-left.png) no-repeat scroll left center!important;
+	display:block;
+	height:55px!important;
+	position:fixed!important;
+	width:180px!important;
+	z-index:11000022!important;
+	margin:0!important;
+}
+	
+.diigotb-body .diigotb-cbg{
+	background:transparent url(chrome://diigotb/skin/ann-bar-palette-bg-right.png) no-repeat scroll right top!important;
+	height:55px!important;
+	line-height:55px!important;
+	padding-left:6px!important;
+	width:180px!important;
+	margin:0!important;
+}
+
+	
+.diigotb-body #currentArrow{
+	background:transparent url(chrome://diigotb/skin/ann-bar-palette-arrow.png) no-repeat scroll 0 0!important;
+	height:6px!important;
+	left:0;
+	position:relative!important;
+	top:-5px;
+	width:7px!important;
+	margin:0!important;
+}
+	
+.diigotb-body #currentArrow._istop{
+	background:transparent url(chrome://diigotb/skin/ann-bar-palette-arrow-down.png) no-repeat scroll 0 0!important;
+	top:51px!important;
+}
+	
+	
+.diigotb-body #diigotb-text-area{
+	position:fixed!important;
+	z-index:11000010!important;
+}
+	
+.diigotb-body .diigotb-text-input{
+	font: 18px/22px Helvetica,Arial,sans-serif!important;
+	border:0px solid #5f92ff!important;
+	z-index:11000011!important;
+}	
+	
+.diigotb-body #diigotb-editpanel{
+	background:transparent url(chrome://diigotb/skin/ann-bar-bg-right.png) no-repeat scroll right center!important;
+	height:35px!important;
+	position: fixed!important;
+	z-index:11000022!important;
+	margin:0!important;
+}
+	
+	
+.diigotb-body .diigotb-btn div{
+	cursor:pointer!important;
+	width:18px!important;
+	height:18px!important;
+	margin:2px!important;
+}
+.diigotb-body .diigotb-btn{
+	width:23px!important;
+	height:23px!important;
+}
+		
+	
+.diigotb-body #diigotb-editpanel .diigotb-bg{
+	background:transparent url(chrome://diigotb/skin/ann-bar-bg-left.png) repeat-x scroll left center!important;
+	height:35px!important;
+	padding-left:6px!important;
+	line-height:35px!important;
+	margin:0!important;
+}
+	
+		
+.diigotb-body div.diigotb-tip{
+	-moz-border-radius:4px 4px 4px 4px;
+	background-color:#f1f2f7;
+	border:1px solid #767676;
+	color:black;
+	display:none;
+	-moz-box-shadow:5px 5px 5px -5px #767676;
+	font:12px Arial,Helvetica,sans-serif;
+	margin:0 !important;
+	padding:3px 6px !important;
+	position:absolute;
+	z-index:2147483647;
+}
+	
+.diigotb-body #diigotb-editpanel div.diigotb-btn{
+	padding:0px!important;
+	display:inline-table!important;
+	margin-bottom:0 !important;
+	margin-left:0 !important;
+	margin-right:0 !important;
+	margin-top:5px;
+}
+	
+	
+.diigotb-body #diigotb-editpanel div.diigotb-sep img{
+	padding:0!important;
+	margin:0!important;
+}
+	
+.diigotb-body #diigotb-editpanel div.diigotb-sep{
+	padding:4px 0!important;
+	display:inline-table!important;
+	margin:0!important;
+	line-height:0 !important;
+}	
+	
+.diigotb-body #diigotb-editpanel div.diigotb-btn.enabled:hover{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-current.png') no-repeat!important;
+}
+	
+.diigotb-body #diigotb-editpanel #diigotb-undo.enabled div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-undo.png') no-repeat center center!important;
+}
+	
+.diigotb-body #diigotb-editpanel div.diigotb-btn.actived{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-current.png') no-repeat!important;
+}
+	
+.diigotb-image-border{
+	border:1px solid #666 !important;
+}
+	
+#diigotb-imagepanel{
+	height:22px!important;
+	position: absolute!important;
+	z-index:11000022!important;
+	margin:0!important;
+}
+
+#diigotb-imagepanel .diigotb-btn{
+	cursor:pointer!important;
+	width:20px!important;
+	height:20px!important;
+	margin:2px!important;
+	float:left !important;
+	background:transparent url(chrome://diigotb/skin/save-image-action-icons.png) no-repeat scroll!important;
+}	
+	
+	
+#diigotb-imagepanel #diigotb-quick-save{
+	background-position:0 0!important;
+}
+		
+#diigotb-imagepanel.processing #diigotb-quick-save{
+	background-position:0 -20px!important;
+	cursor:default!important;
+}
+
+		
+#diigotb-imagepanel.needpremium #diigotb-quick-save{
+	background-position:0 -20px!important;
+	cursor:default!important;
+}	
+
+#diigotb-imagepanel.hassaved #diigotb-quick-save{
+	background-position: -60px 0!important;
+	cursor: pointer !important;
+}
+
+.diigotb-imagetip{
+	background:transparent url(chrome://diigotb/skin/notice-bar-bg-right.png) no-repeat scroll right center !important;
+	height:21px !important;
+	margin:0 !important;
+	position:absolute !important;
+	z-index:11000022 !important;
+	width:106px;
+}
+	
+.diigotb-imagebg{
+	background:transparent url(chrome://diigotb/skin/notice-bar-bg-left.png) repeat-x scroll left center !important;
+	height:21px !important;
+	margin:0 !important;
+	padding-left:6px !important;
+	width:90px;
+}
+	
+.diigotb-imagetip-text{
+	padding-left:20px!important;
+	font:11px/13px Helvetica,Arial,sans-serif!important;
+	color:white!important;
+	line-height:20px!important;
+	float:left;
+}
+	
+.diigotb-imagetip.processing .diigotb-imagetip-text{
+	background:transparent url(chrome://diigotb/skin/processing-fb.gif) no-repeat scroll left center !important;
+}
+	
+.diigotb-imagetip.hassaved .diigotb-imagetip-text{
+	background:transparent url(chrome://diigotb/skin/icon-done.png) no-repeat scroll left center !important;
+}
+	
+.diigotb-border{
+	position: absolute!important;
+	z-index:11000000!important;
+	margin:0!important;
+	background-color: #4b8cdc!important;
+}
+.diigotb-left{
+	width:1px!important;
+}
+.diigotb-right{
+	width:1px!important;
+}
+.diigotb-top{
+	height:1px!important;
+}
+.diigotb-bottom{
+	height:1px!important;
+}
+
+.diigotb-body #diigotb-rect div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-rectangle.png') no-repeat center center!important;
+}	
+.diigotb-body #diigotb-round div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-ellipse.png') no-repeat center center!important;
+}
+.diigotb-body #diigotb-text div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-font.png') no-repeat center center!important;
+}
+	
+.diigotb-body #diigotb-arrow div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-arrow.png') no-repeat center center!important;
+}
+	
+.diigotb-body .diigotb-sep{
+	background: transparent url('chrome://diigotb/skin/ann-bar-bg-separator.png') no-repeat center center!important;
+}
+	
+.diigotb-body #diigotb-undo div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-undo-disabled.png') no-repeat center center!important;
+}
+	
+.diigotb-body #diigotb-capture-save div{
+	background: transparent url('chrome://diigotb/skin/ann-bar-opt-quickly-save.png') no-repeat center center!important;
+}
+	
+	
+	
+.diigotb-body #diigotb-upload-resizer div {
+  position: absolute!important;
+  width: 9px!important;
+  height: 9px!important;
+  /*background-color: white;*/
+  z-index:11000002!important;
+  margin:0px!important;
+  background:transparent url(chrome://diigotb/skin/spot.png) no-repeat scroll left center!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.gleft {
+  left: -9px!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.gtop {
+  top: -9px!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.gright {
+  right: -9px!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.gbottom {
+  bottom: -9px!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.ghor {
+  margin-left: auto!important;
+  margin-right: auto!important;
+  left: 0px!important;
+  right: 0px!important;
+}
+
+.diigotb-body #diigotb-upload-resizer div.gver {
+  margin-top: auto!important;
+  margin-bottom: auto!important;
+  top: 0px!important;
+  bottom: 0px!important;
+}
+	
+.diigotb-body{
+	padding-top: 31px!important;
+}
+	
+.diigotb-body #diigotb-topbar{
+  background: url(chrome://diigotb/skin/topbar-bg.png) left top repeat-x!important;
+  border-bottom: 1px solid #999!important;
+  color: #555!important;
+  font: 12px/18px Helvetica,Arial,sans-serif!important;
+  height: 30px!important;
+  line-height: 30px!important;
+  position: fixed!important;
+  left: 0!important;
+  top: 0!important;
+  text-align:center!important;
+  z-index:1999999!important;
+}
+
+.diigotb-body #diigotb-msg img{
+  margin:0 5px 0 0!important;
+  vertical-align: middle!important;
+}
+	
+.diigotb-body #diigotb-msg{
+	color:#333!important;
+}
+
+.diigotb-body #diigotb-msg a{
+  color: #0044cc!important;
+  text-decoration: none!important;
+}
+
+.diigotb-body #diigotb-msg a:hover{
+  text-decoration: underline!important;
+}
+
+.diigotb-body #diigotb-escLink{
+  display: block!important;
+  float: right!important;
+  margin: 5px 5px 0 0!important;
+  text-decoration: none!important;
+  width: 50px!important;
+  cursor:pointer!important;
+}
+
+.diigotb-body #diigotb-escLink:hover{
+  text-decoration: underline!important;
+}
+
+.diigotb-body #diigotb-escLink span{
+  background: url(chrome://diigotb/skin/esc-right.png) right top no-repeat!important;
+  display: block!important;
+  padding-right: 9px!important;
+}
+
+.diigotb-body #diigotb-escLink span strong{
+  background: url(chrome://diigotb/skin/esc-left.png) left top no-repeat!important;
+  display: block!important;
+  color: #fff!important;
+  font-weight: 700!important;
+  line-height: 20px!important;
+  text-indent:7px!important;
+}
+	
+	
+
+/*highlight label*/
+.diigoHighlight .diigoHighlightLabel sup {
+	font:normal normal normal 8px/8px "lucida grande",tahoma,verdana,arial,sans-serif;
+	text-decoration:none;
+	background-color:inherit;
+	cursor:default;
+}
+	
+body.diigoHiPen.yellow{
+	cursor:url(chrome://diigotb/skin/highlighter-orange.cur), text !important
+}
+	
+body.diigoHiPen.blue{
+	cursor:url(chrome://diigotb/skin/highlighter-blue.cur), text !important
+}
+
+body.diigoHiPen.green{
+	cursor:url(chrome://diigotb/skin/highlighter-green.cur), text !important
+}	
+	
+body.diigoHiPen.pink{
+	cursor:url(chrome://diigotb/skin/highlighter-pink.cur), text !important
+}
+em.diigoHighlight.type_0.commented {	
+	padding-left:30px;
+}
+	
+/*float note*/
+div.diigoHighlight.type_2 {
+	position:absolute;
+	width:29px;
+	height:36px;
+	text-align:center;
+	background:transparent url('chrome://diigotb/skin/float_icon.png') no-repeat 50% 50%;
+	z-index:9996;
+}
+div.diigoHighlight.type_2.mouseOvered {
+	position:absolute;
+	width:37px;
+	height:31px;
+	text-align:center;
+	background:transparent url('chrome://diigotb/skin/float_icon.png') no-repeat;
+	z-index:9996;
+}	
+div.diigoHighlight.type_2 span {
+	color:#000;
+	font:bold 13px Arial, Helvetica, sans-serif;
+	cursor: default;
+	line-height: 37px;
+	text-shadow: #fff 0 1px 0;
+}
+	
+
+div.diigoIcon.commented.TextIcon.diigoEdit{
+	background-repeat:no-repeat !important;
+	background-position:right !important;
+}
+
+	
+div.diigoIcon.commented.ImageIcon.diigoEdit{
+	background-repeat:no-repeat !important;
+	background-position:right !important;
+}
+
+
+/*mouse over effect*/
+/*
+.diigoHighlight.id_190e5778b533dc0fa1b1660653a4f6f5 {outline: 2px dotted green !important;}
+*/
+div.diigoIcon{
+	cursor:pointer !important;
+	margin: 0pt; 
+	padding: 0px 0px 0px 0px;
+	position: absolute;
+	display:none;
+	width: 24px !important; 
+	z-index:999999;
+	height: 23px !important;
+	background: transparent url('chrome://diigotb/skin/edit-highlight.png') no-repeat left;
+}
+
+div.diigoIcon span{
+	color:#000000;
+	display:block;
+	font-family:Helvetica,Arial,sans-serif;
+	font-size:13px;
+	font-weight:700;
+	line-height:18px;
+	text-align:center;
+	text-shadow:0 1px 1px #FFFFFF;
+}
+
+div.diigoIcon.commented.ImageIcon{
+	display:block !important;
+	background-color: transparent !important;
+}
+	
+div.diigoIcon:hover{
+	background-color: transparent !important;
+	background-repeat:no-repeat !important;
+	background-position:right !important;
+}
+	
+div.diigoIcon.commented.TextIcon{
+	display:block !important;
+	left:0;
+	bottom:0;
+}
+	
+div.diigoIcon.commented.public{
+	background: #FFFFFF url('chrome://diigotb/skin/public-annotation.png') no-repeat left;
+}
+
+div.diigoIcon.commented.private{
+	background: #FFFFFF url('chrome://diigotb/skin/private-annotation.png') no-repeat left;
+}
+	
+div.diigoIcon.commented.group{
+	background: #FFFFFF url('chrome://diigotb/skin/group-annotation.png') no-repeat left;
+}
+	
+/*Clip video*/
+div.diigoClipVideo{
+	float:left;
+	height:16px;
+	padding:0 16px 0 6px;
+	background:#f5f5f5 url(chrome://diigotb/skin/toolbar-clip-bg.gif) no-repeat right 0;
+	border:1px solid #ccc;
+	border-bottom-width:0;
+	font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+	z-index:999;
+	position:absolute;
+}
+
+div.diigoClipVideo.clipped {
+  background-position: right -32px; left: 717px; top: 135px;
+}
+
+	div.diigoClipVideo span{
+		font-weight:bold;
+		font-size:10px;
+		line-height:16px;
+		text-decoration:underline;
+		color:#03f;
+		cursor:pointer;
+		margin-right:6px
+	}
+	div.diigoClipVideo span:hover,div.diigoClipVideo span:active{
+		color:#00f
+	}
+	/*.diigolet input{
+		font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+		font-size:9px;
+	}*/
+	
+/*-----------notice msg--------------*/
+.diigotb-notice-img  {
+	float:left!important;
+	height:16px!important;
+	width:16px!important;
+	margin-top:6px!important;
+	margin-right:3px!important;
+}
+.success .diigotb-notice-img{
+	background:url("chrome://diigotb/skin/notice-icons.png") no-repeat scroll 0 0 transparent!important;
+}
+.failed .diigotb-notice-img{
+	background:url("chrome://diigotb/skin/notice-icons.png") no-repeat scroll -16px 0 transparent!important;
+}
+.info .diigotb-notice-img{
+	background:url("chrome://diigotb/skin/notice-icons.png") no-repeat scroll -32px 0 transparent!important;
+}
+.process .diigotb-notice-img{
+	background:url("chrome://diigotb/skin/processing.gif") no-repeat scroll left 0 transparent!important;
+}	
+	
+.diigotb-notice-msg-rt  {
+	background:url("chrome://diigotb/skin/notice-bar-2-bg-left.png") no-repeat scroll left bottom transparent!important;
+	line-height:28px!important;
+	padding-left:10px!important;
+	height:30px!important;
+}
+.failed .diigotb-notice-msg-rt  {
+	background:url("chrome://diigotb/skin/notice-bar-2-bg-left.png") no-repeat scroll left top transparent!important;
+}
+	
+.diigotb-notice-close{
+	float:right!important;
+	height:16px!important;
+	width:16px!important;
+	margin-left:20px!important;
+	margin-top:6px!important;
+	cursor:pointer;
+	background:url("chrome://diigotb/skin/notice-icons.png") no-repeat scroll -48px 0 transparent!important;
+}
+
+.diigotb-notice-close:hover{
+	background-position: -63px 0!important;
+}
+	
+.diigotb-notice-msg  {
+	background:url("chrome://diigotb/skin/notice-bar-2-bg-right.png") no-repeat scroll right bottom transparent!important;
+	float:right!important;
+	height:30px!important;
+	padding:0 11px 0 0!important;
+	border: none!important;
+	margin:0!important;
+	position:fixed!important;
+	font:12px/14px Helvetica,Arial,sans-serif!important;
+	z-index:100000!important;
+}
+.diigotb-notice-msg a {
+	color:#0044cc!important; 
+	text-decoration:underline!important;
+}
+	
+.failed.diigotb-notice-msg  {
+	background:url("chrome://diigotb/skin/notice-bar-2-bg-right.png") no-repeat scroll right top transparent!important;
+}
+	
+}
+
+
+@media print{
+em.diigoHighlight.a, em.diigoHighlight.b, em.diigoHighlight.c {
+	border-bottom:0.5pt dashed Black;
+}
+
+
+/*image highlight*/
+/*no inline comments*/
+img.diigoHighlight {
+	border:0.5pt dashed Black
+}
+
+/*float note*/
+div.diigoHighlight.type_2 {
+	display:none
+}
+div.diigoHighlight.type_2 span {
+	display:none
+}
+}</style><style type="text/css" id="diigo-activeHighlight">dummyRuleForDigg{}</style></head>
+	<body><img class="img-thumb" src="Transaction%20Manager_files/thumb.png">
+	 <style>
+			html, body {
+				height: 100%;
+				overflow:hidden;
+				margin:0;
+				padding:0;
+				-webkit-tap-highlight-color: transparent;
+			}
+			#container {
+				background-color: #FFFFFF;
+				height: 100%;
+				width: 100%;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				margin:0;
+				padding:0;
+				overflow:hidden;
+				-webkit-tap-highlight-color: transparent;
+			}
+			#attachment-container {
+				width:100%;
+				height:100%;
+				min-height: 100%;
+				overflow: hidden;
+				background-color: #E0E0E0;
+			}
+			#attachment {
+				width :94%;
+				height: 95%;
+				width:calc(100% - 100px);
+				height:calc(100% - 100px);
+				margin: 30px;
+				padding: 20px;
+				border: 1px solid #777;
+				border-radius: 10px;
+				background-color: white;
+				overflow: auto;
+				color:#4F4F4F;
+			}
+
+			.close.attachment {
+				top: 12px;
+				right: 10px;
+				border: 1px solid #777;
+				position: fixed;
+				text-align: center;
+				height: 34px;
+				width:34px;
+				background-color: white;
+				border-radius: 18px;
+				font-weight: bold;
+				text-decoration: none;
+				z-index:999;
+				font-family: Arial,Helvetica,sans-serif;
+				font-size: 30px;
+				color:black;
+				box-shadow: 2px 2px 2px #777;
+			}
+			.img-thumb {
+				opacity: 0;
+				z-index: -1;
+				position:absolute;
+			}
+			#attachment iframe {
+				width: calc(100% - 30px);
+				height: calc(100% - 30px);
+				border: 0;
+			}
+			.note {
+				white-space: pre-wrap;
+			}
+	</style>
+		<div id="container" style="overflow-x: auto; overflow-y: auto; " tabindex="1" data-drag-role="container"><div style="position: relative; min-width: 960px; min-height: 459px; width: 960px; height: 459px; transform-origin: left top 0px; transform: translate3d(960px, 1135px, 0px); opacity: 1;" data-mapjs-role="stage"><div data-mapjs-role="reorder-bounds" class="mapjs-reorder-bounds" style="display: none; position: absolute;"></div><div id="node_1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -899px; top: -348px; min-width: 121px;" class="mapjs-node level_1 activated selected" mapjs-level="1"><span data-mapjs-role="title" style="">Transaction Manager</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_3_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -748px; top: -799px; min-width: 102px;" class="mapjs-node level_2" mapjs-level="2"><span data-mapjs-role="title" style="">What is it good for</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_36_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -616px; top: -1064px; min-width: 146px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">When you hear term "transaction" you will probably mind term ACID</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_38_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -440px; top: -1085px; min-width: 30px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">ACID</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a href="#" class="mapjs-note icon-note"></a></div><div class="resize-node"></div></div><div id="node_39_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -380px; top: -1085px; min-width: 89px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">isolation levels:</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://en.wikipedia.org/wiki/Isolation_%28database_systems%29"></a></div><div class="resize-node"></div></div><div id="node_37_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -440px; top: -1017px; min-width: 109px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">BASE transactions</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a href="#" class="mapjs-note icon-note"></a></div><div class="resize-node"></div></div><div id="node_42_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -301px; top: -1026px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">https://neo4j.com/blog/ac...</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://neo4j.com/blog/acid-vs-base-consistency-models-explained/"></a></div><div class="resize-node"></div></div><div id="node_6_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -616px; top: -887px; min-width: 146px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">Managing transactions in app server</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_28_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -440px; top: -949px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">Java SE local transactions</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_29_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -264px; top: -945px; min-width: 109px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">JDBC autocommit:</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-standalone/src/test/java/org/jboss/qa/tspresentation/jdbc/JdbcTest.java"></a></div><div class="resize-node"></div></div><div id="node_16_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -440px; top: -883px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">Implements Java EE spec: JTA (EE 7 - 1.2)</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_18_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -440px; top: -817px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">https://docs.oracle.com/j...</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://docs.oracle.com/javaee/7/api/javax/transaction/package-summary.html"></a></div><div class="resize-node"></div></div><div id="node_7_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -600px; top: -633px; min-width: 92px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">Processing 2PC</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_20_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -478px; top: -758px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">ACID for multiple transactional resources</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_22_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -478px; top: -692px; min-width: 52px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">XA spec:</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="http://pubs.opengroup.org/onlinepubs/009680699/toc.pdf"></a></div><div class="resize-node"></div></div><div id="node_8_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -478px; top: -633px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">XA transaction could be named distributed transaction however we use XA transaction for 2PC processing and distributed transaction is transaction over multiple app servers</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_4_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -748px; top: -367px; min-width: 117px;" class="mapjs-node level_2" mapjs-level="2"><span data-mapjs-role="title" style="">Server configuration</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_10_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -601px; top: -455px; min-width: 135px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">Transaction subsystem</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_11_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -601px; top: -407px; min-width: 74px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">Datasources</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a href="#" class="mapjs-attachment icon-attachment"></a></div><div class="resize-node"></div></div><div id="node_51_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -497px; top: -401px; min-width: 92px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">persistence.xml</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_12_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -601px; top: -348px; min-width: 92px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">JMS subsystem</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a href="#" class="mapjs-attachment icon-attachment"></a></div><div class="resize-node"></div></div><div id="node_13_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -601px; top: -289px; min-width: 105px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">Resource Adapter</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a href="#" class="mapjs-attachment icon-attachment"></a></div><div class="resize-node"></div></div><div id="node_5_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -748px; top: 86px; min-width: 146px;" class="mapjs-node level_2" mapjs-level="2"><span data-mapjs-role="title" style="">Java EE application and transactions</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_43_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -572px; top: -17px; min-width: 24px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">EJB</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_45_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -518px; top: -123px; min-width: 26px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">BMT</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_56_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -462px; top: -230px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">https://github.com/ochalo...</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/ejb/StatelessBmtBean.java"></a></div><div class="resize-node"></div></div><div id="node_57_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -462px; top: -153px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">BMT does not receive transactional context</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_58_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -462px; top: -87px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">Stateful BMT is quite interesting as it could provide share transactional context over several requests</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_46_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -518px; top: 89px; min-width: 26px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">CMT</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_54_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -462px; top: 33px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">https://github.com/ochalo...</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/ejb/TransactionAttributeEjbBean.java"></a></div><div class="resize-node"></div></div><div id="node_49_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -462px; top: 110px; min-width: 146px;" class="mapjs-node level_5" mapjs-level="5"><span data-mapjs-role="title" style="">RuntimeException rollbacks a transaction by default</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_44_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; left: -572px; top: 208px; min-width: 52px;" class="mapjs-node level_3" mapjs-level="3"><span data-mapjs-role="title" style="">CDI bean</span><div data-mapjs-role="decorations" class="mapjs-decorations"></div><div class="resize-node"></div></div><div id="node_53_276a11a1304f44d1" tabindex="0" data-mapjs-role="node" style="display: block; position: absolute; margin-top: 10px; left: -490px; top: 194px; min-width: 146px;" class="mapjs-node level_4" mapjs-level="4"><span data-mapjs-role="title" style="">https://github.com/ochalo...</span><div data-mapjs-role="decorations" class="mapjs-decorations"><a target="_blank" class="mapjs-hyperlink icon-hyperlink" href="https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/cdi/TransactionAttributeCdiBean.java"></a></div><div class="resize-node"></div></div><svg id="connector_1_3_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -899px; top: -799px; width: 263px; height: 481px;"><path class="mapjs-connector" d="M66,465Q66,-20 151,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_3_276a11a1304f44d1_6_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -887px; width: 288px; height: 118px;"><path class="mapjs-connector" d="M56,102Q56,-11 132,23" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_6_276a11a1304f44d1_16_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -616px; top: -887px; width: 332px; height: 52px;"><path class="mapjs-connector" d="M146,23Q146,31 176,27" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_6_276a11a1304f44d1_18_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -616px; top: -887px; width: 332px; height: 111px;"><path class="mapjs-connector" d="M78,23Q78,130 176,95" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_6_276a11a1304f44d1_28_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -616px; top: -949px; width: 332px; height: 110px;"><path class="mapjs-connector" d="M78,85Q78,-32 176,23" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_28_276a11a1304f44d1_29_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -440px; top: -949px; width: 295px; height: 48px;"><path class="mapjs-connector" d="M146,23Q146,35 176,29" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_3_276a11a1304f44d1_7_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -799px; width: 250px; height: 196px;"><path class="mapjs-connector" d="M56,14Q56,214 148,180" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_7_276a11a1304f44d1_8_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -600px; top: -633px; width: 278px; height: 156px;"><path class="mapjs-connector" d="M92,14Q92,111 122,77" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_7_276a11a1304f44d1_20_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -600px; top: -758px; width: 278px; height: 155px;"><path class="mapjs-connector" d="M51,139Q51,-11 122,23" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_7_276a11a1304f44d1_22_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -600px; top: -682px; width: 184px; height: 79px;"><path class="mapjs-connector" d="M51,63Q51,-19 122,15" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_3_276a11a1304f44d1_36_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -1064px; width: 288px; height: 295px;"><path class="mapjs-connector" d="M56,279Q56,-2 132,32" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_36_276a11a1304f44d1_37_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -616px; top: -1064px; width: 295px; height: 88px;"><path class="mapjs-connector" d="M78,32Q78,107 176,72" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_37_276a11a1304f44d1_42_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -440px; top: -1016px; width: 295px; height: 49px;"><path class="mapjs-connector" d="M109,24Q109,24 139,24" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_36_276a11a1304f44d1_38_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -616px; top: -1075px; width: 216px; height: 77px;"><path class="mapjs-connector" d="M146,43Q146,-13 176,15" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_38_276a11a1304f44d1_39_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -440px; top: -1075px; width: 159px; height: 31px;"><path class="mapjs-connector" d="M30,15Q30,15 60,15" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_1_4_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -899px; top: -367px; width: 278px; height: 49px;"><path class="mapjs-connector" d="M66,33Q66,-19 151,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_4_276a11a1304f44d1_10_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -455px; width: 292px; height: 118px;"><path class="mapjs-connector" d="M64,102Q64,-20 147,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_4_276a11a1304f44d1_11_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -397px; width: 231px; height: 60px;"><path class="mapjs-connector" d="M64,44Q64,-19 147,15" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_11_276a11a1304f44d1_51_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -601px; top: -401px; width: 206px; height: 35px;"><path class="mapjs-connector" d="M74,19Q74,9 104,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_4_276a11a1304f44d1_12_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -367px; width: 249px; height: 60px;"><path class="mapjs-connector" d="M64,14Q64,78 147,44" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_4_276a11a1304f44d1_13_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -367px; width: 262px; height: 119px;"><path class="mapjs-connector" d="M64,14Q64,137 147,103" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_1_5_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -899px; top: -348px; width: 307px; height: 482px;"><path class="mapjs-connector" d="M66,14Q66,491 151,457" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_5_276a11a1304f44d1_43_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: -17px; width: 210px; height: 151px;"><path class="mapjs-connector" d="M78,126Q78,-20 176,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_43_276a11a1304f44d1_45_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -572px; top: -123px; width: 90px; height: 136px;"><path class="mapjs-connector" d="M17,120Q17,-20 54,14" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_45_276a11a1304f44d1_56_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -518px; top: -220px; width: 212px; height: 127px;"><path class="mapjs-connector" d="M18,111Q18,-10 56,24" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_45_276a11a1304f44d1_57_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -518px; top: -153px; width: 212px; height: 60px;"><path class="mapjs-connector" d="M26,44Q26,2 56,23" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_45_276a11a1304f44d1_58_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -518px; top: -123px; width: 212px; height: 138px;"><path class="mapjs-connector" d="M26,14Q26,120 56,86" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_43_276a11a1304f44d1_46_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -572px; top: -17px; width: 90px; height: 136px;"><path class="mapjs-connector" d="M17,14Q17,154 54,120" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_46_276a11a1304f44d1_49_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -518px; top: 89px; width: 212px; height: 87px;"><path class="mapjs-connector" d="M26,14Q26,87 56,53" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_46_276a11a1304f44d1_54_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -518px; top: 43px; width: 212px; height: 76px;"><path class="mapjs-connector" d="M26,60Q26,-10 56,24" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_5_276a11a1304f44d1_44_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -748px; top: 86px; width: 238px; height: 152px;"><path class="mapjs-connector" d="M78,23Q78,170 176,136" stroke="#707070" stroke-width="1" fill="transparent"></path></svg><svg id="connector_44_276a11a1304f44d1_53_276a11a1304f44d1" data-mapjs-role="connector" class="mapjs-draw-container" style="left: -572px; top: 204px; width: 238px; height: 49px;"><path class="mapjs-connector" d="M52,18Q52,30 82,24" stroke="#707070" stroke-width="1" fill="transparent"></path></svg></div></div>
+		<div id="attachment-container" class="attachment" style="display: none; ">
+			<div id="attachment" class="attachment" style="display: none; "></div>
+		</div>
+		<a href="#" class="close attachment" style="display: none; ">×</a>
+<script type="text/javascript">
+		window.onload = function () {
+			var container = jQuery('#container'),
+					mindmupMap = jQuery('#mindmup-map'),
+					isTouch = 'ontouchstart' in document.documentElement,
+					mapModel = new MAPJS.MapModel(MAPJS.DOMRender.layoutCalculator, []),
+					fakeImageController = observable({}),
+					fakeMapController = observable({}),
+					layoutThemeStyle = function (mapJson) {
+						var themeJson = mapJson.theme || MAPJS.Themes.default,
+							themeCSS = themeJson && new MAPJS.ThemeProcessor().process(themeJson).css;
+						if (!themeCSS) {
+							return false;
+						}
+						MAPJS.DOMRender.theme = new MAPJS.Theme(themeJson);
+						if (!window.themeCSS) {
+							jQuery('<style id="themeCSS" type="text/css"></style>').appendTo('head').text(themeCSS);
+						}
+						return true;
+					};
+			window.showMap = function (jsonContent) {
+				var idea = MAPJS.content(jsonContent);
+				layoutThemeStyle(jsonContent);
+				fakeMapController.dispatchEvent('mapLoaded', 'internal', idea);
+				mapModel.setIdea(idea);
+			};
+			window.mapModel = mapModel;
+			container.empty().domMapWidget(observable({}), mapModel, isTouch, observable({}), container, _.identity);
+			jQuery('.attachment').hide();
+			mapModel.addEventListener('decorationActionRequested', function (nodeId, decorationType) {
+				var note;
+				if (decorationType === 'note') {
+					note = mapModel.getIdea().getAttrById(nodeId, 'note')
+					if (note && note.text) {
+						$('#attachment').empty();
+						$('#attachment').text(note.text).addClass('note');
+						container.hide();
+						jQuery('.attachment').show();
+					}
+				}
+			});
+			mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+				var embeddableContent = function (contentType) {
+						return contentType && ('application/pdf' === contentType || /^image\//.test(contentType) || /^text\//.test(contentType));
+					};
+
+				if (attachment.contentType == 'application/vnd.google.drive.attachment') {
+					var url = attachment.content.url || attachment.content.embedUrl;
+					if (url) {
+						window.open(url);
+					}
+				} else if (attachment.dataUriEncoded) {
+					$('#attachment').empty().removeClass('note');
+					if (embeddableContent(attachment.contentType)) {
+						$('<iframe>').attr('src', attachment.content).appendTo('#attachment');
+						container.hide();
+						jQuery('.attachment').show();
+					} else {
+						$(document).nodeWithId(nodeId).find('.mapjs-attachment').attr({'download': attachment.name, 'href':attachment.content, 'target': '_blank'});
+					}
+				} else {
+					$('#attachment').html(attachment.content);
+					container.hide();
+					jQuery('.attachment').show();
+				}
+			});
+			jQuery('.close.attachment').click(function () {
+				jQuery('.attachment').hide();
+				$('#attachment').removeClass('note');
+				container.show();
+			});
+			MAPJS.DOMRender.stageMargin = {top: 50, left: 50, bottom: 50, right: 50};
+			mapModel.setEditingEnabled(false);
+			if (mindmupMap.text()) {
+				showMap(JSON.parse(mindmupMap.text()));
+			}
+		};
+</script>
+
+	<textarea style="display:none" id="mindmup-map">{"id":"root","formatVersion":3,"ideas":{"1":{"id":1,"title":"Transaction
+ Manager","attr":{"position":[-900,-348,1]},"ideas":{"1":{"title":"What 
+is it good 
+for","id":"3.276a11a1304f44d1","ideas":{"1":{"title":"Managing 
+transactions in app 
+server","id":"6.276a11a1304f44d1","ideas":{"1":{"title":"Implements Java
+ EE spec: JTA (EE 7 - 
+1.2)","id":"16.276a11a1304f44d1","ideas":{}},"2":{"title":"https://docs.oracle.com/javaee/7/api/javax/transaction/package-summary.html","id":"18.276a11a1304f44d1"},"0.5":{"title":"Java
+ SE local 
+transactions","id":"28.276a11a1304f44d1","ideas":{"1":{"title":"JDBC 
+autocommit: 
+https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-standalone/src/test/java/org/jboss/qa/tspresentation/jdbc/JdbcTest.java","id":"29.276a11a1304f44d1"}}}}},"2":{"title":"Processing
+ 2PC","id":"7.276a11a1304f44d1","ideas":{"1":{"title":"XA transaction 
+could be named distributed transaction however we use XA transaction for
+ 2PC processing and distributed transaction is transaction over multiple
+ app servers","id":"8.276a11a1304f44d1"},"0.5":{"title":"ACID for 
+multiple transactional 
+resources","id":"20.276a11a1304f44d1","ideas":{}},"0.75":{"title":"XA 
+spec: 
+http://pubs.opengroup.org/onlinepubs/009680699/toc.pdf","id":"22.276a11a1304f44d1","ideas":{},"attr":{}}},"attr":{"position":[148.5,166,1]}},"0.5":{"title":"When
+ you hear term \"transaction\" you will probably mind term 
+ACID","id":"36.276a11a1304f44d1","ideas":{"1":{"title":"BASE 
+transactions","id":"37.276a11a1304f44d1","attr":{"note":{"index":15,"text":"Basic
+ Availability\nThe database appears to work most of the 
+time.\n\nSoft-stateStores\ndon’t have to be write-consistent, nor do 
+different replicas have to be mutually consistent all the 
+time.\n\nEventual consistency\nStores exhibit consistency at some later 
+point (e.g., lazily at read 
+time)."}},"ideas":{"1":{"title":"https://neo4j.com/blog/acid-vs-base-consistency-models-explained/","id":"42.276a11a1304f44d1"}}},"0.5":{"title":"ACID","id":"38.276a11a1304f44d1","ideas":{"1":{"title":"isolation
+ levels: 
+https://en.wikipedia.org/wiki/Isolation_(database_systems)","id":"39.276a11a1304f44d1","ideas":{}}},"attr":{"note":{"index":13,"text":"http://stackoverflow.com/questions/3740280/acid-and-database-transactions\n\n\nACID
+ is a set of properties that you would like to apply when modifying a 
+database.\n\nAtomicityConsistencyIsolationDurability\nA transaction is a
+ set of related changes which is used to achieve \nsome of the ACID 
+properties. Transactions are tools to achieve the ACID 
+\nproperties.\nAtomicity means that you can guarantee that all of a 
+transaction \nhappens, or none of it does; you can do complex operations
+ as one single\n unit, all or nothing, and a crash, power failure, 
+error, or anything \nelse won't allow you to be in a state in which only
+ some of the related \nchanges have happened.\nConsistency means that 
+you guarantee that your data will be \nconsistent; none of the 
+constraints you have on related data will ever \nbe violated.\nIsolation
+ means that one transaction cannot read data from another \ntransaction 
+that is not yet completed. If two transactions are executing\n 
+concurrently, each one will see the world as if they were executing 
+\nsequentially, and if one needs to read data that is written by 
+another, \nit will have to wait until the other is finished.\nDurability
+ means that once a transaction is complete, it is \nguaranteed that all 
+of the changes have been recorded to a durable \nmedium (such as a hard 
+disk), and the fact that the transaction has been\n completed is 
+likewise recorded.\nSo, transactions are a mechanism for guaranteeing 
+these properties; \nthey are a way of grouping related actions together 
+such that as a \nwhole, a group of operations can be atomic, produce 
+consistent results, \nbe isolated from other operations, and be durably 
+recorded."}}}}}}},"11":{"title":"Server 
+configuration","id":"4.276a11a1304f44d1","ideas":{"1":{"title":"Transaction
+ 
+subsystem","id":"10.276a11a1304f44d1"},"2":{"title":"Datasources","id":"11.276a11a1304f44d1","ideas":{"1":{"title":"persistence.xml","id":"51.276a11a1304f44d1","ideas":{}}},"attr":{"attachment":{"contentType":"application/vnd.google.drive.attachment","content":{"name":"standalone-full.xads.jts.xml","mimeType":"text/xml","url":"https://drive.google.com/file/d/0B-LRIZQeUx2ceTdPdGgyaFBFcTA/view?usp=drive_web","description":""}}}},"3":{"title":"JMS
+ 
+subsystem","id":"12.276a11a1304f44d1","attr":{"attachment":{"contentType":"application/vnd.google.drive.attachment","content":{"name":"standalone-full.jms-hornetq.xml","mimeType":"text/xml","url":"https://drive.google.com/file/d/0B-LRIZQeUx2cY2Ftemp6TW56Qm8/view?usp=drive_web","description":""}}}},"4":{"title":"Resource
+ 
+Adapter","id":"13.276a11a1304f44d1","attr":{"attachment":{"contentType":"application/vnd.google.drive.attachment","content":{"name":"standalone-full.jms-ibmmq.xml","mimeType":"text/xml","url":"https://drive.google.com/file/d/0B-LRIZQeUx2cYm1ZdWtBTXJQd0U/view?usp=drive_web","description":""}}}}}},"21":{"title":"Java
+ EE application and 
+transactions","id":"5.276a11a1304f44d1","ideas":{"1":{"title":"EJB","id":"43.276a11a1304f44d1","ideas":{"1":{"title":"BMT","id":"45.276a11a1304f44d1","ideas":{"1":{"title":"https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/ejb/StatelessBmtBean.java","id":"56.276a11a1304f44d1"},"2":{"title":"BMT
+ does not receive transactional 
+context","id":"57.276a11a1304f44d1"},"3":{"title":"Stateful BMT is quite
+ interesting as it could provide share transactional context over 
+several 
+requests","id":"58.276a11a1304f44d1"}}},"2":{"title":"CMT","id":"46.276a11a1304f44d1","ideas":{"1":{"title":"RuntimeException
+ rollbacks a transaction by 
+default","id":"49.276a11a1304f44d1"},"0.5":{"title":"https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/ejb/TransactionAttributeEjbBean.java","id":"54.276a11a1304f44d1"}}}}},"2":{"title":"CDI
+ 
+bean","id":"44.276a11a1304f44d1","ideas":{"1":{"title":"https://github.com/ochaloup/ts-presentation/blob/master/ts-presentation-jboss/src/main/java/org/jboss/qa/tspresentation/cdi/TransactionAttributeCdiBean.java","id":"53.276a11a1304f44d1"}}}}}}}},"attr":{},"title":"Transaction
+ Manager","export":{"title":"Transaction 
+Manager","slug":"transaction_manager","description":"MindMup mind map: 
+Transaction Manager"}}</textarea>
+	<p>Created using <a href="https://www.mindmup.com/">MindMup.com</a></p>
+
+	<script type="text/javascript">
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	ga('create', window.config.gaCode, 'auto');
+	ga('send', 'pageview');
+	</script>
+
+	
+
+</body></html>
