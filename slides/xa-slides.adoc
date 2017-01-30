@@ -1,0 +1,241 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: concave
+
+:images: ./images
+
+
+= XA transactions in JBoss EAP
+Ondra Chaloupka / ochaloup@redhat.com
+
+[NOTE.speaker]
+--
+ What to check/What to talk about
+ * 2PC
+ * 3PC
+ * Periodic  recovery
+ * 2PC optimalizations
+ ** presumed rollback optimalization
+ ** read-only optimalization
+ ** one-phase commit optimalization
+ ** LRCO vs. CMR
+ * Narayana log store types (filesystem, hornetq, jdbc)
+ * Operation with log store and jboss cli
+ * JCA multiple datasources in XA
+ JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
+
+ * What is XA (and difference to distributed txn in real)
+ * What is TM good for
+ ** global transaction management
+ ** ejb annotation (txn stuff) management
+ ** TM works all the time as 2PC manager but has some optimalizations (e.g. one-phase commit)
+ * 2PC
+ * 3PC
+ * Periodic  recovery
+ * 2PC optimalizations
+ ** presumed rollback optimalization
+ ** read-only optimalization
+ ** one-phase commit optimalization
+ ** LRCO vs. CMR
+ * Narayana log store types (filesystem, hornetq, jdbc)
+ * Operation with log store and jboss cli
+ * JCA multiple datasources in XA
+ ** JCA - Using tracking=true will make it scream... Assuming you are inside a transaction... WildFly doesn't make use of IronJacamar's tracking feature by default. Further details at http://www.ironjacamar.org/doc/roadto12/txtracking.html
+ ** what is difference to LRCO and one resource as part of global txn
+ * XA protocol is not reliable in all possible stages - see the example where it behaves quite strangely - https://bugzilla.redhat.com/show_bug.cgi?id=1181132#c16
+ ** the thing that Tom describes in comment 17 is that one resource is commited, other is rollbacked during recovery and arjuna only holds a record about this fact - meaning there is a record in object log store that heuristic rollback happened. In fact this is quite specific for CMR in comments but there is description from IBM where XA is explained: http://www-01.ibm.com/support/knowledgecenter/SSGU8G_12.1.0/com.ibm.admin.doc/ids_admin_1069.htm
+--
+
+
+== Motivation
+
+image:{images}/misc/wtf2.jpg[]
+
+[NOTE.speaker]
+--
+I would like provide you a knowledge about XA transactions and their processing in Narayana.
+The aim of this talk is for you understanding how transaction manager processes a transaction
+and how it cope with a fail.
+--
+
+
+== Agenda
+
+* Transaction basics
+* Transaction API of Java EE
+
+
+== Basics
+
+// [%step]
+* Transactions
+* Transactions models
+* ACID (Atomic, Consistent, Isolated, Durable)
+* Resource local vs. Global vs. Distributed
+
+[NOTE.speaker]
+--
+Short summary from the previous sessions.
+https://github.com/ochaloup/ts-presentation/blob/master/slides/
+--
+
+== Basics (cont.)
+
+// [%step]
+* BMT vs. CMT
+* Transaction manager
+* JTA vs. JTS
+
+[NOTE.speaker]
+--
+* Transaction manager is Narayana :-o
+* JTA is high level API, JTS is low level API
+--
+
+== XA transaction
+
+More resources are part of one global transaction.
+
+
+[NOTE.speaker]
+--
+* That's what transaction manager is all about
+* Two phase commit tries to solve the https://en.wikipedia.org/wiki/Two_Generals'_Problem[Two Generals Problem]. There is no full solution to this problem. 2PC is an approximation.
+* There are native "distributed" transactions for particular RDBMS: see http://stackoverflow.com/questions/21109362/how-to-process-distributed-transaction-within-postgresql (native distributed transactions)
+--
+
+== 2 phase commit
+
+```
+transactionalOperation() is a procedure at some client site
+begin() is a remote invocation to the coordinator
+    create global XID
+    return global XID
+XID is added to the thread-local context at the caller
+executeOperation(params) is a remote invocation to a participant site
+    XID is implicitly propagated to the server side thread
+    inform coordinator that this site is a participant
+    execute the operation! (acquiring locks)
+... more operations ....
+commit() is a remote invocation to the coordinator
+    XID is implicitly propagated to the server side thread
+    -------------- 2PC starts here ----------------
+    for all registered participants:
+        prepare(XID) is a remote invocation to each site
+            make sure that the transaction can be committed,
+            usually by writing and flushing a log 
+            return OK
+    gather decisions
+    for all reguistered participants:
+        commit(XID) is a remote invocation to each site
+            log transaction commit
+            (release locks)
+    -------------- 2PC ends here ----------------
+XID is removed from the thread-local context at the caller
+transaction is complete!
+```
+
+[NOTE.speaker]
+--
+Stolen from http://stackoverflow.com/questions/13425824/xa-two-phase-commit-and-execution-in-prepare-phase
+--
+
+== Narayana
+
+image:{images}/logo/narayana-logo.png[]
+
+* Formerly Arjuna Transaction Manager
+* Rewritten code from C/C++
+* http://narayana.io
+
+== Processes of Narayana in JBoss
+
+* Transaction management
+* Transaction reaper
+* Periodic recovery
+
+[NOTE.speaker]
+--
+Transaction management - start transaction, all what we talked in Java EE session
+Transaction reaper - background tread which checks timeout of transaction and could force transaction to abort
+Periodic recovery - runs in cycles (by default each 2 minutes) and cleaning not-finished transactions
+--
+
+=== Transaction reaper in action
+
+[ source, language="txt" ]
+----
+ WARN  [com.arjuna.ats.arjuna] (Transaction Reaper) ARJUNA012117: TransactionReaper::check timeout for TX 0:ffffc0a8655e:-cccc977:55017a45:a281f in state  RUN
+ WARN  [com.arjuna.ats.arjuna] (Transaction Reaper Worker 0) ARJUNA012095: Abort of action id 0:ffffc0a8655e:-cccc977:55017a45:a281f invoked while multiple threads active within it.
+ WARN  [com.arjuna.ats.arjuna] (Transaction Reaper Worker 0) ARJUNA012108: CheckedAction::check - atomic action 0:ffffc0a8655e:-cccc977:55017a45:a281f aborting with 1 threads active!
+ WARN  [com.arjuna.ats.arjuna] (Transaction Reaper Worker 0) ARJUNA012121: TransactionReaper::doCancellations worker Thread[Transaction Reaper Worker 0,5,main] successfully canceled TX 0:ffffc0a8655e:-cccc977:55017a45:a281f
+----
+
+[NOTE.speaker]
+--
+Log from: https://issues.jboss.org/browse/AGPUSH-1320
+Problem of reaper running on background: https://developer.jboss.org/thread/243360
+- some other TM does have configuration option to run reaper on foreground (not in background thread)
+--
+
+=== Periodic Recovery in action
+
+[ source, language="txt" ]
+----
+ WARN  [com.arjuna.ats.jta] (Periodic Recovery) ARJUNA016037: Could not find new XAResource to use for recovering non-serializable XAResource XAResourceRecord < resource:null, txid:< formatId=131077, gtrid_length=39, bqual_length=36, tx_uid=0:ffff96854d53:-362d13b0:54047c43:10, node_name=rk3983node1, branch_uid=0:ffff96854d53:-362d13b0:54047c43:1b, subordinatenodename=null, eis_name=java:jboss/datasources/XATestNode11_Informix_DS >, heuristic: TwoPhaseOutcome.FINISH_OK, product: Informix Dynamic Server/11.50.FC7, jndiName: java:jboss/datasources/XATestNode11_Informix_DS com.arjuna.ats.internal.jta.resources.arjunacore.XAResourceRecord@136e8bfd >
+ WARN  [com.arjuna.ats.jta] (Periodic Recovery) ARJUNA016038: No XAResource to recover < formatId=131077, gtrid_length=39, bqual_length=36, tx_uid=0:ffff96854d53:-362d13b0:54047c43:10, node_name=rk3983node1, branch_uid=0:ffff96854d53:-362d13b0:54047c43:1b, subordinatenodename=null, eis_name=java:jboss/datasources/XATestNode11_Informix_DS >
+----
+
+[NOTE.speaker]
+--
+Problem of JBTM-860 discussed at https://developer.jboss.org/message/902716 (log from there)
+--
+
+== Transaction ID
+
+* global transaction ID (UID)
+
+* resource transaction ID (XID)
+** format (int)
+** global transaction id `byte[]`
+** branch qualifier `byte []`
+
+[NOTE.speaker]
+--
+JTA:
+* http://docs.oracle.com/javaee/7/api/javax/transaction/Transaction.html
+* http://docs.oracle.com/javase/7/docs/api/javax/transaction/xa/Xid.html
+Narayana:
+* com.arjuna.ats.jta.transaction.Transaction implements javax.transaction.Transaction - it's context, bound to thread, enlisting resources, has timeout, has synchronizations
+* com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple implements Transaction interface
+* com.arjuna.ats.internal.jta.transaction.arjunacore.BaseTransaction parent of implementation of UserTransaction and TransactionManager
+* BaseTransaction create an TransactionImple which in constructor creates com.arjuna.ats.arjuna.AtomicAction or rather com.arjuna.ats.arjuna.coordinator.BasicAction
+  which in method BasicAction#End(boolean) manages the 2PC
+  method #End() then calls all resources which are part of the transaction and calls prepare() + commit()
+
+Configuration (i.e. implemenatation to use - JTA or JTS) is done via MBeans.
+This is set in WildFly under transactions (https://github.com/wildfly/wildfly/tree/master/transactions)
+
+UID could contain serialized data - e.g. jndi of datasource or serialized connection that could be restored during recovery
+UID consists transactionNodeIdentifier (configured in transactions subsystem) to differentiate what TM will take care of recovering the transaction if something wrong happens
+  the reason why UID nees node identifier has saved is that XAResource.recover() returns *all* transactions in in-doubt state on the resource - it means *all* transactions which
+  are prepared in database - not imporatnt who creates such transaction (some DBs e.g. postgresql have one transaction log for any account and schema - everything is on one pile)
+XID consists from UID (global id of txn) + ID of resource (branch qualifier)
+branch qualifier is identificator of resource or rather resource manager of the resource - transaction manager is able to join several resources which are part of the transaction
+ (belongs to the same UID) under one branch qualifier. It's where XAResource.isSameRM(XAResource) method plays the role. It informs if two resources belongs to one resource manager
+ and if so TM could join them under one branch qualifier
+--
+
+== References
+
+* Last presentation https://github.com/ochaloup/ts-presentation/blob/master/slides/slides1b.adoc
+* Mike Musgrove presentation https://developer.jboss.org/wiki/JBugcz-1501WildFly9NarayanaTransactions
+* ...
+
+* Bookmarks at https://delicious.com/chalda/ts.presentation-xa
+
+== ?!
+
+image:{images}/misc/cajk.jpg[]
