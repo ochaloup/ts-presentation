@@ -7,7 +7,7 @@
 :images: ./misc
 
 
-= Global transaction in JBoss EAP
+= Transactions in JBoss EAP
 Ondra Chaloupka / ochaloup@redhat.com
 
 
@@ -22,9 +22,149 @@ What you will get in this 15 minutes presentation?
 _Journey of global transaction in JBoss EAP_
 --
 
-== Motivation
+== Basic terminology
 
-...
+* local vs. global transaction
+* JTA spec 1.2 in Java EE 7
+* Narayana
+* JTA vs. JTS
+* XA vs. distributed
+
+[NOTE.speaker]
+--
+https://docs.oracle.com/javaee/7/api/javax/transaction/package-summary.html
+--
+
+== Component interactions overview
+
+image:{images}/ee/ee-component-iteractions.png[role="noborder"]
+
+== Subsystem: transactions
+
+```
+<subsystem xmlns="urn:jboss:domain:transactions:3.1">
+    <core-environment>
+        <process-id>
+            <uuid/>
+        </process-id>
+    </core-environment>
+    <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
+</subsystem>
+```
+
+[NOTE.speaker]
+--
+`./bin/jboss-cli.sh -c --command="/subsystem=transactions:read-resource-description(recursive=true)" | gvim -`
+--
+
+== To enlist
+
+* Datasource
+* JMS resource
+* JCA RAR (inflow) resource
+
+== Transaction enlistment
+
+image:{images}/ee/example-bean-description.png[role="noborder"]
+
+== Datasource
+
+[ source, language="xml" ]
+----
+  <datasource jta="true" jndi-name="java:jboss/datasource-test" pool-name="datasource-test"
+              enabled="true" use-java-context="true" spy="true">
+      <connection-url>jdbc:postgresql://localhost:5432/crashrec</connection-url>
+      <driver>database-jdbc-driver.jar</driver>
+      <security>
+          <user-name>crashrec</user-name>
+          <password>crashrec</password>
+      </security>
+      <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
+  </datasource>
+----
+
+[NOTE.speaker]
+--
+ Note datasource attribute jta here which could be true/false - jta datasource or non-jta datasource
+--
+
+== XA Datasource
+
+[ source, language="xml" ]
+----
+  <xa-datasource jndi-name="java:jboss/xa-datasource-test" pool-name="xa-datasource-test"
+                 enabled="true" spy="true">
+      <xa-datasource-property name="PortNumber">
+          5432
+      </xa-datasource-property>
+      <xa-datasource-property name="ServerName">
+          localhost
+      </xa-datasource-property>
+      <xa-datasource-property name="DatabaseName">
+          crashrec
+      </xa-datasource-property>
+      <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
+      <driver>database-jdbc-driver.jar</driver>
+      <security>
+          <user-name>crashrec</user-name>
+          <password>crashrec</password>
+      </security>
+  </xa-datasource>
+----
+
+[NOTE.speaker]
+--
+ From testing point of view where different databases are used is necessary to know which xa-datasource-property is used
+ in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)
+--
+
+== JMS configuration
+
+[ source, language="xml" ]
+----
+  <jms-connection-factories>
+      <connection-factory name="InVmConnectionFactory">
+          <connectors>
+              <connector-ref connector-name="in-vm"/>
+          </connectors>
+          <entries>
+              <entry name="java:/ConnectionFactory"/>
+          </entries>
+      </connection-factory>
+      <connection-factory name="RemoteConnectionFactory">
+          <connectors>
+              <connector-ref connector-name="http-connector"/>
+          </connectors>
+          <entries>
+              <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
+          </entries>
+      </connection-factory>
+      <pooled-connection-factory name="hornetq-ra">
+          <transaction mode="xa"/>
+          <connectors>
+              <connector-ref connector-name="in-vm"/>
+          </connectors>
+          <entries>
+              <entry name="java:/JmsXA"/>
+              <entry name="java:jboss/DefaultJMSConnectionFactory"/>
+          </entries>
+      </pooled-connection-factory>
+  </jms-connection-factories>
+
+  <jms-destinations>
+      <jms-queue name="ExpiryQueue">
+          <entry name="java:/jms/queue/ExpiryQueue"/>
+      </jms-queue>
+      <jms-queue name="DLQ">
+          <entry name="java:/jms/queue/DLQ"/>
+      </jms-queue>
+  </jms-destinations>
+----
+
+[NOTE.speaker]
+--
+ Messaging is configured only in -full profiles
+--
 
 
 == !
