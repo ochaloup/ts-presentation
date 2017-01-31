@@ -4,20 +4,38 @@
 :revealjs_center: true
 :revealjs_transition: concave
 
-:images: ./images
+:images: ./misc
 
 
-= Byteman basics
+= Global transaction in JBoss EAP
 Ondra Chaloupka / ochaloup@redhat.com
 
 
 == !
 
-image:{images}/misc/wtf2.jpg[role="noborder"]
+image:{images}/entertain/wtf2.jpg[role="noborder"]
 
 [NOTE.speaker]
 --
 What you will get in this 15 minutes presentation?
 
-_Basic introduction to what is Byteman_
+_Journey of global transaction in JBoss EAP_
+--
+
+== Motivation
+
+...
+
+
+== !
+
+image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]
+
+Java Transaction Design Strategies
+
+http://www.infoq.com/minibooks/JTDS
+
+[NOTE.speaker]
+--
+Please submit your talk to our lighting talks schedule.
 --
