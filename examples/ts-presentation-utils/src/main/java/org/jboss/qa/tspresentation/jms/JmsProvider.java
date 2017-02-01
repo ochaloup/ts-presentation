@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class JmsProvider {
     private static final Logger log = LoggerFactory.getLogger(JmsProvider.class);
 
-    private static final long RECEIVE_CALL_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
+    private static final long RECEIVE_CALL_TIMEOUT = TimeUnit.SECONDS.toMillis(15);
     private static final String HOST = ProjectProperties.get(JMS_HOST);
     private static final String PORT = ProjectProperties.get(JMS_PORT);
     private static final String QUEUE_NAME = ProjectProperties.get(JMS_QUEUE);

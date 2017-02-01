@@ -1,0 +1,25 @@
+= On running
+
+There seems to be some troubles with JMS testing with Artemis client 1.5.2. It seems as a race condition but hard to say. Byteman rule could help a little bit
+
+# Create a rule file (`sleep.btm`) with content like
+
+```
+RULE sleeep
+CLASS org.apache.activemq.artemis.core.client.impl.ClientSessionFactoryImpl$SessionFactoryTopologyHandler
+METHOD notifyNodeUp
+#AT ENTRY
+AT LINE 1329
+IF TRUE
+DO
+  System.out.println("sleeping...");
+  Thread.sleep(7000);
+ENDRULE
+```
+
+# Check the ruleset
+ `/opt/byteman/bin/bmcheck.sh -cp /home/ochaloup/presentations/ts-presentation/examples/ts-presentation-standalone/target/test-classes:/home/ochaloup/.m2/repository/org/apache/activemq/artemis-core-client/1.5.2/artemis-core-client-1.5.2.jar ~/presentations/ts-presentation/examples/ts-presentation-standalone/sleep.btm`
+
+# Runt the test with byteman installed
+  `export JAVA_OPTS="-javaagent:/opt/byteman/lib/byteman.jar=script:/home/ochaloup/presentations/ts-presentation/examples/ts-presentation-standalone/sleep.btm"`
+  `mvn test -Dtest=JMSTest#howTo -DargLine="$JAVA_OPTS"`
