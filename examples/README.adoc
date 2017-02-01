@@ -7,7 +7,37 @@
 For test being possible to run you need started PostgreSQL database. All configuration are defined for database on localhost
 with db name `crashrec` and credentials `crashrec/crashrec`.
 
-== Example directories
+
+== Configuration
+
+Configuration is under `ts-presentation-utils/src/main/resources/resource.properties`
+
+=== Standalone part
+
+. Start PosgreSQL server
+. Configure server to show SQL commands in log (Fedora 20)
+   * log_statement = 'all' in `/var/lib/pgsql/data/postgresql.conf` 
+   * logs could be found at: `/var/lib/pgsql/data/pg_log/`
+. Showing all databases from PostgreSQL schema
+   * `SELECT *  FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public' ORDER BY table_type, table_name;`
+. WildFly used as message broker - download WildFly (http://wildfly.org/downloads)
+. export JBOSS_HOME=path/to/unzipped/widfly/distro
+. Define 'guest' user in WildFly server
+   * `echo 'guest=b5d048a237bfd2874b6928e1f37ee15e' >> $JBOSS_HOME/standalone/configuration/application-users.properties`
+   * `echo 'guest=guest' >> $JBOSS_HOME/standalone/configuration/application-roles.properties`
+. Start WildFly as HornetQ server and add testing queue
+   * $JBOSS_HOME/bin/standalone.sh -c standalone-full.xml
+   * $JBOSS_HOME/bin/jboss-cli.sh -c --file=./ts-presentation/ts-presentation-utils/src/main/resources/hornetq-jms-jboss.cli
+
+
+=== Application server part
+
+. Set JBOSS_HOME to WildFly 8.2.0 and Arquillian should do the setting on its own
+. If you want to run with EAP6 then use `-Deap6 -Dno.wildfly` as parameters and set JBOSS_HOME to EAP6 instance
+    (tests were run on wildfly so there could be some incompatibilites ;)
+
+
+== A little bit on directories structure
 
 === lib
 
