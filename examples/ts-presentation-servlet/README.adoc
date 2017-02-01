@@ -1,5 +1,23 @@
-= Commands to run
+= Howtos
 
-`cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/src/main/resources/standalone-full.xml ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/configuration/standalone-full-test.xml`
-`cp ~/presentations/ts-presentation/examples/lib/postgresql*.jar ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/postgresql.jar`
-`cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/target/ts-presentation-servlet.war ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/`
+== Prerequisites
+
+First you need running PostgreSQL database `crashrec`. You need to create table TEST in it.
+
+```
+CREATE TABLE TEST (id INT, a VARCHAR(255))
+```
+
+== Some commands
+
+This is just a bunch of commands to get idea what I was doing but honestly I'm not sure what I was doing ;) 
+
+* `cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/src/main/resources/standalone-full.xml ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/configuration/standalone-full-test.xml`
+* `cp ~/presentations/ts-presentation/examples/lib/postgresql*.jar ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/database-jdbc-driver.jar`
+* `cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/target/ts-presentation-servlet.war ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/`
+* `./bin/standalone.sh -c standalone-full.test.xml`
+* go to `http://localhost:8080/ts-presentation-servlet/`
+
+* get content of message queue
+  `/subsystem=messaging-activemq/server=default/jms-queue=test:read-attribute(name=message-count)`
+

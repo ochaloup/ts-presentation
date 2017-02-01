@@ -44,13 +44,22 @@ public class MyBean {
      * Expecting existence of database table TEST
      * <p>
      * <code>CREATE TABLE TEST (id INT, a VARCHAR(255))</code>
+     * <p>
+     * The purpose of this bean call method is shown what happens when global transaction is started
+     * and there is some non-xa resources plus some non-xa non-jta resources (datasources).<br>
+     * Transaction is marked to rollback even before 2PC starts.<br>
+     * First non-xa datasource is enlisted to transaction as LRCO resource. The second non-xa resource
+     * is neither being enlisted to transaction and is just committed as it is.
+     * <p>
+     * As result of the test we can expect having non-xa+non-jta datasource committed
+     * and non-xa connection factory message processed.
      */
     public void call() {
     	System.out.println("Bean " + this.getClass().getName() + " was called");
 
-    	DatabaseUtil.doInsert(dsxa, TABLE, 1, "dsxa");
-    	DatabaseUtil.doInsert(dsjta, TABLE, 2, "dsjta");
-    	DatabaseUtil.doInsert(dsnonjta, TABLE, 3, "dsjta");
+    	DatabaseUtil.doInsert(dsxa, TABLE, 1, "xa-datasource");
+    	DatabaseUtil.doInsert(dsjta, TABLE, 2, "non-xa-datasource but jta");
+    	DatabaseUtil.doInsert(dsnonjta, TABLE, 3, "non-xa-datasource and no jta");
 
     	JMSUtil.sendMessage(cf, queueExample, "connection factory");
     	JMSUtil.sendMessage(xacf, queueExample, "xa connection factory");
