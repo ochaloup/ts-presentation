@@ -1,0 +1,5 @@
+= Commands to run
+
+`cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/src/main/resources/standalone-full.xml ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/configuration/standalone-full-test.xml`
+`cp ~/presentations/ts-presentation/examples/lib/postgresql*.jar ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/postgresql.jar`
+`cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/target/ts-presentation-servlet.war ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/`

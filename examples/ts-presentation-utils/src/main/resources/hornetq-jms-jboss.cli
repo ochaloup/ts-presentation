@@ -1,0 +1,7 @@
+# $JBOSS_HOME/bin/jboss-cli.sh -c --file=src/main/resources/hornetq-jms-jboss.cli
+/subsystem=messaging/hornetq-server=default/jms-queue="queue/testQueue":add(entries=[java:jboss/queue/testQueue])
+
+# for being able to connect with user guest you need to define such account in EAP configuration
+# this adds user/password guest/guest to application-users.properties config file of EAP
+# echo 'guest=b5d048a237bfd2874b6928e1f37ee15e' >> $JBOSS_HOME/standalone/configuration/application-users.properties
+# echo 'guest=guest' >> $JBOSS_HOME/standalone/configuration/application-roles.properties

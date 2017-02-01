@@ -1,0 +1,14 @@
+# export JBOSS_HOME=$PWD
+# $JBOSS_HOME/bin/jboss-cli.sh -c --file=src/main/resources/artemis-jms-jboss.cli
+# $JBOSS_HOME/bin/jboss-cli.sh -c --command='/subsystem=messaging-activemq/server=default/jms-queue="queue/testQueue":add(entries=[java:jboss/queue/testQueue])'
+/subsystem=messaging-activemq/server=default/jms-queue="queue/testQueue":add(entries=[java:jboss/queue/testQueue])
+
+# ActiveMQ Artemis uses by default ApplicationRealm which takes data from properties file under configuration directory
+# you need to define a user/password and add it to role guest or change the role security settings in activemq
+# subsystem (<security-settings ..). Security should be enabled by default (<security enabled="false"/>).
+# Other option is to disable security and then connect without user/password credentials.
+#
+# for being able to connect with user guest you need to define such account in EAP configuration
+# this adds user/password user/user to application-users.properties config file of EAP with role 'guest'
+# echo 'user=c5568adea472163dfc00c19c6348a665' >> $JBOSS_HOME/standalone/configuration/application-users.properties
+# echo 'user=guest' >> $JBOSS_HOME/standalone/configuration/application-roles.properties

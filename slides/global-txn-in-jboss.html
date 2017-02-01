@@ -46,44 +46,25 @@
   &lt;/xa-datasource&gt;</code></pre></div></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>From testing point of view where different databases are used is necessary to know which xa-datasource-property is used
 in what jdbc driver (e.g. Oracle understand the URL property which is jdbc url and no other database does so)</pre></div></div></aside></section>
-<section id="_jms_configuration"><h2>JMS configuration</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">  &lt;jms-connection-factories&gt;
-      &lt;connection-factory name="InVmConnectionFactory"&gt;
-          &lt;connectors&gt;
-              &lt;connector-ref connector-name="in-vm"/&gt;
-          &lt;/connectors&gt;
-          &lt;entries&gt;
-              &lt;entry name="java:/ConnectionFactory"/&gt;
-          &lt;/entries&gt;
-      &lt;/connection-factory&gt;
-      &lt;connection-factory name="RemoteConnectionFactory"&gt;
-          &lt;connectors&gt;
-              &lt;connector-ref connector-name="http-connector"/&gt;
-          &lt;/connectors&gt;
-          &lt;entries&gt;
-              &lt;entry name="java:jboss/exported/jms/RemoteConnectionFactory"/&gt;
-          &lt;/entries&gt;
-      &lt;/connection-factory&gt;
-      &lt;pooled-connection-factory name="hornetq-ra"&gt;
-          &lt;transaction mode="xa"/&gt;
-          &lt;connectors&gt;
-              &lt;connector-ref connector-name="in-vm"/&gt;
-          &lt;/connectors&gt;
-          &lt;entries&gt;
-              &lt;entry name="java:/JmsXA"/&gt;
-              &lt;entry name="java:jboss/DefaultJMSConnectionFactory"/&gt;
-          &lt;/entries&gt;
-      &lt;/pooled-connection-factory&gt;
-  &lt;/jms-connection-factories&gt;
-
-  &lt;jms-destinations&gt;
-      &lt;jms-queue name="ExpiryQueue"&gt;
-          &lt;entry name="java:/jms/queue/ExpiryQueue"/&gt;
-      &lt;/jms-queue&gt;
-      &lt;jms-queue name="DLQ"&gt;
-          &lt;entry name="java:/jms/queue/DLQ"/&gt;
-      &lt;/jms-queue&gt;
-  &lt;/jms-destinations&gt;</code></pre></div></div>
+<section id="_jms_configuration"><h2>JMS configuration</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml">    &lt;jms-queue name="test" entries="java:/jms/queue/test"/&gt;
+    &lt;connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/&gt;
+    &lt;pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/&gt;
+    &lt;connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/&gt;</code></pre></div></div>
 <aside class="notes"><div class="literalblock"><div class="content"><pre>Messaging is configured only in -full profiles</pre></div></div></aside></section>
+<section id="_persistence_xml"><h2>Persistence.xml</h2><div class="listingblock"><div class="content"><pre class="highlight"><code class="xml language-xml"> &lt;persistence-unit name="MPersistenceUnit" transaction-type="JTA"&gt;
+      &lt;jta-data-source&gt;java:jboss/test-xa&lt;/jta-data-source&gt;
+
+      &lt;properties&gt;
+          &lt;property name="hibernate.dialect"
+                    value="org.hibernate.dialect.PostgreSQL82Dialect"/&gt;
+          &lt;property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" /&gt;
+
+          &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt;
+
+          &lt;property name="hibernate.show_sql" value="true"/&gt;
+          &lt;property name="hibernate.format_sql" value="true"/&gt;
+      &lt;/properties&gt;
+  &lt;/persistence-unit&gt;</code></pre></div></div></section>
 <section><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/cajk.jpg" alt="cajk" height="300"></span></p></div>
 <div class="paragraph"><p>Java Transaction Design Strategies</p></div>
 <div class="paragraph"><p><a href="http://www.infoq.com/minibooks/JTDS" class="bare">http://www.infoq.com/minibooks/JTDS</a></p></div>

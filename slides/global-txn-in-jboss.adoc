@@ -122,49 +122,36 @@ image:{images}/ee/example-bean-description.png[role="noborder"]
 
 [ source, language="xml" ]
 ----
-  <jms-connection-factories>
-      <connection-factory name="InVmConnectionFactory">
-          <connectors>
-              <connector-ref connector-name="in-vm"/>
-          </connectors>
-          <entries>
-              <entry name="java:/ConnectionFactory"/>
-          </entries>
-      </connection-factory>
-      <connection-factory name="RemoteConnectionFactory">
-          <connectors>
-              <connector-ref connector-name="http-connector"/>
-          </connectors>
-          <entries>
-              <entry name="java:jboss/exported/jms/RemoteConnectionFactory"/>
-          </entries>
-      </connection-factory>
-      <pooled-connection-factory name="hornetq-ra">
-          <transaction mode="xa"/>
-          <connectors>
-              <connector-ref connector-name="in-vm"/>
-          </connectors>
-          <entries>
-              <entry name="java:/JmsXA"/>
-              <entry name="java:jboss/DefaultJMSConnectionFactory"/>
-          </entries>
-      </pooled-connection-factory>
-  </jms-connection-factories>
-
-  <jms-destinations>
-      <jms-queue name="ExpiryQueue">
-          <entry name="java:/jms/queue/ExpiryQueue"/>
-      </jms-queue>
-      <jms-queue name="DLQ">
-          <entry name="java:/jms/queue/DLQ"/>
-      </jms-queue>
-  </jms-destinations>
+    <jms-queue name="test" entries="java:/jms/queue/test"/>
+    <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
+    <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
+    <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
 ----
 
 [NOTE.speaker]
 --
  Messaging is configured only in -full profiles
 --
+
+== Persistence.xml
+
+[ source, language="xml" ]
+----
+ <persistence-unit name="MPersistenceUnit" transaction-type="JTA">
+      <jta-data-source>java:jboss/test-xa</jta-data-source>
+
+      <properties>
+          <property name="hibernate.dialect"
+                    value="org.hibernate.dialect.PostgreSQL82Dialect"/>
+          <property name="hibernate.temp.use_jdbc_metadata_defaults" value="true" />
+
+          <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+          <property name="hibernate.show_sql" value="true"/>
+          <property name="hibernate.format_sql" value="true"/>
+      </properties>
+  </persistence-unit>
+----
 
 
 == !
