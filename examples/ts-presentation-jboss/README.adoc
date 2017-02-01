@@ -1,0 +1,7 @@
+= Howtos
+
+* be sure you are running PostgreSQL with database `crashrec` and credentials `crashrec/crashrec`
+* be sure you define `JBOSS_HOME` property
+* be sure you copied jdbc driver to `standalone/deployments` under name defined at `org.jboss.qa.tspresentation.arquillian.TestSetUpObserver`
+* if you want to run against server with HornetQ you need to manually change code - find commented occurences of `/subsystem=messaging/hornetq-server=default`
+

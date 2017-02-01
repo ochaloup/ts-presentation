@@ -39,6 +39,7 @@ public class JoinBranchCheckTest {
                 .addPackage("org.jboss.qa.tspresentation.utils")
                 .addClass(ProjectProperties.class)
                 .addClass(BeanToCheckJoiningBranchQualifier.class)
+                .addClass(BeanToCheckNotJoiningBranchQualifier.class)
                 .addAsManifestResource("beans.xml");
         return jar;
     }
@@ -51,7 +52,7 @@ public class JoinBranchCheckTest {
     /**
      * Two datasources aiming to the same datasource instance.
      * JCA will join it and there will be used the same connection and the same XAResource.
-     * This means that TM will use one phase commit optimalization.
+     * This means that TM will use one phase commit optimization.
      */
     @Test
     public void runInsertionOnePhase() {
@@ -65,7 +66,7 @@ public class JoinBranchCheckTest {
      * {@link com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionImple#isNewRM(XAResource)} is called but
      * it returns false and the two branches are created.
      *
-     * This could be different for other database vendors but jdbc driver of postgres does like:
+     * This could be different for other database vendors but jdbc driver of PostgreSQL does like:
      * public boolean isSameRM(XAResource xares) throws XAException {
      *   return xares == this;
      * }

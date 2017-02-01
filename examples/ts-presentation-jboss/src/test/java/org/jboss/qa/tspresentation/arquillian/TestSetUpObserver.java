@@ -147,7 +147,8 @@ public class TestSetUpObserver {
         }
 
         // JMS queue
-        if(!operations.isDefinedNoOutput("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
+        // if(!operations.isDefinedNoOutput("/subsystem=messaging/hornetq-server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
+        if(!operations.isDefinedNoOutput("/subsystem=messaging-activemq/server=default", new String[] {"jms-queue", ProjectProperties.get(ProjectProperties.JMS_QUEUE)})) {
             operations.addJmsQueue(ProjectProperties.get(ProjectProperties.JMS_QUEUE), ProjectProperties.JMS_QUEUE_JNDI);
         }
 

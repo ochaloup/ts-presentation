@@ -1,0 +1,41 @@
+= Some howto notes
+
+* tests can't be executed directly from examples directory. You are expected to run them by type from the specific directory
+* you can start by compilation of all examples from here
+  `mvn clean install -Dmaven.test.skip.exec=true`
+
+For test being possible to run you need started PostgreSQL database. All configuration are defined for database on localhost
+with db name `crashrec` and credentials `crashrec/crashrec`.
+
+== Example directories
+
+=== lib
+
+Library of jar files useful for testing. Here you can generaly find just postgresql driver that you will copy
+to necessary locations.
+
+=== ts-presentation-utils
+
+Utils classes used in tests. Thease are shared utilities so before tests are run you need first install artifact from
+this directory. That's why is recommended first to install all without executing tests.
+
+=== ts-presentation-standalone
+
+Tests running as standalone application - not inside of container. But for it works you need external resources to be
+set up and running. You need
+
+* database as mentioned above
+* Wildfly with running Artemis ActiveMQ - settings of the queues and other config is described under `ts-presentation-utils/src/main/resources/artemis-jms-jboss.cli`
+
+=== ts-presentation-jboss
+
+Tests running under container. Container is managed by arquillian and before tests are started you need to
+
+* define `JBOSS_HOME` system property
+* copy postgresql driver (see `lib`) to `$JBOSS_HOME/standalone/deployments/database-jdbc-driver.jar`
+
+=== ts-presentation-servlet
+
+No test provided. This just generates a servlet that you need to invoke manually by curl or something. It's about checking behavior of the server that way.
+You will probably need to copy `ts-presentation-servlet/src/main/resources/standalone-full.xml` to `$JBOSS_HOME/standalone/configuration`
+

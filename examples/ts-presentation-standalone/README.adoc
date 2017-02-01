@@ -1,5 +1,7 @@
 = On running
 
+== Troubleshooting
+
 There seems to be some troubles with JMS testing with Artemis client 1.5.2. It seems as a race condition but hard to say. Byteman rule could help a little bit
 
 # Create a rule file (`sleep.btm`) with content like

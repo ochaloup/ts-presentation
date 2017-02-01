@@ -21,7 +21,7 @@
     <jar.library>${project.root.dir}/lib</jar.library>
 
     <!-- Versions -->
-    <version.arquillian.core>1.1.4.Final</version.arquillian.core>
+    <version.arquillian.core>1.1.12.Final</version.arquillian.core>
     <version.checkstyle.plugin>2.10</version.checkstyle.plugin>
     <version.javaee.spec>1.0.0.Final</version.javaee.spec>
     <version.junit>4.11</version.junit>
