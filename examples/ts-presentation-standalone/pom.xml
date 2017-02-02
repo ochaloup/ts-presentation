@@ -22,7 +22,7 @@
   </properties>
 
   <dependencies>
-    <!-- Test utils (HornetQ linked within)-->
+    <!-- Test utils (Artemis ActiveMQ/HornetQ linked within)-->
     <dependency>
         <groupId>org.jboss.qa.tspresentation</groupId>
         <artifactId>ts-presentation-utils</artifactId>

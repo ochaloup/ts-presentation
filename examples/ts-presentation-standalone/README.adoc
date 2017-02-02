@@ -3,6 +3,7 @@
 == Troubleshooting
 
 There seems to be some troubles with JMS testing with Artemis client 1.5.2. It seems as a race condition but hard to say. Byteman rule could help a little bit
+See https://issues.jboss.org/browse/JBEAP-8626 and https://github.com/ochaloup/artemis-client
 
 # Create a rule file (`sleep.btm`) with content like
 
@@ -11,6 +12,7 @@ RULE sleeep
 CLASS org.apache.activemq.artemis.core.client.impl.ClientSessionFactoryImpl$SessionFactoryTopologyHandler
 METHOD notifyNodeUp
 #AT ENTRY
+# the line based on artemis client at version 1.5.2
 AT LINE 1329
 IF TRUE
 DO

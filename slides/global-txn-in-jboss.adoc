@@ -153,6 +153,9 @@ image:{images}/ee/example-bean-description.png[role="noborder"]
   </persistence-unit>
 ----
 
+== Demo?
+
+See https://github.com/ochaloup/ts-presentation/blob/master/examples/ts-presentation-servlet/src/main/java/org/jboss/qa/tspresentation/servlet/MyBean.java
 
 == !
 
