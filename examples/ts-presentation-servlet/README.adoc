@@ -12,12 +12,18 @@ CREATE TABLE TEST (id INT, a VARCHAR(255))
 
 This is just a bunch of commands to get idea what I was doing but honestly I'm not sure what I was doing ;) 
 
-* `cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/src/main/resources/standalone-full.xml ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/configuration/standalone-full-test.xml`
-* `cp ~/presentations/ts-presentation/examples/lib/postgresql*.jar ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/database-jdbc-driver.jar`
-* `cp ~/presentations/ts-presentation/examples/ts-presentation-servlet/target/ts-presentation-servlet.war ~/jboss/wildfly/dist/target/wildfly-11.0.0.Alpha1-SNAPSHOT/standalone/deployments/`
+* `export $JBOSS_HOME=~/jboss/jboss-eap-last`
+* `cp src/main/resources/standalone-full.xml $JBOSS_HOME/standalone/configuration/standalone-full-test.xml`
+* `cp ../lib/postgresql*.jar $JBOSS_HOME/standalone/deployments/database-jdbc-driver.jar`
+* `cp target/ts-presentation-servlet.war $JBOSS_HOME/standalone/deployments/`
+
+On container side
+
 * `./bin/standalone.sh -c standalone-full.test.xml`
 * go to `http://localhost:8080/ts-presentation-servlet/`
+** or with curl `curl -X GET http://localhost:8080/ts-presentation-servlet/`
 
 * get content of message queue
   `/subsystem=messaging-activemq/server=default/jms-queue=test:read-attribute(name=message-count)`
+
 

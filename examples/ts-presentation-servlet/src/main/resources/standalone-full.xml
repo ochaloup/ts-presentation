@@ -33,6 +33,11 @@
         <extension module="org.wildfly.extension.undertow"/>
         <extension module="org.wildfly.iiop-openjdk"/>
     </extensions>
+
+	<system-properties>
+		<property name="com.arjuna.ats.arjuna.allowMultipleLastResources" value="true"/>
+	</system-properties>
+
     <management>
         <security-realms>
             <security-realm name="ManagementRealm">
@@ -88,6 +93,7 @@
             </role-mapping>
         </access-control>
     </management>
+
     <profile>
         <subsystem xmlns="urn:jboss:domain:logging:3.0">
             <console-handler name="CONSOLE">
@@ -373,6 +379,7 @@
                 <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
                 <jms-queue name="test" entries="java:/jms/queue/test"/>
                 <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
+                <pooled-connection-factory name="activemq-nonxa-ra" entries="java:/JmsNonXA" connectors="in-vm" transaction="local"/>
                 <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
                 <connection-factory name="RemoteConnectionFactory" entries="java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector"/>
             </server>
