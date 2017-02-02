@@ -61,7 +61,6 @@ public class ExceptionThrownEjbTestCase {
         if(txManager.getStatus() != Status.STATUS_NO_TRANSACTION) {
             txManager.rollback();
         }
-
     }
 
     @Test

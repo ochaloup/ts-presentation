@@ -654,7 +654,7 @@ public class ManagementOperations {
 
     private void addJmsDestination(final String destinationType, final String destinationName, final String jndiName) throws IOException {
         // ModelNode address = parseAddress("/subsystem=messaging/hornetq-server=default") - this was HornetQ
-    	ModelNode address = parseAddress("/subsystem=messaging-activemq/server=default")
+        ModelNode address = parseAddress("/subsystem=messaging-activemq/server=default")
             .add(destinationType, destinationName);
         ModelNode operation = new ModelNode();
         operation.get(OP_ADDR).set(address);
@@ -664,8 +664,8 @@ public class ManagementOperations {
     }
 
     private void removeJmsDestination(final String destinationType, final String destinationName) throws IOException {
-    	// ModelNode address = parseAddress("/subsystem=messaging/hornetq-server=default") - this was HornetQ
-    	ModelNode address = parseAddress("/subsystem=messaging-activemq/server=default")
+        // ModelNode address = parseAddress("/subsystem=messaging/hornetq-server=default") - this was HornetQ
+        ModelNode address = parseAddress("/subsystem=messaging-activemq/server=default")
             .add(destinationType, destinationName);
         ModelNode operation = new ModelNode();
         operation.get(OP_ADDR).set(address);

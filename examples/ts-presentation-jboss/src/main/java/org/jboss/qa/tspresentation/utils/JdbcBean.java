@@ -42,6 +42,12 @@ public class JdbcBean {
         }
     }
 
+    public void delete(final String tableName) throws SQLException {
+        try(Connection c = datasource.getConnection()) {
+            c.createStatement().executeUpdate("DELETE FROM "+ tableName);
+        }
+    }
+
     /**
      * Looking for id value in column 'id' from table tableName and returning first row
      * of results from the columnNameToReturn
