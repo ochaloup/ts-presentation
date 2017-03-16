@@ -62,7 +62,8 @@ The CAP Theorem (henceforth 'CAP') says that it is impossible to build an implem
 in an asynchronous network that satisfies all of the following three properties:
 
 * *Availability* - will a request made to the data store always eventually complete
-* *Consistency* - will all executions of reads and writes seen by all nodes be atomic or linearizably consistent?
+* *Consistency* - will all executions of reads and writes seen by all nodes be atomic or linearizably consistent
+  we talk here about "atomic consistency" not about consistency of ACID point of view
 * *Partition tolerance* - the network is allowed to drop any messages.
 
 Coined by `Dr. Eric Brewer` by talk `Towards Robust Distributed Systems` in 2000.
@@ -76,6 +77,21 @@ With a blurry precision we can say that *CA* is our well known XA distributed tr
 Here we talk about systems that are not prepared for partition to occur.
 System is one node as single point of failure. You get strong consistency on that node, you get availability
 if that node is not put down.
+
+Scaling - vertical and horizontal
+** Vertical scaling often creates vendor lock, further adding to costs.
+** Horizontal scaling offers more flexibility but is also considerably more complex.
+
+Partitioning - Partitioning is dividing the dataset into smaller distinct independent sets
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
+
+Replication - Replication is making copies of the same data on multiple machines
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
+
+Any horizontal scaling strategy is based on data partitioning; therefore,
+designers are forced to decide between consistency and availability.
 
 And hey, wait a minute I think you will talk about transactions and not about some `read-write storage`.
 Hm... maybe, it's a little bit complicated :)
@@ -102,7 +118,7 @@ networks where one node might fail
 https://henryr.github.io/cap-faq
 --
 
-=== CAP and consensus
+== CAP and consensus
 
 image:{images}/cap/cap-and-consensus.png[role="noborder"]
 
@@ -121,54 +137,31 @@ Several computers (or nodes) achieve consensus if they all agree on some value. 
 * agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
 * electing a leader node to coordinate some higher-level protocol
 
-http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
---
+* CA (consistency + availability). Examples include full strict quorum protocols, such as two-phase commit.
+* CP (consistency + partition tolerance). Examples include majority quorum protocols in which minority partitions are unavailable such as Paxos, ZAB, Raft.
+* AP (availability + partition tolerance). Examples include protocols using conflict resolution, such as Dynamo.
 
+If you don’t want to lose linearizability, you have to make sure you do
+all your reads and writes in one datacenter, which you may call the leader.
 
-== Definition ACID
-
-* *A* for atomicity
-* *C* for consistency
-* *I* for isolation
-* *D* for durability
-
-[NOTE.speaker]
---
-* https://en.wikipedia.org/wiki/ACID
-** set of properties of a (database) transaction
-
-* *Atomic* - "all or nothing", all operations in a transaction succeed or every operation is rolled back
-* *Consistent* - on the completion of a transaction, the database is structurally sound
-  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
-* *Isolated* - transactions do not contend with one another. Contentious access to data is moderated by the database
-  so that transactions appear to run sequentially.
-* *Durable* - The results of applying a transaction are permanent, even in the presence of failures.
---
-
-
-== Definition BASE
-
-* *BA* for basic availability
-* *S* for soft-state
-* *E* for eventual consistency
-
-[NOTE.speaker]
---
-* http://queue.acm.org/detail.cfm?id=1394128
-* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
-
-* *Basic Availability* - The database appears to work most of the time.
-* *Soft-state* - Stores don’t have to be write-consistent, nor do different replicas have to be mutually consistent all the time.
-* *Eventual consistency* - Stores exhibit consistency at some later point (e.g., lazily at read time).
---
-
-
-== ACID and BASE and CAP
-
-[NOTE.speaker]
---
-* ACID - I+C is compound
-** 4 level of isolation -> 3 reads phenomenon
+* Strong consistency models (capable of maintaining a single copy)
+** Linearizable consistency: Under linearizable consistency, all operations appear to have
+   executed atomically in an order that is consistent with the global real-time ordering of operations. (Herlihy & Wing, 1991)
+** Sequential consistency: Under sequential consistency, all operations appear to have executed
+   atomically in some order that is consistent with the order seen at individual nodes and that is equal at all nodes. (Lamport, 1979)
+*** Paxos. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems.
+    It is used in many of Google's systems, including the Chubby lock manager used by BigTable/Megastore,
+    the Google File System as well as Spanner.
+*** ZAB. ZAB - the Zookeeper Atomic Broadcast
+*** Raft - easier Paxos
+* Weak consistency models (not strong)
+** Client-centric consistency models: many kinds of consistency models that are client-centric
+** Causal consistency: strongest model available, strongest is global causal+ consistency
+   – global as in needing to coordinate across datacenters, and the ‘+‘ to indicate that we care about convergence
+** Eventual consistency models
+*** Eventual consistency with probabilistic guarantees : Amazon's Dynamo
+   (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
+*** Eventual consistency with strong guarantees : CRDT, CALM
 
 * CAP
 ** Availability has multiple forms - CAP talks about total availability
@@ -181,13 +174,108 @@ http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
 *** causal consistency - when server goes down particular client can see error but other clients can continue to work on other servers
 *** eventual consistency - data is distributed to (all) servers at the end (someday)
 
-https://en.wikipedia.org/wiki/Consistency_model
+* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+* https://en.wikipedia.org/wiki/Consistency_model
+* https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
+* http://thesecretlivesofdata.com/raft
+* https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
+* http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
+* http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
+* http://the-paper-trail.org/blog/consensus-protocols-paxos
+* http://book.mixu.net/distsys/single-page.html
+--
+
+
+== Definition ACID
+
+* *A* for atomicity
+* *C* for consistency
+* *I* for isolation
+* *D* for durability
+
+[NOTE.speaker]
+--
+** set of properties of a (database) transaction
+
+* *Atomic* - "all or nothing", all operations in a transaction succeed or every operation is rolled back
+* *Consistent* - on the completion of a transaction, the database is structurally sound
+  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
+* *Isolated* - transactions do not contend with one another. Contentious access to data is moderated by the database
+  so that transactions appear to run sequentially.
+* *Durable* - The results of applying a transaction are permanent, even in the presence of failures.
+
+* https://en.wikipedia.org/wiki/ACID
+--
+
+
+== ACID vs. CAP consistency
+
+_ACID consistency_ *!=* _CAP consistency_
+
+[NOTE.speaker]
+--
+* ACID - I+C is compound
+** 4 level of isolation -> 3 reads phenomenon
+
+* https://en.wikipedia.org/wiki/Isolation_(database_systems)
+* https://en.wikipedia.org/wiki/Consistency_(database_systems)
+* https://en.wikipedia.org/wiki/Consistency_model
+* https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew
+--
+
+
+== Definition BASE
+
+* *BA* for basic availability
+* *S* for soft-state
+* *E* for eventual consistency
+
+[NOTE.speaker]
+--
+* *Basic Availability* - The database appears to work most of the time.
+* *Soft-state* - Stores don’t have to be write-consistent, nor do different replicas have to be mutually consistent all the time.
+* *Eventual consistency* - Stores exhibit consistency at some later point (e.g., lazily at read time).
+
+BASE properties are much looser than ACID guarantees, but there isn’t a direct one-for-one mapping between the two consistency models.
+
+We can observe BASE tranaction (not the ACID one) on many NoSQL databases.
+* https://neo4j.com/blog/acid-vs-base-consistency-models-explained
+* https://neo4j.com/blog/aggregate-stores-tour/
+
+* http://queue.acm.org/detail.cfm?id=1394128
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+--
+
+== _Distributed_ BASE transactions
+
+An available transaction
+
+[NOTE.speaker]
+--
+BASE is a way how to get a distributed transaction (transaction over multiple resources/databases) being available.
+
+* Technique known as 2PC (two-phase commit) for providing ACID guarantees across multiple database instances.
+* ACID provides the consistency choice for partitioned databases, then how do you achieve availability instead? One answer is BASE.
+
+* If you want Serializable Isolation level then you should take a look on the http://research.google.com/pubs/pub36726.html[Percolator's transactions].
+  The Percolator's transactions are quite known in the industry and have been used in the https://aws.amazon.com/blogs/aws/dynamodb-transaction-library/[Amazon's DynamoDB transaction library], in the https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/[CockroachDB database]
+  and in the Google's Pecolator system itself. http://rystsov.info/2016/03/02/cross-shard-txs.html[A step-by-step visualization] of the Percolator's transactions may help you to understand it.
+* If you expect contention and can deal with Read Committed isolation level then http://www.bailis.org/papers/ramp-sigmod2014.pdf[RAMP transactions by Peter Bailis] may suit you.
+  I also created http://rystsov.info/2016/04/07/ramp.html[a step-by-step RAMP visualization].
+* The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas paper]
+  but became more actual with the raise of distributed systems.
+
+* http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510
+* https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
+* https://www.youtube.com/watch?v=53DVkaW5Fb0
+* https://www.youtube.com/watch?v=xDuwrtwYHu8
 --
 
 == MSA and weak consistency
 
 [NOTE.speaker]
 --
+* https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs/
 * http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs : Why distributed transactions are bad in MSA
 * http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA
 * http://debezium.io : Red Hat to event source things from DB
