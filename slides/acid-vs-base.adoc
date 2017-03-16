@@ -1,0 +1,213 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: concave
+
+:images: ./misc
+
+
+= ACID vs. BASE
+Ondra Chaloupka / ochaloup@redhat.com
+
+[NOTE.speaker]
+--
+Ideas to talk about
+
+* distributed (XA) transactions
+** 2PL (two phase locking)
+** OCC (optimistic concurrency control)
+--
+
+
+== !
+
+image:{images}/entertain/wtf2.jpg[role="noborder"]
+
+[NOTE.speaker]
+--
+What you will get in this 15 minutes presentation?
+
+_Find what buzzwords you should look at in your spare time :)_
+
+...ok let's redefine
+
+_I'll try to give you some idea about transactions processing distributed systems_
+--
+
+
+== What's wrong with ACID?
+
+image:{images}/entertain/wtf.jpg[role="noborder"]
+
+[NOTE.speaker]
+--
+...nothing ;-)
+
+Distributed systems with the CAP theorem
+--
+
+
+== CAP
+
+* *C* for consistency
+* *A* for availability
+* *P* for partition tolerance
+
+_Just two properties could be true_
+
+[NOTE.speaker]
+--
+The CAP Theorem (henceforth 'CAP') says that it is impossible to build an implementation of read-write storage
+in an asynchronous network that satisfies all of the following three properties:
+
+* *Availability* - will a request made to the data store always eventually complete
+* *Consistency* - will all executions of reads and writes seen by all nodes be atomic or linearizably consistent?
+* *Partition tolerance* - the network is allowed to drop any messages.
+
+Coined by `Dr. Eric Brewer` by talk `Towards Robust Distributed Systems` in 2000.
+Seth Gilbert and Professor Nancy Lynch formalized in 2002.
+
+It's a popular and fairly useful way to think about tradeoffs in the guarantees that a system design makes.
+
+In _normal_ distributed system we can't take off *P* - we are limited for *CP* or *AP*.
+
+With a blurry precision we can say that *CA* is our well known XA distributed transactions 2PC aka. ACID +
+Here we talk about systems that are not prepared for partition to occur.
+System is one node as single point of failure. You get strong consistency on that node, you get availability
+if that node is not put down.
+
+And hey, wait a minute I think you will talk about transactions and not about some `read-write storage`.
+Hm... maybe, it's a little bit complicated :)
+
+https://henryr.github.io/cap-faq
+http://book.mixu.net/distsys/single-page.html
+https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+--
+
+
+=== FLP
+
+FLP talks on problem of consensus
+
+having all nodes agree on a common value - is unsolvable in general in asynchronous
+networks where one node might fail
+
+[NOTE.speaker]
+--
+* FLP permits the possibility of one 'failed' node which is totally partitioned from the network and does not have to respond to requests.
+* Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
+* FLP deals with consensus, which is a similar but different problem to atomic storage.
+
+https://henryr.github.io/cap-faq
+--
+
+=== CAP and consensus
+
+image:{images}/cap/cap-and-consensus.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Several computers (or nodes) achieve consensus if they all agree on some value. More formally:
+
+. Agreement: Every correct process must agree on the same value.
+. Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.
+. Termination: All processes eventually reach a decision.
+. Validity: If all correct processes propose the same value V, then all correct processes decide V.
+
+2PC is consensus protocol - some possible uses of consensus are:
+* deciding whether or not to commit a transaction to a database
+* synchronising clocks by agreeing on the current time
+* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
+* electing a leader node to coordinate some higher-level protocol
+
+http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
+--
+
+
+== Definition ACID
+
+* *A* for atomicity
+* *C* for consistency
+* *I* for isolation
+* *D* for durability
+
+[NOTE.speaker]
+--
+* https://en.wikipedia.org/wiki/ACID
+** set of properties of a (database) transaction
+
+* *Atomic* - "all or nothing", all operations in a transaction succeed or every operation is rolled back
+* *Consistent* - on the completion of a transaction, the database is structurally sound
+  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
+* *Isolated* - transactions do not contend with one another. Contentious access to data is moderated by the database
+  so that transactions appear to run sequentially.
+* *Durable* - The results of applying a transaction are permanent, even in the presence of failures.
+--
+
+
+== Definition BASE
+
+* *BA* for basic availability
+* *S* for soft-state
+* *E* for eventual consistency
+
+[NOTE.speaker]
+--
+* http://queue.acm.org/detail.cfm?id=1394128
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+
+* *Basic Availability* - The database appears to work most of the time.
+* *Soft-state* - Stores don’t have to be write-consistent, nor do different replicas have to be mutually consistent all the time.
+* *Eventual consistency* - Stores exhibit consistency at some later point (e.g., lazily at read time).
+--
+
+
+== ACID and BASE and CAP
+
+[NOTE.speaker]
+--
+* ACID - I+C is compound
+** 4 level of isolation -> 3 reads phenomenon
+
+* CAP
+** Availability has multiple forms - CAP talks about total availability
+** Consistency has multiple forms - CAP talks about linearizability (strict consistency)
+
+* DB consistency studies - e.g. Read skew
+* CAP - consistency, availability, partition tolerance
+** atomic consistency - it's hardly bound to be lineralizable
+** weaker consistency - relaxing CAP
+*** causal consistency - when server goes down particular client can see error but other clients can continue to work on other servers
+*** eventual consistency - data is distributed to (all) servers at the end (someday)
+
+https://en.wikipedia.org/wiki/Consistency_model
+--
+
+== MSA and weak consistency
+
+[NOTE.speaker]
+--
+* http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs : Why distributed transactions are bad in MSA
+* http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA
+* http://debezium.io : Red Hat to event source things from DB
+* https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci : Kafemlejnek.tv
+* http://programio.havrlant.cz/kafka : Lukáš Havrlant blog
+--
+
+
+== !
+
+image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]
+
+Distributed systems: for fun and profit
+
+http://book.mixu.net/distsys
+
+[NOTE.speaker]
+--
+Please submit your talk to our lighting talks schedule.
+
+* and yes http://dataintensive.net : book Design Data-intensive Applications
+* and yes http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+--
