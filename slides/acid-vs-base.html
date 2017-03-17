@@ -1,0 +1,192 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="author" content="Ondra Chaloupka / ochaloup@redhat.com"><title>ACID vs. BASE</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/redhat.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section class="title"><h1>ACID vs. BASE</h1><p class="author"><small>Ondra Chaloupka / ochaloup@redhat.com</small></p></section><section><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/wtf2.jpg" alt="wtf2"></span></p></div>
+<aside class="notes"><div class="paragraph"><p>What you will get in this 15 minutes presentation?</p></div>
+<div class="paragraph"><p><em>Find what buzzwords you should look at in your spare time :)</em></p></div>
+<div class="paragraph"><p>&#8230;&#8203;ok let&#8217;s redefine</p></div>
+<div class="paragraph"><p><em>you will get a brief overview of transactions processing in distributed systems</em></p></div>
+<div class="paragraph"><p>Disclaimer:</p></div>
+<div class="ulist"><ul><li><p>this presentation is an overview of many topics</p></li><li><p>it contains simplifications and expect more study of the presented topics</p></li><li><p>texts cited here comes from different sources - resources linked at all places</p></li></ul></div></aside></section>
+<section id="_what_s_wrong_with_acid"><h2>What&#8217;s wrong with ACID?</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/wtf.jpg" alt="wtf"></span></p></div>
+<aside class="notes"><div class="paragraph"><p>&#8230;&#8203;nothing ;-)</p></div>
+<div class="paragraph"><p>Distributed systems with the CAP theorem</p></div></aside></section>
+<section><section id="_cap"><h2>CAP</h2><div class="ulist"><ul><li><p><strong>C</strong> for consistency</p></li><li><p><strong>A</strong> for availability</p></li><li><p><strong>P</strong> for partition tolerance</p></li></ul></div><div class="paragraph"><p><em>Just two properties could be true</em></p></div><aside class="notes"><div class="paragraph"><p>The CAP Theorem (henceforth 'CAP') says that it is impossible to build an implementation of read-write storage
+in an asynchronous network that satisfies all of the following three properties:</p></div>
+<div class="ulist"><ul><li><p><strong>Availability</strong> - will a request made to the data store always eventually complete</p></li><li><p><strong>Consistency</strong> - will all executions of reads and writes seen by all nodes be atomic or linearizably consistent
+we talk here about "atomic consistency" not about consistency of ACID point of view</p></li><li><p><strong>Partition tolerance</strong> - the network is allowed to drop any messages.</p></li></ul></div>
+<div class="paragraph"><p>Coined by <code>Dr. Eric Brewer</code> by talk <code>Towards Robust Distributed Systems</code> in 2000.
+Seth Gilbert and Professor Nancy Lynch formalized in 2002.</p></div>
+<div class="paragraph"><p>It&#8217;s a popular and fairly useful way to think about tradeoffs in the guarantees that a system design makes.</p></div>
+<div class="paragraph"><p>In <em>normal</em> distributed system we can&#8217;t take off <strong>P</strong> - we are limited for <strong>CP</strong> or <strong>AP</strong>.</p></div>
+<div class="paragraph"><p>With a blurry precision we can say that <strong>CA</strong> is our well known XA distributed transactions 2PC aka. ACID<br>
+Here we talk about systems that are not prepared for partition to occur.
+System is one node as single point of failure. You get strong consistency on that node, you get availability
+if that node is not put down.</p></div>
+<div class="paragraph"><p>Scaling - vertical and horizontal
+<strong> Vertical scaling often creates vendor lock, further adding to costs.
+</strong> Horizontal scaling offers more flexibility but is also considerably more complex.</p></div>
+<div class="paragraph"><p>Partitioning - Partitioning is dividing the dataset into smaller distinct independent sets
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed</p></div>
+<div class="paragraph"><p>Replication - Replication is making copies of the same data on multiple machines
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed</p></div>
+<div class="paragraph"><p>Any horizontal scaling strategy is based on data partitioning; therefore,
+designers are forced to decide between consistency and availability.</p></div>
+<div class="paragraph"><p>And hey, wait a minute I think you will talk about transactions and not about some <code>read-write storage</code>.
+Hm&#8230;&#8203; maybe, it&#8217;s a little bit complicated :)</p></div>
+<div class="paragraph"><p><a href="https://henryr.github.io/cap-faq" class="bare">https://henryr.github.io/cap-faq</a>
+<a href="http://book.mixu.net/distsys/single-page.html" class="bare">http://book.mixu.net/distsys/single-page.html</a>
+<a href="https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html" class="bare">https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html</a></p></div></aside></section><section id="_flp"><h2>FLP</h2><div class="paragraph"><p>FLP talks on problem of consensus</p></div>
+<div class="paragraph"><p>having all nodes agree on a common value - is unsolvable in general in asynchronous
+networks where one node might fail</p></div>
+<aside class="notes"><div class="ulist"><ul><li><p>FLP permits the possibility of one 'failed' node which is totally partitioned from the network and does not have to respond to requests.</p></li><li><p>Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.</p></li><li><p>FLP deals with consensus, which is a similar but different problem to atomic storage.</p></li></ul></div>
+<div class="paragraph"><p><a href="https://henryr.github.io/cap-faq" class="bare">https://henryr.github.io/cap-faq</a></p></div></aside></section></section>
+<section id="_cap_and_consensus"><h2>CAP and consensus</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/cap/cap-and-consensus.png" alt="cap and consensus"></span></p></div>
+<aside class="notes"><div class="paragraph"><p>Several computers (or nodes) achieve consensus if they all agree on some value. More formally:</p></div>
+<div class="olist arabic"><ol class="arabic"><li><p>Agreement: Every correct process must agree on the same value.</p></li><li><p>Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.</p></li><li><p>Termination: All processes eventually reach a decision.</p></li><li><p>Validity: If all correct processes propose the same value V, then all correct processes decide V.</p></li></ol></div>
+<div class="paragraph"><p>2PC is consensus protocol - some possible uses of consensus are:
+* deciding whether or not to commit a transaction to a database
+* synchronising clocks by agreeing on the current time
+* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
+* electing a leader node to coordinate some higher-level protocol</p></div>
+<div class="paragraph"><p>Why not 2PC (<a href="http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava" class="bare">http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava</a>)</p></div>
+<div class="ulist"><ul><li><p>Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
+the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
+than clients and resources then the system is also unavailable.</p></li><li><p>Another problem of the algorithm is its blocking nature: once a resource has sent an agreement message to the coordinator,
+it will block until a commit or rollback is received. As a result the system can&#8217;t use all the potential of the hardware it uses.</p></li><li><p>CA (consistency + availability). Examples include full strict quorum protocols, such as two-phase commit.</p></li><li><p>CP (consistency + partition tolerance). Examples include majority quorum protocols in which minority partitions are unavailable such as Paxos, ZAB, Raft.</p></li><li><p>AP (availability + partition tolerance). Examples include protocols using conflict resolution, such as Dynamo.</p></li></ul></div>
+<div class="paragraph"><p>If you don’t want to lose linearizability, you have to make sure you do
+all your reads and writes in one datacenter, which you may call the leader.</p></div>
+<div class="ulist"><ul><li><p>Strong consistency models (capable of maintaining a single copy)</p><div class="ulist"><ul><li><p>Linearizable consistency: Under linearizable consistency, all operations appear to have
+executed atomically in an order that is consistent with the global real-time ordering of operations. (Herlihy &amp; Wing, 1991)</p></li><li><p>Sequential consistency: Under sequential consistency, all operations appear to have executed
+atomically in some order that is consistent with the order seen at individual nodes and that is equal at all nodes. (Lamport, 1979)</p><div class="ulist"><ul><li><p>Paxos. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems.
+It is used in many of Google&#8217;s systems, including the Chubby lock manager used by BigTable/Megastore,
+the Google File System as well as Spanner.</p></li><li><p>ZAB. ZAB - the Zookeeper Atomic Broadcast</p></li><li><p>Raft - easier Paxos</p></li></ul></div></li></ul></div></li><li><p>Weak consistency models (not strong)</p><div class="ulist"><ul><li><p>Client-centric consistency models: many kinds of consistency models that are client-centric</p></li><li><p>Causal consistency: strongest model available, strongest is global causal+ consistency
+– global as in needing to coordinate across datacenters, and the ‘+‘ to indicate that we care about convergence</p></li><li><p>Eventual consistency models</p><div class="ulist"><ul><li><p>Eventual consistency with probabilistic guarantees : Amazon&#8217;s Dynamo
+(LinkedIn&#8217;s Voldemort, Facebook&#8217;s Cassandra and Basho&#8217;s Riak based on that)</p></li><li><p>Eventual consistency with strong guarantees : CRDT, CALM</p></li></ul></div></li></ul></div></li><li><p>CAP</p><div class="ulist"><ul><li><p>Availability has multiple forms - CAP talks about total availability</p></li><li><p>Consistency has multiple forms - CAP talks about linearizability (strict consistency)</p></li></ul></div></li><li><p>DB consistency studies - e.g. Read skew</p></li><li><p>CAP - consistency, availability, partition tolerance</p><div class="ulist"><ul><li><p>atomic consistency - it&#8217;s hardly bound to be lineralizable</p></li><li><p>weaker consistency - relaxing CAP</p><div class="ulist"><ul><li><p>causal consistency - when server goes down particular client can see error but other clients can continue to work on other servers</p></li><li><p>eventual consistency - data is distributed to (all) servers at the end (someday)</p></li></ul></div></li></ul></div></li><li><p><a href="https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html" class="bare">https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Consistency_model" class="bare">https://en.wikipedia.org/wiki/Consistency_model</a></p></li><li><p><a href="https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads" class="bare">https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads</a></p></li><li><p><a href="http://thesecretlivesofdata.com/raft" class="bare">http://thesecretlivesofdata.com/raft</a></p></li><li><p><a href="https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution" class="bare">https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution</a></p></li><li><p><a href="http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit" class="bare">http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit</a></p></li><li><p><a href="http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit" class="bare">http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit</a></p></li><li><p><a href="http://the-paper-trail.org/blog/consensus-protocols-paxos" class="bare">http://the-paper-trail.org/blog/consensus-protocols-paxos</a></p></li><li><p><a href="http://book.mixu.net/distsys/single-page.html" class="bare">http://book.mixu.net/distsys/single-page.html</a></p></li></ul></div></aside></section>
+<section id="_definition_acid"><h2>Definition ACID</h2><div class="ulist"><ul><li><p><strong>A</strong> for atomicity</p></li><li><p><strong>C</strong> for consistency</p></li><li><p><strong>I</strong> for isolation</p></li><li><p><strong>D</strong> for durability</p></li></ul></div>
+<aside class="notes"><div class="ulist"><ul><li><p>set of properties of a (database) transaction</p><div class="ulist"><ul><li><p><strong>Atomic</strong> - "all or nothing", all operations in a transaction succeed or every operation is rolled back</p></li><li><p><strong>Consistent</strong> - on the completion of a transaction, the database is structurally sound
+that covers e.g. preserve foreign keys, uniqueness defined by schema etc.</p></li><li><p><strong>Isolated</strong> - transactions do not contend with one another. Contentious access to data is moderated by the database
+so that transactions appear to run sequentially.</p></li><li><p><strong>Durable</strong> - The results of applying a transaction are permanent, even in the presence of failures.</p></li><li><p><a href="https://en.wikipedia.org/wiki/ACID" class="bare">https://en.wikipedia.org/wiki/ACID</a></p></li></ul></div></li></ul></div></aside></section>
+<section id="_acid_vs_cap_consistency"><h2>ACID vs. CAP consistency</h2><div class="paragraph"><p><em>ACID consistency</em> <strong>!=</strong> <em>CAP consistency</em></p></div>
+<aside class="notes"><div class="ulist"><ul><li><p>ACID - I+C is compound</p><div class="ulist"><ul><li><p>4 level of isolation &#8594; 3 reads phenomenon</p></li></ul></div></li><li><p><a href="https://en.wikipedia.org/wiki/Isolation_(database_systems" class="bare">https://en.wikipedia.org/wiki/Isolation_(database_systems</a>)</p></li><li><p><a href="https://en.wikipedia.org/wiki/Consistency_(database_systems" class="bare">https://en.wikipedia.org/wiki/Consistency_(database_systems</a>)</p></li><li><p><a href="https://en.wikipedia.org/wiki/Consistency_model" class="bare">https://en.wikipedia.org/wiki/Consistency_model</a></p></li><li><p>TO READ: <a href="https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew" class="bare">https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew</a></p></li><li><p>TO READ: <a href="http://www.bailis.org/blog/when-is-acid-acid-rarely" class="bare">http://www.bailis.org/blog/when-is-acid-acid-rarely</a></p></li></ul></div></aside></section>
+<section id="_hat_not_cap"><h2>HAT, not CAP</h2><div class="ulist"><ul><li><p><strong>HAT</strong> for Hightly Available Transactions</p></li></ul></div>
+<aside class="notes"><div class="ulist"><ul><li><p><a href="http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions" class="bare">http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions</a></p></li><li><p>TO READ: <a href="http://www.bailis.org/blog/when-does-consistency-require-coordination" class="bare">http://www.bailis.org/blog/when-does-consistency-require-coordination</a></p></li><li><p>TO READ: <a href="http://www.bailis.org/blog/worst-case-distributed-systems-design" class="bare">http://www.bailis.org/blog/worst-case-distributed-systems-design</a></p></li></ul></div></aside></section>
+<section id="_sql_vs_nosql_vs_newsql"><h2>SQL vs. NoSQL vs. NewSQL</h2><div class="ulist"><ul><li><p><strong>SQL</strong> using Structured Query Language: rock solid ACID</p></li><li><p><strong>NoSQL</strong> not using SQL language normally: weak consistency and HA</p></li><li><p><strong>NewSQL</strong> using SQL language: tries to be HA with stronger consistency</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>NewSQL examples NuoDB, VoltDB. Plus we can talk about systems like IBM HANA or
+possibly Google Spanner (when focused on strong consistency).
+And then probably even DynamoDB and CrockroachDB which added some
+stronger transaction abilities.</p></div>
+<div class="ulist"><ul><li><p><a href="http://dataconomy.com/2015/08/sql-vs-nosql-vs-newsql-finding-the-right-solution" class="bare">http://dataconomy.com/2015/08/sql-vs-nosql-vs-newsql-finding-the-right-solution</a></p></li><li><p>TO READ: <a href="https://aphyr.com/posts/331-jepsen-voltdb-6-3" class="bare">https://aphyr.com/posts/331-jepsen-voltdb-6-3</a></p></li><li><p>TO READ: <a href="https://www.voltdb.com/transaction-and-consistency-faq" class="bare">https://www.voltdb.com/transaction-and-consistency-faq</a></p></li><li><p>TO READ: <a href="https://developer.jboss.org/wiki/InfinispanTransactions/version/11" class="bare">https://developer.jboss.org/wiki/InfinispanTransactions/version/11</a></p></li><li><p>TO READ: <a href="https://www.nuodb.com/product/durable-distributed-cache" class="bare">https://www.nuodb.com/product/durable-distributed-cache</a></p></li></ul></div></aside></section>
+<section id="_definition_base"><h2>Definition BASE</h2><div class="ulist"><ul><li><p><strong>BA</strong> for basic availability</p></li><li><p><strong>S</strong> for soft-state</p></li><li><p><strong>E</strong> for eventual consistency</p></li></ul></div>
+<aside class="notes"><div class="ulist"><ul><li><p><strong>Basic Availability</strong> - The database appears to work most of the time.</p></li><li><p><strong>Soft-state</strong> - Stores don’t have to be write-consistent, nor do different replicas have to be mutually consistent all the time.</p></li><li><p><strong>Eventual consistency</strong> - Stores exhibit consistency at some later point (e.g., lazily at read time).</p></li></ul></div>
+<div class="paragraph"><p>BASE properties are much looser than ACID guarantees, but there isn’t a direct one-for-one mapping between the two consistency models.</p></div>
+<div class="paragraph"><p>We can say that BASE transaction is used in NoSQL databases.
+As we can say that ACID transaction is used in SQL databases.
+Nothing from that is exactly correct but for simplification is fine.</p></div>
+<div class="ulist"><ul><li><p><a href="https://neo4j.com/blog/acid-vs-base-consistency-models-explained" class="bare">https://neo4j.com/blog/acid-vs-base-consistency-models-explained</a></p></li><li><p><a href="https://neo4j.com/blog/aggregate-stores-tour/" class="bare">https://neo4j.com/blog/aggregate-stores-tour/</a></p></li><li><p><a href="http://queue.acm.org/detail.cfm?id=1394128" class="bare">http://queue.acm.org/detail.cfm?id=1394128</a></p></li><li><p><a href="http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html" class="bare">http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html</a></p></li></ul></div></aside></section>
+<section id="__em_distributed_em_base_transactions"><h2><em>Distributed</em> BASE transactions</h2><div class="paragraph"><p>An available transaction</p></div>
+<aside class="notes"><div class="paragraph"><p>BASE is a way how to get a distributed transaction (transaction over multiple resources/databases) being available.</p></div>
+<div class="ulist"><ul><li><p>Technique known as 2PC (two-phase commit) for providing ACID guarantees across multiple database instances.</p></li><li><p>ACID provides the consistency choice for partitioned databases, then how do you achieve availability instead? One answer is BASE.</p></li><li><p>If you want Serializable Isolation level then you should take a look on the <a href="http://research.google.com/pubs/pub36726.html">Percolator&#8217;s transactions</a>.
+The Percolator&#8217;s transactions are quite known in the industry and have been used in the <a href="https://aws.amazon.com/blogs/aws/dynamodb-transaction-library/">Amazon&#8217;s DynamoDB transaction library</a>, in the <a href="https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/">CockroachDB database</a>
+and in the Google&#8217;s Pecolator system itself. <a href="http://rystsov.info/2016/03/02/cross-shard-txs.html">A step-by-step visualization</a> of the Percolator&#8217;s transactions may help you to understand it.</p></li><li><p>If you expect contention and can deal with Read Committed isolation level then <a href="http://www.bailis.org/papers/ramp-sigmod2014.pdf">RAMP transactions by Peter Bailis</a> may suit you.
+I also created <a href="http://rystsov.info/2016/04/07/ramp.html">a step-by-step RAMP visualization</a>.</p></li><li><p>The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the <a href="http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf">Sagas paper</a>
+but became more actual with the raise of distributed systems.</p></li></ul></div>
+<div class="paragraph"><p>from StackOverflow <a href="http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510" class="bare">http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510</a></p></div>
+<div class="ulist"><ul><li><p><a href="https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov" class="bare">https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov</a></p></li><li><p><a href="https://www.youtube.com/watch?v=53DVkaW5Fb0" class="bare">https://www.youtube.com/watch?v=53DVkaW5Fb0</a></p></li><li><p><a href="https://www.youtube.com/watch?v=xDuwrtwYHu8" class="bare">https://www.youtube.com/watch?v=xDuwrtwYHu8</a></p></li></ul></div></aside></section>
+<section id="_msa_and_weak_consistency"><h2>MSA and weak consistency</h2><aside class="notes"><div class="paragraph"><p>In adopting the CQRS pattern for use in your application development, consider this transactional aspect of CQRS.
+Commands cannot be lost. You need a transaction manager (to handle ACID transactions) to ensure that every command
+is processed and that the events are generated and made persistent in the event store. This holds true for command handling,
+but if you consider the entire transaction (from running the command to the event listener execution) in regard to the asynchronous
+characteristics of flow, it is a BASE transaction.</p></div>
+<div class="paragraph"><p>from <a href="https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs" class="bare">https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs</a></p></div>
+<div class="ulist"><ul><li><p><a href="http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs" class="bare">http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs</a> : Why distributed transactions are bad in MSA</p></li><li><p><a href="http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data" class="bare">http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data</a> : Data management in MSA</p></li><li><p><a href="http://debezium.io" class="bare">http://debezium.io</a> : Red Hat to event sourcing for DBs</p></li><li><p><a href="https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci" class="bare">https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci</a> : Kafemlejnek.tv</p></li><li><p><a href="http://programio.havrlant.cz/kafka" class="bare">http://programio.havrlant.cz/kafka</a> : Lukáš Havrlant blog</p></li></ul></div></aside></section>
+<section id="_crdt_calm_and_others"><h2>CRDT, CALM and others</h2><div class="ulist"><ul><li><p><strong>CRDT</strong> for Convergent and Commutative Replicated Data Types</p></li><li><p><strong>CALM</strong> for Consistency as Logical Monotonicity</p></li><li><p><strong>ACID 2.0</strong> for ACID 2.0 :)</p></li><li><p><strong>STM</strong> for Software Transactional Memory</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>There’s a considerable amount of research focusing on how to provide ACID consistency without serializability.
+As an example, we can restrict the types of operations that transactions can perform, as in escrow and read-only transactions and with monotonic logic.
+We can also consider hypothetical databases that introduce dummy transactions to fill in anomalous behavior in the serial schedule, which would be silly
+but technically serializable. The systems in question don’t (usually) provide these sorts of “special-case” ACID-compliant transactions as features.</p></div>
+<div class="paragraph"><p>from <a href="http://www.bailis.org/blog/when-is-acid-acid-rarely" class="bare">http://www.bailis.org/blog/when-is-acid-acid-rarely</a></p></div>
+<div class="ulist"><ul><li><p>TO READ: <a href="https://github.com/pfrazee/crdt_notes" class="bare">https://github.com/pfrazee/crdt_notes</a></p></li><li><p><a href="https://blog.acolyer.org/2015/09/10/out-of-the-fire-swamp-part-iii-go-with-the-flow" class="bare">https://blog.acolyer.org/2015/09/10/out-of-the-fire-swamp-part-iii-go-with-the-flow</a></p></li><li><p><a href="https://blog.acolyer.org/2015/03/18/a-comprehensive-study-of-convergent-and-commutative-replicated-data-types" class="bare">https://blog.acolyer.org/2015/03/18/a-comprehensive-study-of-convergent-and-commutative-replicated-data-types</a></p></li><li><p><a href="https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach" class="bare">https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach</a></p></li><li><p><a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control" class="bare">https://en.wikipedia.org/wiki/Optimistic_concurrency_control</a>, <a href="https://en.wikipedia.org/wiki/Transactional_memory" class="bare">https://en.wikipedia.org/wiki/Transactional_memory</a></p></li></ul></div></aside></section>
+<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/cajk.jpg" alt="cajk" height="300"></span></p></div>
+<div class="paragraph"><p>Distributed systems: for fun and profit</p></div>
+<div class="ulist"><ul><li><p><a href="http://book.mixu.net/distsys" class="bare">http://book.mixu.net/distsys</a></p></li></ul></div>
+<div class="paragraph"><p>Design Data-intensive Applications</p></div>
+<div class="ulist"><ul><li><p><a href="http://dataintensive.net" class="bare">http://dataintensive.net</a></p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Please submit your talk to our lighting talks schedule.</p></div>
+<div class="ulist"><ul><li><p>and yes <a href="http://dataintensive.net" class="bare">http://dataintensive.net</a> : book Design Data-intensive Applications</p></li><li><p>and yes <a href="http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer" class="bare">http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer</a></p></li></ul></div></aside></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: false,
+  // Display a presentation progress bar
+  progress: true,
+  // Display the page number of the current slide
+  slideNumber: false,
+  // Push each slide change to the browser history
+  history: false,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'redhat',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'fade',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 960,
+  height: 700,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+  ]
+});</script></body></html>
