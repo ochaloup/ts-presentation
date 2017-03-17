@@ -10,14 +10,6 @@
 = ACID vs. BASE
 Ondra Chaloupka / ochaloup@redhat.com
 
-[NOTE.speaker]
---
-Ideas to talk about
-
-* distributed (XA) transactions
-** 2PL (two phase locking)
-** OCC (optimistic concurrency control)
---
 
 
 == !
@@ -32,7 +24,13 @@ _Find what buzzwords you should look at in your spare time :)_
 
 ...ok let's redefine
 
-_I'll try to give you some idea about transactions processing distributed systems_
+_you will get a brief overview of transactions processing in distributed systems_
+
+Disclaimer:
+
+* this presentation is an overview of many topics
+* it contains simplifications and expect more study of the presented topics
+* texts cited here comes from different sources - resources linked at all places
 --
 
 
@@ -137,6 +135,14 @@ Several computers (or nodes) achieve consensus if they all agree on some value. 
 * agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
 * electing a leader node to coordinate some higher-level protocol
 
+Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
+
+* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
+  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
+  than clients and resources then the system is also unavailable.
+* Another problem of the algorithm is its blocking nature: once a resource has sent an agreement message to the coordinator,
+  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
+
 * CA (consistency + availability). Examples include full strict quorum protocols, such as two-phase commit.
 * CP (consistency + partition tolerance). Examples include majority quorum protocols in which minority partitions are unavailable such as Paxos, ZAB, Raft.
 * AP (availability + partition tolerance). Examples include protocols using conflict resolution, such as Dynamo.
@@ -220,8 +226,43 @@ _ACID consistency_ *!=* _CAP consistency_
 * https://en.wikipedia.org/wiki/Isolation_(database_systems)
 * https://en.wikipedia.org/wiki/Consistency_(database_systems)
 * https://en.wikipedia.org/wiki/Consistency_model
-* https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew
+* TO READ: https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew
+* TO READ: http://www.bailis.org/blog/when-is-acid-acid-rarely
 --
+
+
+== HAT, not CAP
+
+* *HAT* for Hightly Available Transactions
+
+[NOTE.speaker]
+--
+* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
+* TO READ: http://www.bailis.org/blog/when-does-consistency-require-coordination
+* TO READ: http://www.bailis.org/blog/worst-case-distributed-systems-design
+--
+
+
+== SQL vs. NoSQL vs. NewSQL
+
+* *SQL* using Structured Query Language: rock solid ACID
+* *NoSQL* not using SQL language normally: weak consistency and HA
+* *NewSQL* using SQL language: tries to be HA with stronger consistency
+
+[NOTE.speaker]
+--
+NewSQL examples NuoDB, VoltDB. Plus we can talk about systems like IBM HANA or
+possibly Google Spanner (when focused on strong consistency).
+And then probably even DynamoDB and CrockroachDB which added some
+stronger transaction abilities.
+
+* http://dataconomy.com/2015/08/sql-vs-nosql-vs-newsql-finding-the-right-solution
+* TO READ: https://aphyr.com/posts/331-jepsen-voltdb-6-3
+* TO READ: https://www.voltdb.com/transaction-and-consistency-faq
+* TO READ: https://developer.jboss.org/wiki/InfinispanTransactions/version/11
+* TO READ: https://www.nuodb.com/product/durable-distributed-cache
+--
+
 
 
 == Definition BASE
@@ -238,10 +279,12 @@ _ACID consistency_ *!=* _CAP consistency_
 
 BASE properties are much looser than ACID guarantees, but there isn’t a direct one-for-one mapping between the two consistency models.
 
-We can observe BASE tranaction (not the ACID one) on many NoSQL databases.
+We can say that BASE transaction is used in NoSQL databases.
+As we can say that ACID transaction is used in SQL databases.
+Nothing from that is exactly correct but for simplification is fine.
+
 * https://neo4j.com/blog/acid-vs-base-consistency-models-explained
 * https://neo4j.com/blog/aggregate-stores-tour/
-
 * http://queue.acm.org/detail.cfm?id=1394128
 * http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
 --
@@ -265,7 +308,8 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 * The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas paper]
   but became more actual with the raise of distributed systems.
 
-* http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510
+from StackOverflow http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510
+
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
 * https://www.youtube.com/watch?v=xDuwrtwYHu8
@@ -275,14 +319,43 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 
 [NOTE.speaker]
 --
-* https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs/
+In adopting the CQRS pattern for use in your application development, consider this transactional aspect of CQRS.
+Commands cannot be lost. You need a transaction manager (to handle ACID transactions) to ensure that every command
+is processed and that the events are generated and made persistent in the event store. This holds true for command handling,
+but if you consider the entire transaction (from running the command to the event listener execution) in regard to the asynchronous
+characteristics of flow, it is a BASE transaction.
+
+from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs
+
+
 * http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs : Why distributed transactions are bad in MSA
 * http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA
-* http://debezium.io : Red Hat to event source things from DB
+* http://debezium.io : Red Hat to event sourcing for DBs
 * https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci : Kafemlejnek.tv
 * http://programio.havrlant.cz/kafka : Lukáš Havrlant blog
 --
 
+
+== CRDT, CALM and others
+
+* *CRDT* for Convergent and Commutative Replicated Data Types
+* *CALM* for Consistency as Logical Monotonicity
+* *ACID 2.0* for ACID 2.0 :)
+
+[NOTE.speaker]
+--
+There’s a considerable amount of research focusing on how to provide ACID consistency without serializability.
+As an example, we can restrict the types of operations that transactions can perform, as in escrow and read-only transactions and with monotonic logic.
+We can also consider hypothetical databases that introduce dummy transactions to fill in anomalous behavior in the serial schedule, which would be silly
+but technically serializable. The systems in question don’t (usually) provide these sorts of “special-case” ACID-compliant transactions as features.
+
+from http://www.bailis.org/blog/when-is-acid-acid-rarely
+
+* TO READ: https://github.com/pfrazee/crdt_notes
+* https://blog.acolyer.org/2015/09/10/out-of-the-fire-swamp-part-iii-go-with-the-flow
+* https://blog.acolyer.org/2015/03/18/a-comprehensive-study-of-convergent-and-commutative-replicated-data-types
+* https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach
+--
 
 == !
 
@@ -290,7 +363,11 @@ image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]
 
 Distributed systems: for fun and profit
 
-http://book.mixu.net/distsys
+* http://book.mixu.net/distsys
+
+Design Data-intensive Applications
+
+* http://dataintensive.net
 
 [NOTE.speaker]
 --
