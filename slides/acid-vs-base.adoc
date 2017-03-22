@@ -10,41 +10,79 @@
 = ACID vs. BASE
 Ondra Chaloupka / ochaloup@redhat.com
 
-
-
-== !
-
-image:{images}/entertain/wtf2.jpg[role="noborder"]
-
 [NOTE.speaker]
 --
-What you will get in this 15 minutes presentation?
+What you will get in this 30+ minutes presentation?
 
-_Find what buzzwords you should look at in your spare time :)_
+_Get to know todays transaction buzzwords_
+_and get some knowledge where to start searching internet_
 
-...ok let's redefine
+*Disclaimer:* the presentation contains some simplifications and my points of view,
+  for more details, please, check the topic on your own
 
-_you will get a brief overview of transactions processing in distributed systems_
-
-Disclaimer:
-
-* this presentation is an overview of many topics
-* it contains simplifications and expect more study of the presented topics
-* texts cited here comes from different sources - resources linked at all places
+There are quotes coming from different places on the internet in the presentation.
+All links are referred.
 --
 
 
 == What's wrong with ACID?
 
-image:{images}/entertain/wtf.jpg[role="noborder"]
+image:{images}/entertain/wtf2.jpg[role="noborder"]
 
 [NOTE.speaker]
 --
-...nothing ;-)
-
-Distributed systems with the CAP theorem
+...nothing just high availability is demanded
+and thus distributed systems came ;-)
 --
 
+== Let's review - ACID
+
+* *A* for atomicity
+* *C* for consistency
+* *I* for isolation
+* *D* for durability
+
+[NOTE.speaker]
+--
+** set of properties of a (database) transaction
+
+*Atomicity*::
+  "all or nothing", all operations in a transaction succeed or every operation is rolled back
+*Consistency*::
+  on the completion of a transaction, the database is structurally sound
+  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
+*Isolation*::
+  transactions do not contend with one another. Contentious access to data is moderated by the database
+  so that transactions appear to run sequentially.
+*Durability*::
+  the results of applying a transaction are permanent, even in the presence of failures
+
+* https://en.wikipedia.org/wiki/ACID
+--
+
+== Isolation
+
+[NOTE.speaker]
+--
+In perspective of this talk the *Isolation* property is quite interesting.
+
+We know classic isolation levels defined by ANSI/ISO SQL standard. Those are
+
+*
+
+* https://martin.kleppmann.com/2014/11/25/hermitage-testing-the-i-in-acid.html
+* http://blog.triona.de/development/database/acid-and-isolation-level-overview.html
+* http://ithare.com/databases-101-acid-mvcc-vs-locks-transaction-isolation-levels-and-concurrency
+* https://wiki.postgresql.org/wiki/SSI
+* http://www.bailis.org/blog/linearizability-versus-serializability/
+--
+
+== Isolation once more
+
+[NOTE.speaker]
+--
+* https://github.com/ept/hermitage
+--
 
 == CAP
 
@@ -94,9 +132,20 @@ designers are forced to decide between consistency and availability.
 And hey, wait a minute I think you will talk about transactions and not about some `read-write storage`.
 Hm... maybe, it's a little bit complicated :)
 
-https://henryr.github.io/cap-faq
-http://book.mixu.net/distsys/single-page.html
-https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+* *Consistency* (where consistency means that every read would return the latest information
+  from the database or an error)
+* *Availability*(That every request must receive a non-error response)
+* *Partition-Tolerant environment* (where Partition-Tolerance is the ability
+  of a system with multiple nodes to continue to fulfill the system’s function even when arbitrary
+  number of messages fail in communication between the nodes in the system)
+* While *isolation level* is a degree of how isolated your transaction is,
+  it is consequently also a degree of how soon the changes done by your transaction
+  is visible to other transactions.
+
+* https://henryr.github.io/cap-faq
+* http://book.mixu.net/distsys/single-page.html
+* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+* https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
 --
 
 
@@ -150,6 +199,9 @@ Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distr
 If you don’t want to lose linearizability, you have to make sure you do
 all your reads and writes in one datacenter, which you may call the leader.
 
+2PC, Paxos, and various approaches to quorum - these protocols provide the application programmer
+a façade of global serializability (http://adrianmarriott.net/logosroot/papers/LifeBeyondTxns.pdf)
+
 * Strong consistency models (capable of maintaining a single copy)
 ** Linearizable consistency: Under linearizable consistency, all operations appear to have
    executed atomically in an order that is consistent with the global real-time ordering of operations. (Herlihy & Wing, 1991)
@@ -192,28 +244,6 @@ all your reads and writes in one datacenter, which you may call the leader.
 --
 
 
-== Definition ACID
-
-* *A* for atomicity
-* *C* for consistency
-* *I* for isolation
-* *D* for durability
-
-[NOTE.speaker]
---
-** set of properties of a (database) transaction
-
-* *Atomic* - "all or nothing", all operations in a transaction succeed or every operation is rolled back
-* *Consistent* - on the completion of a transaction, the database is structurally sound
-  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
-* *Isolated* - transactions do not contend with one another. Contentious access to data is moderated by the database
-  so that transactions appear to run sequentially.
-* *Durable* - The results of applying a transaction are permanent, even in the presence of failures.
-
-* https://en.wikipedia.org/wiki/ACID
---
-
-
 == ACID vs. CAP consistency
 
 _ACID consistency_ *!=* _CAP consistency_
@@ -223,9 +253,20 @@ _ACID consistency_ *!=* _CAP consistency_
 * ACID - I+C is compound
 ** 4 level of isolation -> 3 reads phenomenon
 
+C in CAP = single-copy consistency (i.e. replication consistency)
+C in ACID = preserving database rules e.g. unique keys
+C in CAP is a strict subset of C in ACID.
+●●Common Misunderstanding: “CAP Theorem → inability to provide
+ACID database properties with high availability”.
+CAP only prohibits serializable transactions with availability in the
+presence of partitions.
+○ No need to abandon Atomicity or Durability.
+
+
 * https://en.wikipedia.org/wiki/Isolation_(database_systems)
 * https://en.wikipedia.org/wiki/Consistency_(database_systems)
 * https://en.wikipedia.org/wiki/Consistency_model
+* GOOD POINTS HERE: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 * TO READ: https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew
 * TO READ: http://www.bailis.org/blog/when-is-acid-acid-rarely
 --
@@ -333,6 +374,8 @@ from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microse
 * http://debezium.io : Red Hat to event sourcing for DBs
 * https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci : Kafemlejnek.tv
 * http://programio.havrlant.cz/kafka : Lukáš Havrlant blog
+* https://github.com/cer/event-sourcing-examples : examples of http://eventuate.io
+* https://www.infoq.com/articles/microservices-aggregates-events-cqrs-part-1-richardson : Developing Transactional Microservices Using Aggregates, Event Sourcing and CQRS - Part 1
 --
 
 
