@@ -12,30 +12,36 @@ Ondra Chaloupka / ochaloup@redhat.com
 
 [NOTE.speaker]
 --
-What you will get in this 30+ minutes presentation?
+*Why this presentation?*
 
-_Get to know todays transaction buzzwords_
-_and get some knowledge where to start searching internet_
+Distributed systems changed the way how we process data and way how we can think
+about transactions. This could give you some summary about the topic.
 
-*Disclaimer:* the presentation contains some simplifications and my points of view,
+*What you will get in this 30+ minutes presentation?*
+
+Get to know nowadays transaction buzzwords
+and get some knowledge what you can use when need to search the Internet :)
+
+*Disclaimer:* the presentation could contain some simplifications,
   for more details, please, check the topic on your own
 
-There are quotes coming from different places on the internet in the presentation.
-All links are referred.
+There are quotes coming from different places on the Internet in the presentation.
+All links are mentioned.
 --
 
 
-== What's wrong with ACID?
+== Why transactions?
 
 image:{images}/entertain/wtf2.jpg[role="noborder"]
 
 [NOTE.speaker]
 --
-...nothing just high availability is demanded
-and thus distributed systems came ;-)
+* Transactions providing programming model which ease tasks of data manipulation.
+* Transactions provides guarantees which you can build upon (anybody would be
+  happy having assurance that a data change doesn't break data integrity)
 --
 
-== Let's review - ACID
+== ACID
 
 * *A* for atomicity
 * *C* for consistency
@@ -44,7 +50,8 @@ and thus distributed systems came ;-)
 
 [NOTE.speaker]
 --
-** set of properties of a (database) transaction
+Transactions are usually connected with acronym ACID which defines set of properties
+of a (database) transaction.
 
 *Atomicity*::
   "all or nothing", all operations in a transaction succeed or every operation is rolled back
@@ -57,24 +64,67 @@ and thus distributed systems came ;-)
 *Durability*::
   the results of applying a transaction are permanent, even in the presence of failures
 
+The ACID acronym came from research of `IBM System R` from year 1975. Acronym itself
+mixes different standpoints about a system (more mnemonic than precise, Brewer 2012)
+Following description came from Martin Kleppmann's presentation linked below.
+
+* *Durability* means the time when disk does `fsync` (leave some deeper technical details
+  about disk writes aside). For transaction it means that data are written to some log
+  and when system crashes it will be available when started again (we can re-read
+  the log and restore data).
+* *Atomicity* defines possibility to abort transaction and changes done by transaction
+  in the system will be reverted to state before the transaction starts.
+  Martin talks that it should be nicer to says `abortability`. +
+  _Atomicity_ is about handling failures when does depend when they come from (system crash,
+  network failures, some constraint was broken...). +
+  _Atomicity_ is *not* about concurrency. Rather _Isolation_ is about concurrency -
+  meaning parallel transaction works on the same piece of data.
+* *Consistency* is to having the system in consistent state (moving from one to other one).
+  _Consistency_ is a point of view of an application in fact. +
+  _Consistency_ means fulfilling   invariants which could be defined in DB model
+  but they could be outside of it too.
+* *Isolation* is about concurrency. In perspective of this presentation the _Isolation_
+  property is the most interesting...
+
 * https://en.wikipedia.org/wiki/ACID
+* https://martin.kleppmann.com/2015/11/04/transactions-at-code-mesh.html
 --
 
 == Isolation
 
+image:{images}/cap/isolation-levels-base.png[role="noborder"]
+
 [NOTE.speaker]
 --
-In perspective of this talk the *Isolation* property is quite interesting.
+Isolation talks about behavior when running two (multiple) concurrent transaction. +
+We know classic isolation levels defined by ANSI/ISO SQL standard. Those are based
+on notion of locking (lock-based concurrency control). The list is:
 
-We know classic isolation levels defined by ANSI/ISO SQL standard. Those are
+*None*::
+  no transaction - you can write whatever you want and you struggle _lost update_
+  phenomena.
+  It means that your not committed work could be rewritten by other "transaction"
+  without you know about it. +
+  Here is interesting point for me that _lost update_ phenomena is trouble for Hibernate (ORM)
+  where entities are loaded to cache (here we are) and as solution you can then using optimistic locking
+  (version added to data and exception thrown when concurrent change happens) or pesimistic
+  (select ... for update is used which causes aquiring exclusive write lock on  accessed rows - see down here)
+*Read uncommitted*::
+  sets write lock only while the row is being modified. You struggle _dirty reads_
+  phenomena.
+  It means you can read uncommitted changes of a different transaction. But you can't write
+  to data which was changed by some concurrent transaction.
+*Read committed*::
 
-*
+*Repeatable reads*::
+*Serializable*::
+
 
 * https://martin.kleppmann.com/2014/11/25/hermitage-testing-the-i-in-acid.html
 * http://blog.triona.de/development/database/acid-and-isolation-level-overview.html
 * http://ithare.com/databases-101-acid-mvcc-vs-locks-transaction-isolation-levels-and-concurrency
-* https://wiki.postgresql.org/wiki/SSI
-* http://www.bailis.org/blog/linearizability-versus-serializability/
+* http://www.bailis.org/blog/linearizability-versus-serializability
+* https://vladmihalcea.com/2014/09/14/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena
 --
 
 == Isolation once more
@@ -142,10 +192,20 @@ Hm... maybe, it's a little bit complicated :)
   it is consequently also a degree of how soon the changes done by your transaction
   is visible to other transactions.
 
+  * Consistency (C). A guarantee that all the nodes in the system see the same data at the same time.
+    (Very often people attempting to introduce eventual consistency into a system run into problems from
+     the business side. Business users hear "consistency" and they tend to think it means
+     that the data will be wrong. That the data will be incoherent and contradictory. This is not actually the case.)
+  * Availability (A). A guarantee that the system can continue to operate even if a node is unavailable.
+    (Cloud providers have broadened the interpretation of the CAP theorem in the sense that they consider
+     a system to be unavailable if the response time exceeds the latency limit.)
+  * Partition tolerance (P). A guarantee that the system continues to operate despite the nodes being unable to communicate.
+
 * https://henryr.github.io/cap-faq
 * http://book.mixu.net/distsys/single-page.html
 * https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
 * https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
+* https://msdn.microsoft.com/en-us/library/jj591577.aspx
 --
 
 
@@ -366,6 +426,8 @@ is processed and that the events are generated and made persistent in the event 
 but if you consider the entire transaction (from running the command to the event listener execution) in regard to the asynchronous
 characteristics of flow, it is a BASE transaction.
 
+Event Sourcing (ES) and Command Query Responsibility Segregation (CQRS) or Turning the Database Upside Down
+
 from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs
 
 
@@ -376,6 +438,7 @@ from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microse
 * http://programio.havrlant.cz/kafka : Lukáš Havrlant blog
 * https://github.com/cer/event-sourcing-examples : examples of http://eventuate.io
 * https://www.infoq.com/articles/microservices-aggregates-events-cqrs-part-1-richardson : Developing Transactional Microservices Using Aggregates, Event Sourcing and CQRS - Part 1
+* https://mapr.com/blog/how-stream-first-architecture-patterns-are-revolutionizing-healthcare-platforms
 --
 
 
