@@ -42,14 +42,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1369524"
-     inkscape:cx="381.05628"
+     inkscape:cx="235.93147"
      inkscape:cy="374.03204"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1021"
-     inkscape:window-x="0"
+     inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
@@ -132,7 +132,7 @@
          style="font-size:24px">Dirty reads</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:12.63881302px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.63881302px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-900.3855"
        y="362.07318"
        id="text3013"
@@ -142,7 +142,7 @@
          id="tspan3015"
          x="-900.3855"
          y="362.07318"
-         style="font-size:24px">Lost update</tspan></text>
+         style="font-size:24px">Lost update ?</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12.63881302px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#aa0000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"

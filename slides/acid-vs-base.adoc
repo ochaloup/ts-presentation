@@ -84,7 +84,8 @@ Following description came from Martin Kleppmann's presentation linked below.
   _Consistency_ means fulfilling   invariants which could be defined in DB model
   but they could be outside of it too.
 * *Isolation* is about concurrency. In perspective of this presentation the _Isolation_
-  property is the most interesting...
+  property is the most interesting. When talking about _ACID_ isolation it's meant
+  _Serializability_ to be obtained.
 
 * https://en.wikipedia.org/wiki/ACID
 * https://martin.kleppmann.com/2015/11/04/transactions-at-code-mesh.html
@@ -98,40 +99,189 @@ image:{images}/cap/isolation-levels-base.png[role="noborder"]
 --
 Isolation talks about behavior when running two (multiple) concurrent transaction. +
 We know classic isolation levels defined by ANSI/ISO SQL standard. Those are based
-on notion of locking (lock-based concurrency control). The list is:
+on notion of locking (lock-based concurrency control). I'm mentioning locks in the list
+belows but it's just naive way of thinking about locking. Real DBs has much more sophisticated
+ways to lock thinks (e.g. check M$ articles about locks)
 
 *None*::
-  no transaction - you can write whatever you want and you struggle _lost update_
-  phenomena.
-  It means that your not committed work could be rewritten by other "transaction"
-  without you know about it. +
-  Here is interesting point for me that _lost update_ phenomena is trouble for Hibernate (ORM)
-  where entities are loaded to cache (here we are) and as solution you can then using optimistic locking
-  (version added to data and exception thrown when concurrent change happens) or pesimistic
-  (select ... for update is used which causes aquiring exclusive write lock on  accessed rows - see down here)
+  * locks: no
+  * you can read corrupted data that as other transaction hasn't ended with an operation yet
+  * means that your not committed work could be rewritten by other "transaction" meanwhile.
+  * here is interesting point about _lost update_ phenomena +
+    you can read at some places that the minimum transaction isolation level to avoid it is
+    _read uncommitted_. Which is partly true. The issue (as I understand it) is that the term
+    _lost update_ is not precisely specified. For _read uncommitted_ solves this phenomena it has to
+    mean that other transaction can interleave writing a data which can lead to corruption of data
+    (no lock acquired, two transaction writing to the same place at the same time)
+  ** but _lost update_ is specified rather differently (more broader), fist or second
+  ** data that has been updated by one transaction is overwritten by another transaction,
+     before the first transaction is either committed or rolled back
+  ** one transaction reads data into its local memory, and then another transaction changes
+     this data and commits its change. After this, the first transaction updates the same data based
+     on what it read into memory before another transaction was executed. In this case,
+     the update performed by the another transaction can be considered a lost update.
+  ** the later trouble connects to contention errors too (deadlocks) and it's a thing which Hibernate (ORM)
+     tries to solve (entities are loaded to cache), as solution you can then using optimistic locking
+     (version added to data and exception thrown when concurrent change happens) or pessimistic
+     (`select ... for update` is used which causes acquiring exclusive write lock on  accessed rows)
 *Read uncommitted*::
-  sets write lock only while the row is being modified. You struggle _dirty reads_
-  phenomena.
-  It means you can read uncommitted changes of a different transaction. But you can't write
-  to data which was changed by some concurrent transaction.
+  * struggles _dirty reads (P1)_ phenomena
+  * locks: acquires write lock only for the operation and releases immediately
+  * means you can read uncommitted changes of a different transaction. But you can't write
+    to data which was changed by some concurrent transaction.
 *Read committed*::
-
+  * struggles _non-repeatable reads (P2)_ phenomena
+  * locks: acquires write lock to the end of transaction, read lock is released immediately after select ends
+  * means that other transaction reading the same data several times can see different values
+    during it's executions. Transaction one starts and reads X being 1. Meanwhile transaction
+    two stats, writes X to be 2 and commits. Transaction one reads X again and it can see it being 2.
 *Repeatable reads*::
+  * struggles _phantom reads_ phenomena
+  * locks: acquires write and read lock for records working with till the end of transaction
+  * means that reading a set of data over a table could change during life time. Transaction one starts
+    and selects `SELECT * from MYTABLE`, Transaction two starts, insert a row to the table `MYTABLE`
+    and ends. Transaction one selects `MYTABLE` again and it can see different number of results now.
 *Serializable*::
+  * 'complete' isolation of transaction
+  * locks read, write and range lock when select is used are acquired till the end of transaction
+
+Now we can see there is not only those isolation levels but the diagram shows *Snapshot isolation (MVCC)*.
+That's a different approach of solving the concurrency control issue. We do not use locks but a snapshot
+of data is taken at time when transaction starts. Transaction then works with the data which was available
+at point of transaction started. Still for being sure to not get issues on writing data we need to
+acquires write locks (but we don't need read locks). Acquiring locks is a pesimistic way of solving the issue,
+the optimistic one is to record writing and in case of conflicting abort the transaction and retry it again.
+In systems with no much contentions it works fine. See more about *Serializable Snaphost Isolation* e.g.
+at PostgreSQL web.
+
+Let's shortly mention other two more concurrency control issues which connect to snapshot isolation.
+The schema on this slide is not exact as lock based repeatable read avoids _non-repeatable reads_
+and _read skew_ (which could be taken as special case of _non-repeatable reads_) but it avoids
+_write skew_ too which is not avoided by _snapshot isolation_ (when not talking about _SSI_).
+
+*Read Skew*::
+  * not avoided when using _read committed_ isolation level,
+    avoided when _snapshot isolation_ is used and when _repeatable read_ is used
+  * variation on _non-repeatable reads_. When transaction 1 selects record a,
+    transaction 2 sneaks and updates the record 1 and record 2, transaction 1 resumes
+    and selects record 2. Transaction 1 does not see the picture of the world as it was
+    when it starts (when it read record 1).
+*Write Skew* (A5B)::
+  * avoided when using _repeatable read_ isolation level (based on locks),
+    not avoided when _snapshot isolation_ is used. Occurs when transaction are not _serializable_.
+  * it defines situation of some constraint being put at application level. For example that at least
+    one counter in a table has to be non-zero (Martin makes example in his presentation on at least
+    one physician has be in attendance and all decide that decline his attendance in the same time).
+    There is important here that two transactions operates on different records thus it does not
+    influence each other directly on write. +
+    When back to counter we have this DB table:
+
+|===
+| ID | Counter
+
+| 1 | 1
+| 2 | 1
+
+|===
+
+Now transactions runs concurrently
+
+|===
+| Transaction 1 | Transaction 2
+
+| BEGIN txn 1 | BEGIN txn 2
+| SELECT * FROM table | SELECT * FROM table
+
+| check there if there is some other record with counter >= 1
+| check there if there is some other record with counter >= 1
+
+| set counter of *ID 1* to *0*
+| set counter of *ID 2* to *0*
+
+| COMMIT | COMMIT
+
+|===
+
+At the end both counters (counter of ID = 1 and ID = 2)
+are zero which is violation of constraint application has.
 
 
 * https://martin.kleppmann.com/2014/11/25/hermitage-testing-the-i-in-acid.html
 * http://blog.triona.de/development/database/acid-and-isolation-level-overview.html
 * http://ithare.com/databases-101-acid-mvcc-vs-locks-transaction-isolation-levels-and-concurrency
-* http://www.bailis.org/blog/linearizability-versus-serializability
-* https://vladmihalcea.com/2014/09/14/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena
+* https://technet.microsoft.com/en-us/library/jj856598
+* http://technet.microsoft.com/en-us/library/cc546518.aspx
+* https://www.simple-talk.com/sql/t-sql-programming/developing-modifications-that-survive-concurrency
+* https://wiki.postgresql.org/wiki/SSI
+* https://vladmihalcea.com/2015/10/20/a-beginners-guide-to-read-and-write-skew-phenomena/
 --
 
-== Isolation once more
+== Isolation in real world
+
+* https://github.com/ept/hermitage
+* http://www.bailis.org/blog/when-is-acid-acid-rarely
 
 [NOTE.speaker]
 --
-* https://github.com/ept/hermitage
+Links contains tables where are depicted default and maximum isolation levels
+for particular databases.
+--
+
+== Isolation for distributed world
+
+image:{images}/cap/isolation-levels-hat.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Some more info about distributed DBs and HA in a while but here we can see a picture
+of Peter Bailis paper _HAT, not CAP: Introducing Highly Available Transactions_.
+
+* It presents what are isolation levels available for HA (AP from CAP) systems.
+* Those marked as red are not available for CA.
+* Those marked in blue are available for sticky availability.
+* Those which are on the left side of the picture (RU, RC, RR, SI, 1SR) are those
+  discussed in previous slide. The part on the right side belongs to the distributed
+  world that we talk about in a while.
+
+[cols = "2"]
+|===
+
+| HA
+| Read Uncommitted (RU), Read Committed (RC),
+  Monotonic Atomic View (MAV), Item
+  Cut Isolation (I-CI), Predicate Cut Isolation (P-CI),
+  Writes Follow Reads (WFR), Monotonic Reads (MR),
+  Monotonic Writes (MW)
+
+| Sticky
+| Read Your Writes (RYW), PRAM, Causal
+
+| Unavailable
+| Cursor Stability (CS)† , Snapshot Isolation (SI)† ,
+  Repeatable Read (RR)†‡ , One-Copy Serializability (1SR)†‡,
+  Recency , Safe , Regular , ⊕Linearizability , Strong 1SR†‡
+
+|===
+
+I would like quickly touch one topic here and it's Serializability vs.
+Linearizability. It's interesting from point that even serializable isolation level
+can't be taken as the level of the best guarantees. Still there is a _Strict Serializability_.
+
+To quote Peter Bailis here
+
+* *Linearizability* is a guarantee about single operations on single objects. It provides a real-time
+  (i.e., wall-clock) guarantee on the behavior of a set of single operations (often reads and writes)
+  on a single object (e.g., distributed register or data item).
+** _Linearizability_ for read and write operations is synonymous with the term `"atomic consistency"``
+   and is the `"C"`, or `consistency`, in Gilbert and Lynch’s proof of the _CAP Theorem_.
+* *Serializability* is a guarantee about transactions, or groups of one or more operations over one or
+  more objects. It guarantees that the execution of a set of transactions (usually containing read and
+  write operations) over multiple items is equivalent to some serial execution (total ordering)
+  of the transactions.
+** _Serializability_ is the traditional `"I"``, or `isolation`, in _ACID_.
+
+* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
+* http://www.bailis.org/blog/linearizability-versus-serializability
 --
 
 == CAP
