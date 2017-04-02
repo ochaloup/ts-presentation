@@ -105,15 +105,16 @@ ways to lock thinks (e.g. check M$ articles about locks)
 
 *None*::
   * locks: no
+  * struggles _dirty writes (P0)_
   * you can read corrupted data that as other transaction hasn't ended with an operation yet
   * means that your not committed work could be rewritten by other "transaction" meanwhile.
-  * here is interesting point about _lost update_ phenomena +
+  * here is interesting point about _lost update (P4)_ phenomena +
     you can read at some places that the minimum transaction isolation level to avoid it is
     _read uncommitted_. Which is partly true. The issue (as I understand it) is that the term
     _lost update_ is not precisely specified. For _read uncommitted_ solves this phenomena it has to
     mean that other transaction can interleave writing a data which can lead to corruption of data
     (no lock acquired, two transaction writing to the same place at the same time)
-  ** but _lost update_ is specified rather differently (more broader), fist or second
+  ** but _lost update (P4)_ is specified rather differently (more broader), fist or second
   ** data that has been updated by one transaction is overwritten by another transaction,
      before the first transaction is either committed or rolled back
   ** one transaction reads data into its local memory, and then another transaction changes
@@ -130,13 +131,13 @@ ways to lock thinks (e.g. check M$ articles about locks)
   * means you can read uncommitted changes of a different transaction. But you can't write
     to data which was changed by some concurrent transaction.
 *Read committed*::
-  * struggles _non-repeatable reads (P2)_ phenomena
+  * struggles _(fuzzy) non-repeatable reads (P2)_ phenomena
   * locks: acquires write lock to the end of transaction, read lock is released immediately after select ends
   * means that other transaction reading the same data several times can see different values
     during it's executions. Transaction one starts and reads X being 1. Meanwhile transaction
     two stats, writes X to be 2 and commits. Transaction one reads X again and it can see it being 2.
 *Repeatable reads*::
-  * struggles _phantom reads_ phenomena
+  * struggles _phantom reads (P3)_ phenomena
   * locks: acquires write and read lock for records working with till the end of transaction
   * means that reading a set of data over a table could change during life time. Transaction one starts
     and selects `SELECT * from MYTABLE`, Transaction two starts, insert a row to the table `MYTABLE`
@@ -159,7 +160,7 @@ The schema on this slide is not exact as lock based repeatable read avoids _non-
 and _read skew_ (which could be taken as special case of _non-repeatable reads_) but it avoids
 _write skew_ too which is not avoided by _snapshot isolation_ (when not talking about _SSI_).
 
-*Read Skew*::
+*Read Skew* (A5A)::
   * not avoided when using _read committed_ isolation level,
     avoided when _snapshot isolation_ is used and when _repeatable read_ is used
   * variation on _non-repeatable reads_. When transaction 1 selects record a,
@@ -263,9 +264,9 @@ of Peter Bailis paper _HAT, not CAP: Introducing Highly Available Transactions_.
 
 |===
 
-I would like quickly touch one topic here and it's Serializability vs.
+I would like quickly touch one topic here which is Serializability vs.
 Linearizability. It's interesting from point that even serializable isolation level
-can't be taken as the level of the best guarantees. Still there is a _Strict Serializability_.
+can't be taken as the level of the most guarantees. Still there is a _Strict Serializability_.
 
 To quote Peter Bailis here
 
@@ -282,80 +283,91 @@ To quote Peter Bailis here
 
 * http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * http://www.bailis.org/blog/linearizability-versus-serializability
+* https://blog.acolyer.org/2016/02/26/distributed-consistency-and-session-anomalies
+* https://www.youtube.com/watch?v=Ih0Efbx0cE8 : Adrian Colyer - Out of the Fire Swamp
 --
 
-== CAP
+== Serializability
 
-* *C* for consistency
-* *A* for availability
-* *P* for partition tolerance
-
-_Just two properties could be true_
+image:{images}/cap/serialization.png[role="noborder"]
 
 [NOTE.speaker]
 --
+Serialization talks about multiple items groups under one transaction.
+Those transaction can be put to arbitrary order but they are executed in serial.
+
+Easy to imagine is to run on one node in one thread transaction by transaction.
+--
+
+== Linearizability
+
+image:{images}/cap/linearizability.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Linearizability talks operation on single object to be done in the same order
+on multiple nodes.
+
+In other words it ensures that all operations on single object is executed in the same order
+on all nodes.
+--
+
+
+== CAP
+
+image:{images}/cap/cap-consensus.png[role="noborder"]
+
+[NOTE.speaker]
+--
+(_Coined by `Dr. Eric Brewer` by talk `Towards Robust Distributed Systems` in 2000._
+_Seth Gilbert and Professor Nancy Lynch formalized in 2002._)
+
 The CAP Theorem (henceforth 'CAP') says that it is impossible to build an implementation of read-write storage
-in an asynchronous network that satisfies all of the following three properties:
+in an asynchronous network that satisfies all of the three properties. We are constrained only to two of them.
 
-* *Availability* - will a request made to the data store always eventually complete
-* *Consistency* - will all executions of reads and writes seen by all nodes be atomic or linearizably consistent
-  we talk here about "atomic consistency" not about consistency of ACID point of view
-* *Partition tolerance* - the network is allowed to drop any messages.
-
-Coined by `Dr. Eric Brewer` by talk `Towards Robust Distributed Systems` in 2000.
-Seth Gilbert and Professor Nancy Lynch formalized in 2002.
+*Availability*::
+  will a request made to the data store always eventually complete
+*Consistency*::
+  will all executions of reads and writes seen by all nodes be atomic or linearizably consistent
+*Partition tolerance*::
+  the network is allowed to drop any messages.
 
 It's a popular and fairly useful way to think about tradeoffs in the guarantees that a system design makes.
 
 In _normal_ distributed system we can't take off *P* - we are limited for *CP* or *AP*.
 
-With a blurry precision we can say that *CA* is our well known XA distributed transactions 2PC aka. ACID +
-Here we talk about systems that are not prepared for partition to occur.
-System is one node as single point of failure. You get strong consistency on that node, you get availability
-if that node is not put down.
+The diagram shows *CA* as *2PC*. It's possible in way that we avoid partition to happens
+by not using distributed execution, by running on single node.
+Then we got to well known XA distributed transactions 2PC aka. ACID.
 
-Scaling - vertical and horizontal
-** Vertical scaling often creates vendor lock, further adding to costs.
-** Horizontal scaling offers more flexibility but is also considerably more complex.
+And hey, wait a minute, this talk about `read-write storage` and not any transaction ;)
 
-Partitioning - Partitioning is dividing the dataset into smaller distinct independent sets
-* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
-* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
+Let's revise the *CAP* acronym once again
 
-Replication - Replication is making copies of the same data on multiple machines
-* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
-* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
-
-Any horizontal scaling strategy is based on data partitioning; therefore,
-designers are forced to decide between consistency and availability.
-
-And hey, wait a minute I think you will talk about transactions and not about some `read-write storage`.
-Hm... maybe, it's a little bit complicated :)
-
-* *Consistency* (where consistency means that every read would return the latest information
-  from the database or an error)
-* *Availability*(That every request must receive a non-error response)
-* *Partition-Tolerant environment* (where Partition-Tolerance is the ability
-  of a system with multiple nodes to continue to fulfill the system’s function even when arbitrary
-  number of messages fail in communication between the nodes in the system)
-* While *isolation level* is a degree of how isolated your transaction is,
-  it is consequently also a degree of how soon the changes done by your transaction
-  is visible to other transactions.
-
-  * Consistency (C). A guarantee that all the nodes in the system see the same data at the same time.
-    (Very often people attempting to introduce eventual consistency into a system run into problems from
+*Partition-Tolerant environment*::
+  ability of the whole system to continue to work (accept requests and process them reliably) even
+  when any number of messages fail in communications.
+  ** the basic prove of *CAP theorem* is based on having two nodes split (brain split), each of them
+  starts to process different requests but they can't communicate with each other. The system as whole
+  is then inconsistent (consistency in CAP way of thinking). Each node responses different value on reading.
+*Consistency*::
+  defines a consistency model that system work with. the characteristic is whether every read would return
+  the latest written information (or error), it's a degree of how soon the changes done by your transaction
+  is visible to other transactions
+  ** Very often people attempting to introduce eventual consistency into a system run into problems from
      the business side. Business users hear "consistency" and they tend to think it means
-     that the data will be wrong. That the data will be incoherent and contradictory. This is not actually the case.)
-  * Availability (A). A guarantee that the system can continue to operate even if a node is unavailable.
-    (Cloud providers have broadened the interpretation of the CAP theorem in the sense that they consider
-     a system to be unavailable if the response time exceeds the latency limit.)
-  * Partition tolerance (P). A guarantee that the system continues to operate despite the nodes being unable to communicate.
+     that the data will be wrong. That the data will be incoherent and contradictory.)
+*Availability*::
+  excects that every request receives a non-error response
+  ** Cloud providers have broadened the interpretation of the CAP theorem in the sense that they consider
+     a system to be unavailable if the response time exceeds the latency limit.
 
 * https://henryr.github.io/cap-faq
 * http://book.mixu.net/distsys/single-page.html
 * https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
 * https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
 * https://msdn.microsoft.com/en-us/library/jj591577.aspx
+* https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
 --
 
 
@@ -363,21 +375,27 @@ Hm... maybe, it's a little bit complicated :)
 
 FLP talks on problem of consensus
 
-having all nodes agree on a common value - is unsolvable in general in asynchronous
-networks where one node might fail
+```
+Having all nodes agree on a common value - is unsolvable
+in general in asynchronous networks where one node might fail.
+```
 
 [NOTE.speaker]
 --
-* FLP permits the possibility of one 'failed' node which is totally partitioned from the network and does not have to respond to requests.
+This is only a side node to the fact that scientists considers different models
+to describe distributed systems and the '_CAP issue_'.
+
+* FLP permits the possibility of one 'failed' node which is totally partitioned from the network
+  and does not have to respond to requests.
 * Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
 * FLP deals with consensus, which is a similar but different problem to atomic storage.
 
 https://henryr.github.io/cap-faq
 --
 
-== CAP and consensus
+== 2PC (once again)
 
-image:{images}/cap/cap-and-consensus.png[role="noborder"]
+* TODO: ? :)
 
 [NOTE.speaker]
 --
@@ -592,7 +610,7 @@ from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microse
 --
 
 
-== CRDT, CALM and others
+== CRDT, CALM, ALPS and others
 
 * *CRDT* for Convergent and Commutative Replicated Data Types
 * *CALM* for Consistency as Logical Monotonicity
@@ -629,10 +647,30 @@ Design Data-intensive Applications
 
 * http://dataintensive.net
 
+TODO: add title name here
+
+* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+
 [NOTE.speaker]
 --
-Please submit your talk to our lighting talks schedule.
+Info dump from several sources, mixed, just for inspiration.
 
-* and yes http://dataintensive.net : book Design Data-intensive Applications
-* and yes http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+
+Scaling - vertical and horizontal
+
+** Vertical scaling often creates vendor lock, further adding to costs.
+** Horizontal scaling offers more flexibility but is also considerably more complex.
+
+Partitioning - Partitioning is dividing the dataset into smaller distinct independent sets
+
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
+
+Replication - Replication is making copies of the same data on multiple machines
+
+* Replication improves performance by making additional computing power and bandwidth applicable to a new copy of the data
+* Replication improves availability by creating additional copies of the data, increasing the number of nodes that need to fail before availability is sacrificed
+
+Any horizontal scaling strategy is based on data partitioning; therefore,
+designers are forced to decide between consistency and availability.
 --
