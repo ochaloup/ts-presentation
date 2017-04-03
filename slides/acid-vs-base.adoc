@@ -372,13 +372,31 @@ Let's revise the *CAP* acronym once again
 * TODO review: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 --
 
-== Consistency models
+== Consistency models: Data-centric
 
-*TODO:* put here basic types - strong vs. weak, what is eventual consistency
+* Strict consistency
+** reads returns the most recent writes
+* Linearizability
+** sequential consistent and time ordering
+* Sequential consistency
+** ops executed in some sequential order
+* Casual consistency
+** reads are seen in the same order
+
+* Eventual consistency
 
 [NOTE.speaker]
 --
-_(disclaimer: these are just notes here)_
+Consistency model (aka consistency semantics)
+
+* Contract between processes and the data store
+** If processes obey certain rules, data store will work correctly
+* All models attempt to return the results of the last write for a read operation
+** Differ in how “last” write is determined/defined
+
+Strict consistency is sometimes referred as strong consistency.
+
+_and some unordered notes..._
 
 * Strong consistency models (capable of maintaining a single copy)
 ** Linearizable consistency: Under linearizable consistency, all operations appear to have
@@ -399,17 +417,20 @@ _(disclaimer: these are just notes here)_
    (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
 *** Eventual consistency with strong guarantees : CRDT, CALM
 
-* CAP - consistency, availability, partition tolerance
-** atomic consistency - it's hardly bound to be lineralizable
-** weaker consistency - relaxing CAP
-*** causal consistency - when server goes down particular client can see error but other clients can continue to work on other servers
-*** eventual consistency - data is distributed to (all) servers at the end (someday)
-
+* http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
 * http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
 * https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
 --
 
-== Serializzability distributed
+== Consistency models: Client-centric
+
+* Monotonic reads
+* Monotonic writes
+* Read your writes
+* Writes follow reads
+
+
+== Distributed serializability
 
 image:{images}/cap/consensus-atomic-ordering-kleppmann.png[role="noborder"]
 
