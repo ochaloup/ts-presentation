@@ -214,7 +214,7 @@ are zero which is violation of constraint application has.
 * http://technet.microsoft.com/en-us/library/cc546518.aspx
 * https://www.simple-talk.com/sql/t-sql-programming/developing-modifications-that-survive-concurrency
 * https://wiki.postgresql.org/wiki/SSI
-* https://vladmihalcea.com/2015/10/20/a-beginners-guide-to-read-and-write-skew-phenomena/
+* https://vladmihalcea.com/2015/10/20/a-beginners-guide-to-read-and-write-skew-phenomena
 --
 
 == Isolation in real world
@@ -350,6 +350,7 @@ Let's revise the *CAP* acronym once again
   ** the basic prove of *CAP theorem* is based on having two nodes split (brain split), each of them
   starts to process different requests but they can't communicate with each other. The system as whole
   is then inconsistent (consistency in CAP way of thinking). Each node responses different value on reading.
+  ** Consistency has multiple forms - CAP talks about linearizability (strict consistency)
 *Consistency*::
   defines a consistency model that system work with. the characteristic is whether every read would return
   the latest written information (or error), it's a degree of how soon the changes done by your transaction
@@ -361,17 +362,9 @@ Let's revise the *CAP* acronym once again
   excects that every request receives a non-error response
   ** Cloud providers have broadened the interpretation of the CAP theorem in the sense that they consider
      a system to be unavailable if the response time exceeds the latency limit.
+  ** CAP talks about total availability
 
-* https://henryr.github.io/cap-faq
-* http://book.mixu.net/distsys/single-page.html
-* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
-* https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
-* https://msdn.microsoft.com/en-us/library/jj591577.aspx
-* https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
---
-
-
-=== FLP
+A step aside: FLP
 
 FLP talks on problem of consensus
 
@@ -380,8 +373,6 @@ Having all nodes agree on a common value - is unsolvable
 in general in asynchronous networks where one node might fail.
 ```
 
-[NOTE.speaker]
---
 This is only a side node to the fact that scientists considers different models
 to describe distributed systems and the '_CAP issue_'.
 
@@ -390,45 +381,21 @@ to describe distributed systems and the '_CAP issue_'.
 * Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
 * FLP deals with consensus, which is a similar but different problem to atomic storage.
 
-https://henryr.github.io/cap-faq
+* https://henryr.github.io/cap-faq
+* http://book.mixu.net/distsys/single-page.html
+* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+* https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
+* https://msdn.microsoft.com/en-us/library/jj591577.aspx
+* TODO review: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 --
 
-== 2PC (once again)
+== Consistency models
 
-* TODO: ? :)
+*TODO:* put here basic types - strong vs. weak, what is eventual consistency
 
 [NOTE.speaker]
 --
-Several computers (or nodes) achieve consensus if they all agree on some value. More formally:
-
-. Agreement: Every correct process must agree on the same value.
-. Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.
-. Termination: All processes eventually reach a decision.
-. Validity: If all correct processes propose the same value V, then all correct processes decide V.
-
-2PC is consensus protocol - some possible uses of consensus are:
-* deciding whether or not to commit a transaction to a database
-* synchronising clocks by agreeing on the current time
-* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
-* electing a leader node to coordinate some higher-level protocol
-
-Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
-
-* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
-  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
-  than clients and resources then the system is also unavailable.
-* Another problem of the algorithm is its blocking nature: once a resource has sent an agreement message to the coordinator,
-  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
-
-* CA (consistency + availability). Examples include full strict quorum protocols, such as two-phase commit.
-* CP (consistency + partition tolerance). Examples include majority quorum protocols in which minority partitions are unavailable such as Paxos, ZAB, Raft.
-* AP (availability + partition tolerance). Examples include protocols using conflict resolution, such as Dynamo.
-
-If you don’t want to lose linearizability, you have to make sure you do
-all your reads and writes in one datacenter, which you may call the leader.
-
-2PC, Paxos, and various approaches to quorum - these protocols provide the application programmer
-a façade of global serializability (http://adrianmarriott.net/logosroot/papers/LifeBeyondTxns.pdf)
+_(disclaimer: these are just notes here)_
 
 * Strong consistency models (capable of maintaining a single copy)
 ** Linearizable consistency: Under linearizable consistency, all operations appear to have
@@ -449,74 +416,124 @@ a façade of global serializability (http://adrianmarriott.net/logosroot/papers/
    (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
 *** Eventual consistency with strong guarantees : CRDT, CALM
 
-* CAP
-** Availability has multiple forms - CAP talks about total availability
-** Consistency has multiple forms - CAP talks about linearizability (strict consistency)
-
-* DB consistency studies - e.g. Read skew
 * CAP - consistency, availability, partition tolerance
 ** atomic consistency - it's hardly bound to be lineralizable
 ** weaker consistency - relaxing CAP
 *** causal consistency - when server goes down particular client can see error but other clients can continue to work on other servers
 *** eventual consistency - data is distributed to (all) servers at the end (someday)
 
-* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
-* https://en.wikipedia.org/wiki/Consistency_model
-* https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
-* http://thesecretlivesofdata.com/raft
-* https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
+* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
+* https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
+--
+
+== 2PC (issues)
+
+image:{images}/cap/2pc.png[role="noborder"]
+
+[NOTE.speaker]
+--
+* CA (consistency + availability). Examples include full strict quorum protocols,
+  such as two-phase commit.
+
+2PC: consensus prototol, commit agreement protocol
+
+Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
+
+* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
+  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
+  than clients and resources then the system is also unavailable.
+* Another problem of the algorithm is its blocking nature: once a resource has sent an agreement message to the coordinator,
+  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
+
 * http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+--
+
+== 3PC
+
+[NOTE.speaker]
+--
 * http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
-* http://the-paper-trail.org/blog/consensus-protocols-paxos
+* https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
+--
+
+
+== Consensus
+
+*TODO:* should be here ?
+
+[NOTE.speaker]
+--
+Possible uses of consensus are:
+
+* deciding whether or not to commit a transaction to a database
+* synchronising clocks by agreeing on the current time
+* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
+* electing a leader node to coordinate some higher-level protocol
+
+Several computers (or nodes) achieve consensus if they all agree on some value. More formally:
+
+. Agreement: Every correct process must agree on the same value.
+. Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.
+. Termination: All processes eventually reach a decision.
+. Validity: If all correct processes propose the same value V, then all correct processes decide V.
+
+* https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
 * http://book.mixu.net/distsys/single-page.html
+* https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
 --
 
 
-== ACID vs. CAP consistency
+== CAP - *CP*
 
-_ACID consistency_ *!=* _CAP consistency_
+*TODO:* Raft, Paxos example
 
 [NOTE.speaker]
 --
-* ACID - I+C is compound
-** 4 level of isolation -> 3 reads phenomenon
+* CP (consistency + partition tolerance). Examples include majority quorum protocols
+  in which minority partitions are unavailable such as Paxos, ZAB, Raft.
 
-C in CAP = single-copy consistency (i.e. replication consistency)
-C in ACID = preserving database rules e.g. unique keys
-C in CAP is a strict subset of C in ACID.
-●●Common Misunderstanding: “CAP Theorem → inability to provide
-ACID database properties with high availability”.
-CAP only prohibits serializable transactions with availability in the
-presence of partitions.
-○ No need to abandon Atomicity or Durability.
+2PC, Paxos, and various approaches to quorum - these protocols provide the application programmer
+a façade of global serializability
 
+If you don’t want to lose linearizability, you have to make sure you do
+all your reads and writes in one datacenter, which you may call the leader.
 
-* https://en.wikipedia.org/wiki/Isolation_(database_systems)
-* https://en.wikipedia.org/wiki/Consistency_(database_systems)
-* https://en.wikipedia.org/wiki/Consistency_model
-* GOOD POINTS HERE: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
-* TO READ: https://wiki.postgresql.org/wiki/SSI#Simple_Write_Skew
-* TO READ: http://www.bailis.org/blog/when-is-acid-acid-rarely
+* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+* http://thesecretlivesofdata.com/raft
+* http://the-paper-trail.org/blog/consensus-protocols-paxos
 --
 
 
-== HAT, not CAP
+== CAP - *AP*
 
-* *HAT* for Hightly Available Transactions
+*TODO:* ?
 
 [NOTE.speaker]
 --
+* AP (availability + partition tolerance). Examples include protocols using conflict
+  resolution, such as Dynamo.
+
+*HAT* for Highty Available Transactions
+
 * http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * TO READ: http://www.bailis.org/blog/when-does-consistency-require-coordination
 * TO READ: http://www.bailis.org/blog/worst-case-distributed-systems-design
 --
 
+== CRDT, CALM
+
+[NOTE.speaker]
+--
+Eventual consistency with strong guarantees : CRDT, CALM
+--
+
 
 == SQL vs. NoSQL vs. NewSQL
 
-* *SQL* using Structured Query Language: rock solid ACID
-* *NoSQL* not using SQL language normally: weak consistency and HA
-* *NewSQL* using SQL language: tries to be HA with stronger consistency
+image:{images}/cap/nosql-sql-comparision.jpg[role="noborder"]
+
+* _source:_ https://blogs.the451group.com/information_management/2011/04/15/nosql-newsql-and-beyond[https://blogs.the451group.com]
 
 [NOTE.speaker]
 --
@@ -525,12 +542,14 @@ possibly Google Spanner (when focused on strong consistency).
 And then probably even DynamoDB and CrockroachDB which added some
 stronger transaction abilities.
 
+* https://blogs.the451group.com/information_management/2011/04/15/nosql-newsql-and-beyond
 * http://dataconomy.com/2015/08/sql-vs-nosql-vs-newsql-finding-the-right-solution
-* TO READ: https://aphyr.com/posts/331-jepsen-voltdb-6-3
-* TO READ: https://www.voltdb.com/transaction-and-consistency-faq
-* TO READ: https://developer.jboss.org/wiki/InfinispanTransactions/version/11
-* TO READ: https://www.nuodb.com/product/durable-distributed-cache
+* https://aphyr.com/posts/331-jepsen-voltdb-6-3
+* https://www.nuodb.com/product/durable-distributed-cache
 --
+
+
+
 
 
 
