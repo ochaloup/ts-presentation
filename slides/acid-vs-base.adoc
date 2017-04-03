@@ -409,7 +409,7 @@ _(disclaimer: these are just notes here)_
 * https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
 --
 
-== Consensus
+== Serializzability distributed
 
 image:{images}/cap/consensus-atomic-ordering-kleppmann.png[role="noborder"]
 
@@ -417,6 +417,14 @@ _source:_ https://www.youtube.com/watch?v=5ZjhNTM8XU8&t=2300[Martin Kleppmann]
 
 [NOTE.speaker]
 --
+Here I would like check with you what are things to achieve *serializable transactions*
+in distributed environment.
+For that we need an *atomic commitment protocol* (all of them protocol or nono of them commit)
+and for that work in distributed environment we are in fight with *ordering*.
+And total ordering is in fact a problem of *consensus*.
+
+Consensus requires quite a lot of coordination.
+
 Possible uses of consensus are:
 
 * deciding whether or not to commit a transaction to a database
@@ -516,6 +524,7 @@ After the TM or participant is back, recovery process restore the system.
 * if none received *preCommit*, they all can *abort*
 
 * https://roxanageambasu.github.io/ds-class//assets/lectures/lecture16.pdf
+* http://planet.jboss.org/post/2pc_or_3pc
 * http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
 * https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
 --
