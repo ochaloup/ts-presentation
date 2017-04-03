@@ -364,23 +364,6 @@ Let's revise the *CAP* acronym once again
      a system to be unavailable if the response time exceeds the latency limit.
   ** CAP talks about total availability
 
-A step aside: FLP
-
-FLP talks on problem of consensus
-
-```
-Having all nodes agree on a common value - is unsolvable
-in general in asynchronous networks where one node might fail.
-```
-
-This is only a side node to the fact that scientists considers different models
-to describe distributed systems and the '_CAP issue_'.
-
-* FLP permits the possibility of one 'failed' node which is totally partitioned from the network
-  and does not have to respond to requests.
-* Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
-* FLP deals with consensus, which is a similar but different problem to atomic storage.
-
 * https://henryr.github.io/cap-faq
 * http://book.mixu.net/distsys/single-page.html
 * https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
@@ -426,41 +409,11 @@ _(disclaimer: these are just notes here)_
 * https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
 --
 
-== 2PC (issues)
-
-image:{images}/cap/2pc.png[role="noborder"]
-
-[NOTE.speaker]
---
-* CA (consistency + availability). Examples include full strict quorum protocols,
-  such as two-phase commit.
-
-2PC: consensus prototol, commit agreement protocol
-
-Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
-
-* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
-  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
-  than clients and resources then the system is also unavailable.
-* Another problem of the algorithm is its blocking nature: once a resource has sent an agreement message to the coordinator,
-  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
-
-* http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
-* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
---
-
-== 3PC
-
-[NOTE.speaker]
---
-* http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
-* https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
---
-
-
 == Consensus
 
-*TODO:* should be here ?
+image:{images}/cap/consensus-atomic-ordering-kleppmann.png[role="noborder"]
+
+_source:_ https://www.youtube.com/watch?v=5ZjhNTM8XU8&t=2300[Martin Kleppmann]
 
 [NOTE.speaker]
 --
@@ -478,9 +431,93 @@ Several computers (or nodes) achieve consensus if they all agree on some value. 
 . Termination: All processes eventually reach a decision.
 . Validity: If all correct processes propose the same value V, then all correct processes decide V.
 
+
+A step aside: FLP
+
+FLP talks on problem of consensus
+
+```
+Having all nodes agree on a common value - is unsolvable
+in general in asynchronous networks where one node might fail.
+```
+
+This is only a side node to the fact that scientists considers different models
+to describe distributed systems and the '_CAP issue_'.
+
+* FLP permits the possibility of one 'failed' node which is totally partitioned from the network
+  and does not have to respond to requests.
+* Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
+* FLP deals with consensus, which is a similar but different problem to atomic storage.
+
 * https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
 * http://book.mixu.net/distsys/single-page.html
 * https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
+--
+
+== 2PC (issues)
+
+image:{images}/cap/2pc.png[role="noborder"]
+
+[NOTE.speaker]
+--
+* CA (consistency + availability). Examples include full strict quorum protocols,
+  such as two-phase commit.
+
+2PC: atomic commitment protocol (ACP), a specialized type of consensus protocol
+
+Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
+
+* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
+  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
+  than clients and resources then the system is also unavailable.
+* Another problem of the algorithm is its *blocking nature*: once a resource has sent an agreement message to the coordinator,
+  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
+* it's blocking - it does not progress during the failure
+
+In context of consesus: *2PC is safe but not live*
+
+For 2PC can't be reach a safe decision when someone crashes/time-outs. Having only one participant
+down it means no-one can proceed.
+
+* 2PC originated in year 1979 (Gray)
+* 3PC in year 1981 (Stonebraker)
+* Paxos in year 1998 (Lamport)
+
+* http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+*
+--
+
+== 3PC
+
+image:{images}/cap/3pc.png[role="noborder"]
+
+[NOTE.speaker]
+--
+As it was known about 2PC that's safe but not live. Goal was creating consensus protocol
+to be live (never block on node failures).
+
+3PC is live but it is not safe. 3PC has issue with network partitions where
+data correctness is not assured.
+
+The protocol expects that node can't be just unreachable but living. When it stop
+to respond it's expected to be dead.
+
+3PC splits commit/abort to two phases.
+* let to know to all participants what was the outcome
+* when all participants knows the outcome then commit (only that time)
+
+The base difference to 2PC is that in case of failure of participant or TM
+protocol defines further execution for the system. When TM is not available
+then after timeout participants can continue to work depending the phase they are in.
+After the TM or participant is back, recovery process restore the system.
+
+* if one of the participants receives *preCommit*, they all can *commit*
+* if none received *preCommit*, they all can *abort*
+
+* https://roxanageambasu.github.io/ds-class//assets/lectures/lecture16.pdf
+* http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
+* https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
 --
 
 
