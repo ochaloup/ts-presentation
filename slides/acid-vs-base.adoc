@@ -287,32 +287,6 @@ To quote Peter Bailis here
 * https://www.youtube.com/watch?v=Ih0Efbx0cE8 : Adrian Colyer - Out of the Fire Swamp
 --
 
-== Serializability
-
-image:{images}/cap/serialization.png[role="noborder"]
-
-[NOTE.speaker]
---
-Serialization talks about multiple items groups under one transaction.
-Those transaction can be put to arbitrary order but they are executed in serial.
-
-Easy to imagine is to run on one node in one thread transaction by transaction.
---
-
-== Linearizability
-
-image:{images}/cap/linearizability.png[role="noborder"]
-
-[NOTE.speaker]
---
-Linearizability talks operation on single object to be done in the same order
-on multiple nodes.
-
-In other words it ensures that all operations on single object is executed in the same order
-on all nodes.
---
-
-
 == CAP
 
 image:{images}/cap/cap-consensus.png[role="noborder"]
@@ -366,68 +340,37 @@ Let's revise the *CAP* acronym once again
 
 * https://henryr.github.io/cap-faq
 * http://book.mixu.net/distsys/single-page.html
-* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
 * https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
 * https://msdn.microsoft.com/en-us/library/jj591577.aspx
 * TODO review: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 --
 
-== Consistency models: Data-centric
 
-* Strict consistency
-** reads returns the most recent writes
-* Linearizability
-** sequential consistent and time ordering
-* Sequential consistency
-** ops executed in some sequential order
-* Casual consistency
-** reads are seen in the same order
+== Serializability
 
-* Eventual consistency
+image:{images}/cap/serialization.png[role="noborder"]
 
 [NOTE.speaker]
 --
-Consistency model (aka consistency semantics)
+Serialization talks about multiple items groups under one transaction.
+Those transaction can be put to arbitrary order but they are executed in serial.
 
-* Contract between processes and the data store
-** If processes obey certain rules, data store will work correctly
-* All models attempt to return the results of the last write for a read operation
-** Differ in how “last” write is determined/defined
-
-Strict consistency is sometimes referred as strong consistency.
-
-_and some unordered notes..._
-
-* Strong consistency models (capable of maintaining a single copy)
-** Linearizable consistency: Under linearizable consistency, all operations appear to have
-   executed atomically in an order that is consistent with the global real-time ordering of operations. (Herlihy & Wing, 1991)
-** Sequential consistency: Under sequential consistency, all operations appear to have executed
-   atomically in some order that is consistent with the order seen at individual nodes and that is equal at all nodes. (Lamport, 1979)
-*** Paxos. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems.
-    It is used in many of Google's systems, including the Chubby lock manager used by BigTable/Megastore,
-    the Google File System as well as Spanner.
-*** ZAB. ZAB - the Zookeeper Atomic Broadcast
-*** Raft - easier Paxos
-* Weak consistency models (not strong)
-** Client-centric consistency models: many kinds of consistency models that are client-centric
-** Causal consistency: strongest model available, strongest is global causal+ consistency
-   – global as in needing to coordinate across datacenters, and the ‘+‘ to indicate that we care about convergence
-** Eventual consistency models
-*** Eventual consistency with probabilistic guarantees : Amazon's Dynamo
-   (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
-*** Eventual consistency with strong guarantees : CRDT, CALM
-
-* http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
-* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
-* https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
+Easy to imagine is to run on one node in one thread transaction by transaction.
 --
 
-== Consistency models: Client-centric
 
-* Monotonic reads
-* Monotonic writes
-* Read your writes
-* Writes follow reads
+== Linearizability
+
+image:{images}/cap/linearizability.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Linearizability talks operation on single object to be done in the same order
+on multiple nodes.
+
+In other words it ensures that all operations on single object is executed in the same order
+on all nodes.
+--
 
 
 == Distributed serializability
@@ -483,7 +426,73 @@ to describe distributed systems and the '_CAP issue_'.
 * https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
 --
 
-== 2PC (issues)
+
+== Consistency in baseball game
+
+image:{images}/cap/baseball-consistency-2.png[role="noborder"]
+
+_source:_ https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball[Replicated Data Consistency Explained Through Baseball]
+
+[NOTE.speaker]
+--
+Consistency model (aka consistency semantics)
+
+* Contract between processes and the data store
+** If processes obey certain rules, data store will work correctly
+* All models attempt to return the results of the last write for a read operation
+** Differ in how “last” write is determined/defined
+
+Strict consistency is sometimes referred as strong consistency.
+
+Consistency models: Data-centric
+
+* Strict consistency
+** reads returns the most recent writes
+* Linearizability
+** sequential consistent and time ordering
+* Sequential consistency
+** ops executed in some sequential order
+* Casual consistency
+** reads are seen in the same order
+
+* Eventual consistency
+
+
+Consistency models: Client-centric
+
+* Monotonic reads
+* Monotonic writes
+* Read your writes
+* Writes follow reads
+
+_and some unordered notes..._
+
+* Strong consistency models (capable of maintaining a single copy)
+** Linearizable consistency: Under linearizable consistency, all operations appear to have
+   executed atomically in an order that is consistent with the global real-time ordering of operations. (Herlihy & Wing, 1991)
+** Sequential consistency: Under sequential consistency, all operations appear to have executed
+   atomically in some order that is consistent with the order seen at individual nodes and that is equal at all nodes. (Lamport, 1979)
+*** Paxos. Paxos is one of the most important algorithms when writing strongly consistent partition tolerant replicated systems.
+    It is used in many of Google's systems, including the Chubby lock manager used by BigTable/Megastore,
+    the Google File System as well as Spanner.
+*** ZAB. ZAB - the Zookeeper Atomic Broadcast
+*** Raft - easier Paxos
+* Weak consistency models (not strong)
+** Client-centric consistency models: many kinds of consistency models that are client-centric
+** Causal consistency: strongest model available, strongest is global causal+ consistency
+   – global as in needing to coordinate across datacenters, and the ‘+‘ to indicate that we care about convergence
+** Eventual consistency models
+*** Eventual consistency with probabilistic guarantees : Amazon's Dynamo
+   (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
+*** Eventual consistency with strong guarantees : CRDT, CALM
+
+* http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
+* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
+* https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
+--
+
+
+== 2PC
 
 image:{images}/cap/2pc.png[role="noborder"]
 
@@ -553,46 +562,106 @@ After the TM or participant is back, recovery process restore the system.
 
 == CAP - *CP*
 
-*TODO:* Raft, Paxos example
+http://thesecretlivesofdata.com/raft
 
 [NOTE.speaker]
 --
-* CP (consistency + partition tolerance). Examples include majority quorum protocols
-  in which minority partitions are unavailable such as Paxos, ZAB, Raft.
+* CP (consistency + partition tolerance). Basically those are *majority quorum protocols*
+  in which minority partitions are unavailable such as Paxos, ZAB (*ZooKeeper*), Raft.
 
 2PC, Paxos, and various approaches to quorum - these protocols provide the application programmer
-a façade of global serializability
+a façade of global serializability.
 
 If you don’t want to lose linearizability, you have to make sure you do
 all your reads and writes in one datacenter, which you may call the leader.
 
+RAFT
+
+Raft is a consensus algorithm for implementing fault tolerant distributed systems
+using a replicated state machine approach.
+
+Raft is "simplification" of Paxos, mainly for being easier to explain
+
+There are two topics to talk about
+
+* leader election
+* log replication
+
 * http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
 * http://thesecretlivesofdata.com/raft
 * http://the-paper-trail.org/blog/consensus-protocols-paxos
+* https://loonytek.com/2015/10/18/leader-election-and-log-replication-in-raft-part-1
+* http://blog.nahurst.com/visual-guide-to-nosql-systems
 --
 
 
 == CAP - *AP*
 
-*TODO:* ?
+image:{images}/cap/ap.png[role="noborder"]
 
 [NOTE.speaker]
 --
-* AP (availability + partition tolerance). Examples include protocols using conflict
-  resolution, such as Dynamo.
+* AP (availability + partition tolerance). Basically those are *protocols using conflict resolution*,
+  such as Dynamo.
 
-*HAT* for Highty Available Transactions
+The easiest way how to resolve conflict is to move the responsibility to client.
+If there is a conflict DB returns to client both results and it's up to client
+what it does - uses both, rewrites one as the correct record...
 
-* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
-* TO READ: http://www.bailis.org/blog/when-does-consistency-require-coordination
-* TO READ: http://www.bailis.org/blog/worst-case-distributed-systems-design
+* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
 --
 
 == CRDT, CALM
 
+*CRDT*::
+  conflict-free data type
+*CALM*::
+  consistency as logical monotonicity
+
 [NOTE.speaker]
 --
 Eventual consistency with strong guarantees : CRDT, CALM
+
+CRDT
+
+* a type of specially-designed data structure used to achieve strong eventual consistency
+* basically they are datastructures that could be used with set of operation which
+  are capable to resolve conflict. The basic example is a counter - it's implemented
+  in way of not setting a state but list of additions. When split brain occurs then
+  each partion is free to add addition (+1) to list of addition. When the cluster is joint
+  again there is a function which defines how to resolve the conflict (e.g. part one
+  receives request for +1 and part two three request for +1). The function just takes
+  additions and sum that up. The resolution for the conflict is +4.
+* Two types
+** Operation-based CRDTs
+** State-based CRDTs
+
+CALM
+
+Moving responsibility to define where coordination is needed to creator of program.
+It provides tooling to define what are the "weak points" of the program and where
+coordination will be needed. Other parts are fine to be left as "AP" without any
+coordination enforced.
+
+Accordingly, CALM tells programmers which operations and programs can guarantee safety
+when used in an eventually consistent system. Any code that fails CALM tests is a candidate
+for stronger coordination mechanisms.
+
+A Bloom program may be viewed as a dataflow graph with external input interfaces as sources,
+external output interfaces as sinks, collections as internal nodes, and rules as edges.
+This graph represents the dependencies between the collections in a program and
+is generated automatically by the Bud interpreter.
+
+* http://www.se-radio.net/2016/03/se-radio-episode-252-christopher-meiklejohn-on-crdts
+* https://medium.com/@istanbul_techie/a-look-at-conflict-free-replicated-data-types-crdt-221a5f629e7e
+* https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type
+* https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach
+* http://www.bailis.org/blog/when-does-consistency-require-coordination
+* http://queue.acm.org/detail.cfm?id=2462076
+* https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach
+* https://blog.acolyer.org/2015/09/08/out-of-the-fire-swamp-part-i-the-data-crisis
+* https://blog.acolyer.org/2015/09/09/out-of-the-fire-swamp-part-ii-peering-into-the-mist
+* https://blog.acolyer.org/2015/09/10/out-of-the-fire-swamp-part-iii-go-with-the-flow
 --
 
 
@@ -604,6 +673,13 @@ image:{images}/cap/nosql-sql-comparision.jpg[role="noborder"]
 
 [NOTE.speaker]
 --
+Difference in terms of SQL, NoSQL and NewSQL is fuzzy. There is difference if SQL
+is used. But here in terms is rather kind of:
+
+* *SQL* == *AC* (RBMS)
+* *NoSQL* == *AP*
+* *NewSQL* == *CP*
+
 NewSQL examples NuoDB, VoltDB. Plus we can talk about systems like IBM HANA or
 possibly Google Spanner (when focused on strong consistency).
 And then probably even DynamoDB and CrockroachDB which added some
@@ -613,11 +689,8 @@ stronger transaction abilities.
 * http://dataconomy.com/2015/08/sql-vs-nosql-vs-newsql-finding-the-right-solution
 * https://aphyr.com/posts/331-jepsen-voltdb-6-3
 * https://www.nuodb.com/product/durable-distributed-cache
+* http://www.methodsandtools.com/archive/acidnosql.html
 --
-
-
-
-
 
 
 == Definition BASE
@@ -636,24 +709,33 @@ BASE properties are much looser than ACID guarantees, but there isn’t a direct
 
 We can say that BASE transaction is used in NoSQL databases.
 As we can say that ACID transaction is used in SQL databases.
-Nothing from that is exactly correct but for simplification is fine.
+We can say that ACID transaction is used in NewSQL databases.
 
-* https://neo4j.com/blog/acid-vs-base-consistency-models-explained
-* https://neo4j.com/blog/aggregate-stores-tour/
-* http://queue.acm.org/detail.cfm?id=1394128
-* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
---
+_...nothing particularly correct in these saying but it's fine as simplification_
 
-== _Distributed_ BASE transactions
-
-An available transaction
-
-[NOTE.speaker]
---
 BASE is a way how to get a distributed transaction (transaction over multiple resources/databases) being available.
 
 * Technique known as 2PC (two-phase commit) for providing ACID guarantees across multiple database instances.
 * ACID provides the consistency choice for partitioned databases, then how do you achieve availability instead? One answer is BASE.
+
+* https://neo4j.com/blog/acid-vs-base-consistency-models-explained
+* https://neo4j.com/blog/aggregate-stores-tour
+* http://queue.acm.org/detail.cfm?id=1394128
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+--
+
+== _Distributed_ transactions
+
+* Percolator's transactions
+* RAMP transactions
+* (Google Spanner)
+* Compensating (SAGA) transactions
+
+[NOTE.speaker]
+--
+For Perclator and RAMP (and Spanner) We talk about transactions which is capable to work multiple records and provide
+atomic commit with them.
+For BASE we talk about eventual consistency where atomic commit is relaxed whole-over.
 
 * If you want Serializable Isolation level then you should take a look on the http://research.google.com/pubs/pub36726.html[Percolator's transactions].
   The Percolator's transactions are quite known in the industry and have been used in the https://aws.amazon.com/blogs/aws/dynamodb-transaction-library/[Amazon's DynamoDB transaction library], in the https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/[CockroachDB database]
@@ -663,14 +745,30 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 * The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas paper]
   but became more actual with the raise of distributed systems.
 
-from StackOverflow http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510
+_source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510[how-to-manage-transactions-over-multiple-databases]
 
+*HAT* for Highly Available Transactions
+* the paper comes with isolation/consistency analysis and introduces RAMP transactions
+
+*Google Spanner*
+* It is a distributed relational database that can distribute and store data in Google's BigTable storage
+  system in multiple data centers. Spanner meets ACID (of course, it supports transaction) and supports SQL.
+  Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
+* Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
+
+* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
 * https://www.youtube.com/watch?v=xDuwrtwYHu8
+* http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
+* https://dzone.com/articles/spanner-globally-distributed
 --
 
-== MSA and weak consistency
+== MSA and consistency
+
+image:{images}/cap/eventdriven.png[role="noborder"]
+
+_source:_ http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data[The Hardest Part About Microservices: Your Data]
 
 [NOTE.speaker]
 --
@@ -680,10 +778,11 @@ is processed and that the events are generated and made persistent in the event 
 but if you consider the entire transaction (from running the command to the event listener execution) in regard to the asynchronous
 characteristics of flow, it is a BASE transaction.
 
-Event Sourcing (ES) and Command Query Responsibility Segregation (CQRS) or Turning the Database Upside Down
+*Event Sourcing* (ES) and *Command Query Responsibility Segregation* (CQRS) or *Turning the Database Upside Down*
 
 from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microservices-and-cqrs-trs
 
+Implementation of CQRS saga base transaction is done in Axon Framework: http://www.axonframework.org
 
 * http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs : Why distributed transactions are bad in MSA
 * http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA
@@ -693,49 +792,17 @@ from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microse
 * https://github.com/cer/event-sourcing-examples : examples of http://eventuate.io
 * https://www.infoq.com/articles/microservices-aggregates-events-cqrs-part-1-richardson : Developing Transactional Microservices Using Aggregates, Event Sourcing and CQRS - Part 1
 * https://mapr.com/blog/how-stream-first-architecture-patterns-are-revolutionizing-healthcare-platforms
+* https://dzone.com/articles/microservices-with-spring-boot-axon-cqrses-anddock
 --
 
-
-== CRDT, CALM, ALPS and others
-
-* *CRDT* for Convergent and Commutative Replicated Data Types
-* *CALM* for Consistency as Logical Monotonicity
-* *ACID 2.0* for ACID 2.0 :)
-
-* *STM* for Software Transactional Memory
-
-[NOTE.speaker]
---
-There’s a considerable amount of research focusing on how to provide ACID consistency without serializability.
-As an example, we can restrict the types of operations that transactions can perform, as in escrow and read-only transactions and with monotonic logic.
-We can also consider hypothetical databases that introduce dummy transactions to fill in anomalous behavior in the serial schedule, which would be silly
-but technically serializable. The systems in question don’t (usually) provide these sorts of “special-case” ACID-compliant transactions as features.
-
-from http://www.bailis.org/blog/when-is-acid-acid-rarely
-
-* TO READ: https://github.com/pfrazee/crdt_notes
-* https://blog.acolyer.org/2015/09/10/out-of-the-fire-swamp-part-iii-go-with-the-flow
-* https://blog.acolyer.org/2015/03/18/a-comprehensive-study-of-convergent-and-commutative-replicated-data-types
-* https://blog.acolyer.org/2015/03/16/consistency-analysis-in-bloom-a-calm-and-collected-approach
-* https://en.wikipedia.org/wiki/Optimistic_concurrency_control
-* TO READ: https://en.wikipedia.org/wiki/Transactional_memory
---
 
 == !
 
 image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]
 
-Distributed systems: for fun and profit
-
-* http://book.mixu.net/distsys
-
-Design Data-intensive Applications
-
-* http://dataintensive.net
-
-TODO: add title name here
-
-* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+* http://book.mixu.net/distsys[Distributed systems: for fun and profit]
+* http://dataintensive.net[Design Data-intensive Applications]
+* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer[Distributed systems theory for the distributed systems engineer]
 
 [NOTE.speaker]
 --
