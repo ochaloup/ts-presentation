@@ -342,7 +342,8 @@ Let's revise the *CAP* acronym once again
 * http://book.mixu.net/distsys/single-page.html
 * https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
 * https://msdn.microsoft.com/en-us/library/jj591577.aspx
-* TODO review: http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
+* http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
+* http://www.julianbrowne.com/article/viewer/brewers-cap-theorem
 --
 
 
@@ -720,7 +721,7 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 
 * https://neo4j.com/blog/acid-vs-base-consistency-models-explained
 * https://neo4j.com/blog/aggregate-stores-tour
-* http://queue.acm.org/detail.cfm?id=1394128
+* http://queue.acm.org/detail.cfm?id=1394128 (Base: An Acid Alternative)
 * http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
 --
 
@@ -756,10 +757,14 @@ _source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manag
   Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
 * Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
 
+*SAGA*
+* trade-off: atomicity for availability
+
 * http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
-* https://www.youtube.com/watch?v=xDuwrtwYHu8
+* https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015 • Applying the Saga Pattern • Caitie McCaffrey)
+* https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
 * http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
 * https://dzone.com/articles/spanner-globally-distributed
 --

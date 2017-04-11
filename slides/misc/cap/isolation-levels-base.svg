@@ -42,13 +42,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1369524"
-     inkscape:cx="235.93147"
+     inkscape:cx="85.529395"
      inkscape:cy="374.03204"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1021"
+     inkscape:window-height="1019"
      inkscape:window-x="1920"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -230,7 +230,7 @@
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-size:24.0421772px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24.0421772px;line-height:125%;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="550.53967"
        y="975.69678"
        id="text4235"
@@ -238,7 +238,7 @@
          sodipodi:role="line"
          id="tspan4237"
          x="550.53967"
-         y="975.69678">Consistency</tspan></text>
+         y="975.69678">Isolation</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12.63881302px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#aa0000;fill-opacity:1;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans"
