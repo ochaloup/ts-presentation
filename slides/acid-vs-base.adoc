@@ -760,6 +760,18 @@ _source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manag
 *SAGA*
 * trade-off: atomicity for availability
 
+*RAMP*
+* based on paper from Peter Bailis and others (UC Berkeley and University of Sydney)
+* does not provide ACID guarantees but the goal is to achieve atoic reads of multiple items
+* each partition maintains version history for items, it's consisted from tuple like `(item, value, timestamp, metadata)`
+* RAMP uses 2 phase commit but without exclusive locking
+* three versions of the protocol like 'RAMP-Fast', 'RAMP-Small', 'RAMP-Hybrid'
+** metadata contains 'dependency' - in this context it means what other items are part of the atomic update,
+   for example we want update item 'X' and 'Y'. Item 'X' is set to value '1' and 'Y' to '2'. When we read 'Y'
+   DB returns value with timestamp and dependency. We can now compare if getting 'X' and 'Y' has the same timestamp
+   which is important if 'X' and 'Y' was part of the same transaction - which we found out by checking metadata dependency information.
+** if there is a discrepancy we ask for the value with the smaller timestamp again to get updated value
+
 * http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
@@ -767,6 +779,8 @@ _source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manag
 * https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
 * http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
 * https://dzone.com/articles/spanner-globally-distributed
+* http://rustyrazorblade.com/2015/11/ramp-made-easy
+* http://rustyrazorblade.com/2015/11/ramp-made-easy-part-2
 --
 
 == MSA and consistency
