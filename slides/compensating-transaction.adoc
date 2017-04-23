@@ -102,6 +102,9 @@ As I tried to indicate the issue is the same - let through be higher, do not hol
 
 [NOTE.speaker]
 --
+The concept of the original paper talks about single node database but it could
+be applied to distributed transactions (as was already shown).
+
 Saga could be classified as `Base` transaction (at least from my understanding)
 as it does not lock resources a.k.a locks and letting data of resources being available
 for other transactions to work with.
@@ -120,6 +123,36 @@ to handle with failures. It's up to you if concept of Saga is useful for you or 
 * https://www.atomikos.com/Blog/ACAPSolutionProvingBrewerWrong (A CAP Solution (Proving Brewer Wrong) aka CQRS)
 --
 
+== Saga: distributed implemenation
+
+* state store
+* routing slip
+* process manager
+
+[NOTE.speaker]
+--
+*State store*::
+  State store corresponds with transaction manager object store (as Narayana implements it
+  and as it's easily to be understand). State is saved in a storage (either in local disk
+  or in some distributed environment). This storage has to be available during recovery.
+
+*Routing slip*::
+  The state corresponding with the saga state is send from one service to other. For example
+  we want to add to one account and remove from other account, each in different service.
+  Thus information that the Saga contains this two operations is sent in the message to the
+  first service. It adds to one account and sends information that the Saga consists from two
+  operations, where one is fulfilled by 'me'. If the second service fails to remove from the account,
+  it sends a message with saga context to an error queue where the first service listen on
+  and it handle compensations.
+
+*Process manager*::
+  It's what we label here as event driven transactions. There some messaging system where
+  process manager listen on. The services could be informed about needs of add/remove to/from account
+  from some service bus, queue or just async call but they send information about outcome to the msg system
+  where process manager listen and it can manage compensation handling.
+
+* https://dzone.com/articles/transactions-in-microservices
+--
 
 == Narayana compensating transactions
 
