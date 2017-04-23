@@ -136,6 +136,8 @@ ways to lock thinks (e.g. check M$ articles about locks)
   * means that other transaction reading the same data several times can see different values
     during it's executions. Transaction one starts and reads X being 1. Meanwhile transaction
     two stats, writes X to be 2 and commits. Transaction one reads X again and it can see it being 2.
+  * generally prevents users from reading uncommitted or non-final writes but allows a number of bad
+    things to happen, like lost updates during concurrent read-modify-write operations
 *Repeatable reads*::
   * struggles _phantom reads (P3)_ phenomena
   * locks: acquires write and read lock for records working with till the end of transaction
@@ -215,6 +217,7 @@ are zero which is violation of constraint application has.
 * https://www.simple-talk.com/sql/t-sql-programming/developing-modifications-that-survive-concurrency
 * https://wiki.postgresql.org/wiki/SSI
 * https://vladmihalcea.com/2015/10/20/a-beginners-guide-to-read-and-write-skew-phenomena
+* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
 --
 
 == Isolation in real world
@@ -338,12 +341,19 @@ Let's revise the *CAP* acronym once again
      a system to be unavailable if the response time exceeds the latency limit.
   ** CAP talks about total availability
 
+Saying this implies that `CA` and `CP/AP` are not about the same face of a distributed system:
+* `CA` is a specification of the operating range: you specify that the system does not work well under partition or,
+  more precisely, that partitions are outside the operating range of the system.
+* `CP` or `AP` describes the behavior: what happens if there is a partition.
+
+
 * https://henryr.github.io/cap-faq
 * http://book.mixu.net/distsys/single-page.html
 * https://medium.com/@cinish/database-acid-cap-isolation-levels-371b7e06a112
 * https://msdn.microsoft.com/en-us/library/jj591577.aspx
 * http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 * http://www.julianbrowne.com/article/viewer/brewers-cap-theorem
+* http://blog.thislongrun.com/2015/04/the-unclear-cp-vs-ca-case-in-cap.html
 --
 
 
@@ -608,8 +618,12 @@ image:{images}/cap/ap.png[role="noborder"]
 The easiest way how to resolve conflict is to move the responsibility to client.
 If there is a conflict DB returns to client both results and it's up to client
 what it does - uses both, rewrites one as the correct record...
+Other used and easy way is having kind of versioning system (kind of git in database).
+All is stored in versions, the newest record is used as the value but you can get
+whole history of value changes and you can work with it.
 
 * https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+* http://guide.couchdb.org/draft/consistency.html
 --
 
 == CRDT, CALM
@@ -758,29 +772,36 @@ _source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manag
 * Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
 
 *SAGA*
-* trade-off: atomicity for availability
+* trade-off: `atomicity` for `availability` (stated by Caitie in his GOTO 2015 presentation)
+* I personally do not totally agree with it, I like the point of view of Martin Kleppmann
+  from his presentation at Strange Loop 2015 where he defines `atomicity` as `abortability`. That's what Saga
+  is designed for - being able to compensate a.k.a abort the unit of work as a whole.
+  Saga then has rather trade-off of `isolation` for `availability`.
 
 *RAMP*
 * based on paper from Peter Bailis and others (UC Berkeley and University of Sydney)
 * does not provide ACID guarantees but the goal is to achieve atoic reads of multiple items
 * each partition maintains version history for items, it's consisted from tuple like `(item, value, timestamp, metadata)`
 * RAMP uses 2 phase commit but without exclusive locking
-* three versions of the protocol like 'RAMP-Fast', 'RAMP-Small', 'RAMP-Hybrid'
+* three versions of the protocol like `RAMP-Fast`, `RAMP-Small`, `RAMP-Hybrid`
 ** metadata contains 'dependency' - in this context it means what other items are part of the atomic update,
    for example we want update item 'X' and 'Y'. Item 'X' is set to value '1' and 'Y' to '2'. When we read 'Y'
    DB returns value with timestamp and dependency. We can now compare if getting 'X' and 'Y' has the same timestamp
    which is important if 'X' and 'Y' was part of the same transaction - which we found out by checking metadata dependency information.
 ** if there is a discrepancy we ask for the value with the smaller timestamp again to get updated value
+* you really need to read a nice concise summary from Jon Haddad - RAMP Made easy
 
 * http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
-* https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015 • Applying the Saga Pattern • Caitie McCaffrey)
+* https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015, Applying the Saga Pattern, Caitie McCaffrey)
+* https://www.youtube.com/watch?v=5ZjhNTM8XU8 ("Transactions: myths, surprises and opportunities" by Martin Kleppmann)
 * https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
 * http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
 * https://dzone.com/articles/spanner-globally-distributed
-* http://rustyrazorblade.com/2015/11/ramp-made-easy
+* http://rustyrazorblade.com/2015/11/ramp-made-easy (Jon Haddad, RAMP Made easy)
 * http://rustyrazorblade.com/2015/11/ramp-made-easy-part-2
+* https://www.infoq.com/presentations/spanner-distributed-google
 --
 
 == MSA and consistency
@@ -803,8 +824,14 @@ from https://www.ibm.com/developerworks/cloud/library/cl-build-app-using-microse
 
 Implementation of CQRS saga base transaction is done in Axon Framework: http://www.axonframework.org
 
+A normalized database (with no redundancy) is optimized for writing, whereas a denormalized database is optimized for reading.
+
+...change data capture (CDC) means using an existing database in the familiar way, but extracting any inserts, updates and
+deletes into a stream of data change events which other applications can consume,
+see `Debezium`.
+
 * http://www.grahamlea.com/2016/08/distributed-transactions-microservices-icebergs : Why distributed transactions are bad in MSA
-* http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA
+* http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data : Data management in MSA, Ch. Posta
 * http://debezium.io : Red Hat to event sourcing for DBs
 * https://kafemlejnek.tv/dil-6-nastupujici-architektury-web-aplikaci : Kafemlejnek.tv
 * http://programio.havrlant.cz/kafka : Lukáš Havrlant blog
@@ -812,6 +839,7 @@ Implementation of CQRS saga base transaction is done in Axon Framework: http://w
 * https://www.infoq.com/articles/microservices-aggregates-events-cqrs-part-1-richardson : Developing Transactional Microservices Using Aggregates, Event Sourcing and CQRS - Part 1
 * https://mapr.com/blog/how-stream-first-architecture-patterns-are-revolutionizing-healthcare-platforms
 * https://dzone.com/articles/microservices-with-spring-boot-axon-cqrses-anddock
+* https://www.confluent.io/blog/making-sense-of-stream-processing
 --
 
 
