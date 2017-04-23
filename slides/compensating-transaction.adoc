@@ -1,0 +1,159 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: fade
+
+:images: ./misc
+
+
+= Sagas/Compensating transactions
+Ondra Chaloupka / ochaloup@redhat.com
+
+[NOTE.speaker]
+--
+*Why this presentation?*
+
+As other of my presentation this targets to broaden my (mainly :-) and yours (hopefully :-)
+horizons in transaction processing.
+
+*What you will get in this 15+ minutes presentation?*
+
+You should get know what is Saga transaction and why LLT (long lived transaction),
+Saga's forward and backward recovery, Axon framework and its approach of message driven transaction processing,
+Atomicos TCC (try-cancel/confirm), Narayana compensating approach.
+--
+
+
+== Long lived transaction
+
+image:{images}/entertain/wtf2.jpg[role="noborder"]
+
+[NOTE.speaker]
+--
+I would like start the whole talk by introducing concept of long lived transaction.
+
+Standard ACID transaction is expected to be a short amount of work done in short time.
+This expectation is based on the fact that ACID transaction holds resources (locks)
+and prevents other concurrent transaction using the same data to proceed (mainly when the
+both of them hit writing the same record, reading concurrently could be somehow solved by MVCC - Snapshot isolation).
+
+What if we want to have long transaction spans request over network (WS, REST) combined with insertion to a database.
+What if we consider popular example of reserving a flight, taxi to a hotel and the hotel,
+which we would like to be a single operation in high level point of view - I mean when I book a hotel from some date,
+I need to be sure that the flight for that date is booked too and having taxi on particular date being prepared
+for me. Confirmation of the hotel could take "long" time and during that time I need to hold reservation
+for the flight. When booking fails I need to cancel the flight reservation too. At this particular example
+it's suitable to hold resources (locks) as it could block other reservation to happen.
+
+This is really popular example in many articles and it is in fact real for many use cases.
+But what I thing is important here is the fact that it points to the fact that
+holding resources/locks (for long time) could be a bad fit which not permitting concurrent operation to proceed.
+This is something with current systems which manages big amount of data and processing many operations in parallel
+has to fight with.
+
+Trend of holding locks is represented by well-known two phase commit protocol where
+each resource - each participant of the transaction (it could be a database, WS/REST call, JMS...)
+starts its own local transaction and that local transaction holds resources of particular system
+(it holds locks on the resource, implementation depends system - in example of DB as mentioned
+there is MVCC which does not lock for concurrent reads). The resource is hold during the whole time
+of processing until commit is called on the local transaction.
+When thinking about two phase commit from point of insertion of some data to a database we can imagine to be like
+
+. application inserts data to database
+. that starts a global `2PC` transaction managed by a transaction manager (e.g. Narayana)
+. that started a local database transaction which (could) holds some locks and prevent other insertion (or possibly reads)
+  being done on the influenced record by other operations (transactions) started later
+. application sends a message to JMS queue
+. the database local transaction is still active and locks are held
+. application ends its business logic
+. transaction manager starts two phase commit
+. transaction manager asks the database if it can prepare
+. the database responses 'yes' and stores the state of the local transaction durably
+  (until now the crash of the database means losing information about the local transaction)
+. transaction manager asks other participants if they can prepare (this time it asks the JMS broker)
+. the database still locks the data influenced by the data insertion
+. transaction manager directs the database to commit, database releases the locks now
+. interestingly here we have a time windows when an global consistency is not fulfilled.
+  defined in different way ACID consistency is fine as there is no contradiction of consistency
+  constraints required by database but isolation in ACID way of thinking stretched over the whole
+  global transaction is not valid in fact. This is just pointing to fact that `2PC` provides ACID atomicity
+  but not the ACID isolation
+. transaction manager commits other participants and global transaction ends
+
+This example shows how the `2PC` holds resources which leads to the fact that resources
+itself holds locks as part of its local transactions.
+
+How to not holding lock and permit higher transaction throughput? The answer could be Saga.
+Even we didn't define it so far we can say it comes with idea of splitting this big
+transaction to small ones where each local transaction is finished as soon as possible
+and the set of the already finished transactions defines a work of unit. This breaks
+ACID isolation right at the place but Saga provides handling to grant atomicity.
+
+The Saga defines unit of work work that could be aborted and we relax isolation.
+
+As I tried to indicate the issue is the same - let through be higher, do not hold/lock.
+
+* http://stackoverflow.com/questions/4639740/how-acid-is-the-two-phase-commit-protocol
+--
+
+
+== Saga
+
+[NOTE.speaker]
+--
+Saga could be classified as `Base` transaction (at least from my understanding)
+as it does not lock resources a.k.a locks and letting data of resources being available
+for other transactions to work with.
+
+TODO: _add description of Saga here_
+
+As you could see the transaction handling introduced by Saga requires the application to
+define compensation actions or define actions as idempotent (you can repeat operation on the
+resource multiple times and you will get the same result - operation being repeated not leading to a different outcome).
+
+Still you can handle all the data integrity yourself in your application and design your system architecture
+to handle with failures. It's up to you if concept of Saga is useful for you or not.
+
+* https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Sagas, Priceton University, 1987)
+* http://queue.acm.org/detail.cfm?id=1394128 (Base: An Acid Alternative, base transactions)
+* https://www.atomikos.com/Blog/ACAPSolutionProvingBrewerWrong (A CAP Solution (Proving Brewer Wrong) aka CQRS)
+--
+
+
+== Narayana compensating transactions
+
+[NOTE.speaker]
+--
+* https://developer.jboss.org/wiki/CompensatingTransactionsWhenACIDIsTooMuch (Narayana: Compensating Transactions: When ACID is too much)
+--
+
+
+== Atomicos TCC
+
+[NOTE.speaker]
+--
+* https://www.atomikos.com/Main/DownloadPublications?article=TransactionsForSOA-WhitePaper.pdf (Atomicos: Composite	Transactions for SOA)
+* https://www.infoq.com/presentations/Transactions-HTTP-REST (Atomicos: Transactions for the REST of Us, presentation
+--
+
+
+== Event driven transactions
+
+[NOTE.speaker]
+--
+* https://docs.axonframework.org/part2/sagas.html (Axon: Managing complex business transactions)
+* https://docs.particular.net/nservicebus/sagas (Particular Software : .NET/Windows, Sagas)
+--
+
+
+== !
+
+image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]
+
+* https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas, Priceton University, 1987]
+
+[NOTE.speaker]
+--
+Resources to consider
+--

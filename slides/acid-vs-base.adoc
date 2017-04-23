@@ -735,7 +735,7 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 
 * https://neo4j.com/blog/acid-vs-base-consistency-models-explained
 * https://neo4j.com/blog/aggregate-stores-tour
-* http://queue.acm.org/detail.cfm?id=1394128 (Base: An Acid Alternative)
+* http://queue.acm.org/detail.cfm?id=1394128 (Base: An Acid Alternative, base transactions)
 * http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
 --
 
