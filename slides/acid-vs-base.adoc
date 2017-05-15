@@ -68,6 +68,9 @@ The ACID acronym came from research of `IBM System R` from year 1975. Acronym it
 mixes different standpoints about a system (more mnemonic than precise, Brewer 2012)
 Following description came from Martin Kleppmann's presentation linked below.
 
+ACID was coined in 1983, based on work from 1981 (https://en.wikipedia.org/wiki/ACID).
+The acronym was created based on the implementation of databases at that time.
+
 * *Durability* means the time when disk does `fsync` (leave some deeper technical details
   about disk writes aside). For transaction it means that data are written to some log
   and when system crashes it will be available when started again (we can re-read
@@ -217,7 +220,8 @@ are zero which is violation of constraint application has.
 * https://www.simple-talk.com/sql/t-sql-programming/developing-modifications-that-survive-concurrency
 * https://wiki.postgresql.org/wiki/SSI
 * https://vladmihalcea.com/2015/10/20/a-beginners-guide-to-read-and-write-skew-phenomena
-* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
+* https://vladmihalcea.com/2017/01/31/a-beginners-guide-to-the-phantom-read-anomaly-and-how-it-differs-between-2pl-and-mvcc/
+* http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-cap
 --
 
 == Isolation in real world
@@ -354,6 +358,7 @@ Saying this implies that `CA` and `CP/AP` are not about the same face of a distr
 * http://www.cs.utexas.edu/~dsb/cs386d/Projects14/CAPConsistency.pdf
 * http://www.julianbrowne.com/article/viewer/brewers-cap-theorem
 * http://blog.thislongrun.com/2015/04/the-unclear-cp-vs-ca-case-in-cap.html
+* http://www.julianbrowne.com/article/viewer/brewers-cap-theorem
 --
 
 
@@ -500,6 +505,7 @@ _and some unordered notes..._
 * http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
 * http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
 * https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
+* https://www.youtube.com/watch?v=yCcWpzY8dIA (GOTO 2016, Conflict Resolution for Eventual Consistency, Martin Kleppmann)
 --
 
 
@@ -622,8 +628,9 @@ Other used and easy way is having kind of versioning system (kind of git in data
 All is stored in versions, the newest record is used as the value but you can get
 whole history of value changes and you can work with it.
 
-* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
-* http://guide.couchdb.org/draft/consistency.html
+* https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html (Please stop calling databases CP or AP, Martin Kleppmann)
+* http://guide.couchdb.org/draft/consistency.html (Eventual Consistency, CouchDB)
+* https://www.youtube.com/watch?v=H0i_bXKwujQ (Building Scalable Stateful Services, Caitie McCaffrey, GOTO 2015 [cp vs. ap])
 --
 
 == CRDT, CALM
