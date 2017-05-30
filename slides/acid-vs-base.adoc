@@ -799,10 +799,26 @@ After the TM or participant is back, recovery process restore the system.
 * if one of the participants receives *preCommit*, they all can *commit*
 * if none received *preCommit*, they all can *abort*
 
+* a process is blocked if it must wait for the recovery of another process before deciding
+** 2PC is blocking protocol - after prepare there is waiting for TM to recover, there is no way for participant to decide on his own
+** 3PC is non-blocking - there is always timeout after which participants can vote (choose) new leader to finish the transaction
+** no atomic commit protocol is non blocking if communication failures or total failures, but 2PC can block even with non-total failures
+** (https://www.experts-exchange.com/questions/24673620/why-is-3-phase-commit-protocol-non-blocking.html)
+*** 3PC: "can you commit", "prepare to commit" "do commit"
+*** 2PC: "ready to commit", "commit if you can (the first part "ready to commit" must block the resources until it is either committed or failed, hence blocking)
+*** The main reason is 3-phrase commits have a built in timeout.  So any resources waited on are released if the transaction fails to complete (commit or rollback) within the threshold.
+    As opposed to 2-phase which can/will hold resources indefinitely.
+    So yes, both protocols do block  but 3phrase has a built in release so no blocking is permanent.
+** For 2PC, the coordinator may abort the transaction globally or resend the global decision. For a participant, it can leave the process blocked until communication with the coordinator is re-established such as sending abort message to the coordinator or invoke the cooperative termination protocol.
+   For 3PC, the coordinator can abort the transaction globally, send global-commit message to the participants or simply send the global decision to all sites that have not acknowledged. The participant can unilaterally abort a transaction, follow an election protocol, or elect a new coordinator.
+
 * https://roxanageambasu.github.io/ds-class//assets/lectures/lecture16.pdf
 * http://planet.jboss.org/post/2pc_or_3pc
 * http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
 * https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
+* http://www.cs.utexas.edu/users/lorenzo/corsi/cs380d/past/03F/notes/9-9.pdf + http://www.cs.utexas.edu/users/lorenzo/corsi/cs380d/past/03F/notes/9-11.pdf
+* http://courses.cs.vt.edu/~cs5204/fall00/distributedDBMS/sreenu/3pc.html
+* https://www.linkedin.com/pulse/main-difference-between-2pc-3pc-protocols-thiensi-le
 --
 
 
