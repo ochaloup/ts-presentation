@@ -224,6 +224,22 @@ are zero which is violation of constraint application has.
 * http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-cap
 --
 
+== Write skew
+
+```
+t1 --- read x <- 2 --- write y -> 6 --- commit
+
+t2 --- read y <- 3 --- write x -> 7 --- commit
+```
+
+* at start `x = 2`, `y = 3`
+* constraint defined: `a + b =< 10`
+
+[NOTE.speaker]
+--
+perfect summary at: https://blog.acolyer.org/2016/02/24/a-critique-of-ansi-sql-isolation-levels
+--
+
 == Isolation in real world
 
 * https://github.com/ept/hermitage
@@ -294,6 +310,95 @@ To quote Peter Bailis here
 * https://www.youtube.com/watch?v=Ih0Efbx0cE8 : Adrian Colyer - Out of the Fire Swamp
 --
 
+
+== Serializability
+
+image:{images}/cap/serialization.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Serialization talks about multiple items groups under one transaction.
+Those transaction can be put to arbitrary order but they are executed in serial.
+
+Easy to imagine is to run on one node in one thread transaction by transaction.
+--
+
+
+== Linearizability
+
+image:{images}/cap/linearizability.png[role="noborder"]
+
+[NOTE.speaker]
+--
+Linearizability talks operation on single object to be done in the same order
+on multiple nodes.
+
+In other words it ensures that all operations on single object is executed in the same order
+on all nodes.
+--
+
+
+== Distributed (strict) serializability
+
+image:{images}/cap/consensus-atomic-ordering-kleppmann.png[role="noborder"]
+
+_source:_ https://www.youtube.com/watch?v=5ZjhNTM8XU8&t=2300[Martin Kleppmann]
+
+[NOTE.speaker]
+--
+Here I would like check with you what are things to achieve *serializable transactions*
+in distributed environment.
+For that we need an *atomic commitment protocol* (all of them protocol or nono of them commit)
+and for that work in distributed environment we are in fight with *ordering*.
+And total ordering is in fact a problem of *consensus*.
+
+Consensus requires quite a lot of coordination.
+
+Possible uses of consensus are:
+
+* deciding whether or not to commit a transaction to a database
+* synchronising clocks by agreeing on the current time
+* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
+* electing a leader node to coordinate some higher-level protocol
+
+Several computers (or nodes) achieve consensus if they all agree on some value. More formally:
+
+. Agreement: Every correct process must agree on the same value.
+. Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.
+. Termination: All processes eventually reach a decision.
+. Validity: If all correct processes propose the same value V, then all correct processes decide V.
+
+Time and consistency
+
+When mutable state is distributed over multiple machines each machine can receive update events
+at different times and in different orders. If the final state is dependent on the order of updates
+then the system must choose a single serialisation of the events, imposing a global total order.
+A distributed system is consistent exactly when the outside world can never observe two different serialisations.
+
+A step aside: FLP
+
+FLP talks on problem of consensus
+
+```
+Having all nodes agree on a common value - is unsolvable
+in general in asynchronous networks where one node might fail.
+```
+
+This is only a side node to the fact that scientists considers different models
+to describe distributed systems and the '_CAP issue_'.
+
+* FLP permits the possibility of one 'failed' node which is totally partitioned from the network
+  and does not have to respond to requests.
+* Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
+* FLP deals with consensus, which is a similar but different problem to atomic storage.
+
+* https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
+* http://book.mixu.net/distsys/single-page.html
+* https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
+* http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/
+--
+
+
 == CAP
 
 image:{images}/cap/cap-consensus.png[role="noborder"]
@@ -362,87 +467,6 @@ Saying this implies that `CA` and `CP/AP` are not about the same face of a distr
 --
 
 
-== Serializability
-
-image:{images}/cap/serialization.png[role="noborder"]
-
-[NOTE.speaker]
---
-Serialization talks about multiple items groups under one transaction.
-Those transaction can be put to arbitrary order but they are executed in serial.
-
-Easy to imagine is to run on one node in one thread transaction by transaction.
---
-
-
-== Linearizability
-
-image:{images}/cap/linearizability.png[role="noborder"]
-
-[NOTE.speaker]
---
-Linearizability talks operation on single object to be done in the same order
-on multiple nodes.
-
-In other words it ensures that all operations on single object is executed in the same order
-on all nodes.
---
-
-
-== Distributed serializability
-
-image:{images}/cap/consensus-atomic-ordering-kleppmann.png[role="noborder"]
-
-_source:_ https://www.youtube.com/watch?v=5ZjhNTM8XU8&t=2300[Martin Kleppmann]
-
-[NOTE.speaker]
---
-Here I would like check with you what are things to achieve *serializable transactions*
-in distributed environment.
-For that we need an *atomic commitment protocol* (all of them protocol or nono of them commit)
-and for that work in distributed environment we are in fight with *ordering*.
-And total ordering is in fact a problem of *consensus*.
-
-Consensus requires quite a lot of coordination.
-
-Possible uses of consensus are:
-
-* deciding whether or not to commit a transaction to a database
-* synchronising clocks by agreeing on the current time
-* agreeing to move to the next stage of a distributed algorithm (this is the famous replicated state machine approach)
-* electing a leader node to coordinate some higher-level protocol
-
-Several computers (or nodes) achieve consensus if they all agree on some value. More formally:
-
-. Agreement: Every correct process must agree on the same value.
-. Integrity: Every correct process decides at most one value, and if it decides some value, then it must have been proposed by some process.
-. Termination: All processes eventually reach a decision.
-. Validity: If all correct processes propose the same value V, then all correct processes decide V.
-
-
-A step aside: FLP
-
-FLP talks on problem of consensus
-
-```
-Having all nodes agree on a common value - is unsolvable
-in general in asynchronous networks where one node might fail.
-```
-
-This is only a side node to the fact that scientists considers different models
-to describe distributed systems and the '_CAP issue_'.
-
-* FLP permits the possibility of one 'failed' node which is totally partitioned from the network
-  and does not have to respond to requests.
-* Otherwise, FLP does not allow message loss; the network is only asynchronous but not lossy.
-* FLP deals with consensus, which is a similar but different problem to atomic storage.
-
-* https://blog.acolyer.org/2015/09/02/the-potential-dangers-of-causal-consistency-and-an-explicit-solution
-* http://book.mixu.net/distsys/single-page.html
-* https://aphyr.com/posts/322-call-me-maybe-mongodb-stale-reads
---
-
-
 == Consistency in baseball game
 
 image:{images}/cap/baseball-consistency-2.png[role="noborder"]
@@ -468,7 +492,7 @@ Consistency models: Data-centric
 ** sequential consistent and time ordering
 * Sequential consistency
 ** ops executed in some sequential order
-* Casual consistency
+* Causal consistency
 ** reads are seen in the same order
 
 * Eventual consistency
@@ -502,78 +526,27 @@ _and some unordered notes..._
    (LinkedIn's Voldemort, Facebook's Cassandra and Basho's Riak based on that)
 *** Eventual consistency with strong guarantees : CRDT, CALM
 
+Causal consistency (https://www.quora.com/Distributed-Systems-What-is-a-causal-consistency)
+
+* A system is causally consistent if all agents see (only) causally related events in the same order.
+  This is weaker than sequential consistency because the later requires all events appear in the same order,
+  irrespective of causality. My favorite example is from http://www-bcf.usc.edu/~wyattllo/papers/causal-login13.pdf
+* Causal consistency improves user experience because with it actions appear to everyone in the correct order.
+  A common scenario where causality is important, but often isn’t provided,
+  is comments on social network posts, which sometimes appear out of order.
+**  e.g.
+    ```
+    [Removes boss from friends list]
+    [Posts]: “My boss is the worst, I need a new job!”
+    ```
+    If these two actions occur in the wrong order, then my post will not have been hidden
+    from my boss as intended. Bad news bears. Good news is that with causal consistency me myself can
+    see the changes in good order ;-)
+
 * http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
 * http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
 * https://www.microsoft.com/en-us/research/publication/replicated-data-consistency-explained-through-baseball
 * https://www.youtube.com/watch?v=yCcWpzY8dIA (GOTO 2016, Conflict Resolution for Eventual Consistency, Martin Kleppmann)
---
-
-
-== 2PC
-
-image:{images}/cap/2pc.png[role="noborder"]
-
-[NOTE.speaker]
---
-* CA (consistency + availability). Examples include full strict quorum protocols,
-  such as two-phase commit.
-
-2PC: atomic commitment protocol (ACP), a specialized type of consensus protocol
-
-Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
-
-* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
-  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
-  than clients and resources then the system is also unavailable.
-* Another problem of the algorithm is its *blocking nature*: once a resource has sent an agreement message to the coordinator,
-  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
-* it's blocking - it does not progress during the failure
-
-In context of consesus: *2PC is safe but not live*
-
-For 2PC can't be reach a safe decision when someone crashes/time-outs. Having only one participant
-down it means no-one can proceed.
-
-* 2PC originated in year 1979 (Gray)
-* 3PC in year 1981 (Stonebraker)
-* Paxos in year 1998 (Lamport)
-
-* http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
-* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
-*
---
-
-== 3PC
-
-image:{images}/cap/3pc.png[role="noborder"]
-
-[NOTE.speaker]
---
-As it was known about 2PC that's safe but not live. Goal was creating consensus protocol
-to be live (never block on node failures).
-
-3PC is live but it is not safe. 3PC has issue with network partitions where
-data correctness is not assured.
-
-The protocol expects that node can't be just unreachable but living. When it stop
-to respond it's expected to be dead.
-
-3PC splits commit/abort to two phases.
-* let to know to all participants what was the outcome
-* when all participants knows the outcome then commit (only that time)
-
-The base difference to 2PC is that in case of failure of participant or TM
-protocol defines further execution for the system. When TM is not available
-then after timeout participants can continue to work depending the phase they are in.
-After the TM or participant is back, recovery process restore the system.
-
-* if one of the participants receives *preCommit*, they all can *commit*
-* if none received *preCommit*, they all can *abort*
-
-* https://roxanageambasu.github.io/ds-class//assets/lectures/lecture16.pdf
-* http://planet.jboss.org/post/2pc_or_3pc
-* http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
-* https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
 --
 
 
@@ -733,6 +706,7 @@ again there is a function which defines how to resolve the conflict (e.g. part o
 * https://www.youtube.com/watch?v=em9zLzM8O7c ("Consistency without consensus in production systems" by Peter Bourgon)
 * https://lostechies.com/jimmybogard/2013/06/06/acid-2-0-in-action
 * http://www.enterpriseintegrationpatterns.com/ramblings/68_acid.html
+* https://medium.com/@istanbul_techie/a-look-at-conflict-free-replicated-data-types-crdt-221a5f629e7e
 --
 
 
@@ -761,6 +735,153 @@ stronger transaction abilities.
 * https://aphyr.com/posts/331-jepsen-voltdb-6-3
 * https://www.nuodb.com/product/durable-distributed-cache
 * http://www.methodsandtools.com/archive/acidnosql.html
+--
+
+
+== 2PC
+
+image:{images}/cap/2pc.png[role="noborder"]
+
+[NOTE.speaker]
+--
+* CA (consistency + availability). Examples include full strict quorum protocols,
+  such as two-phase commit.
+
+2PC: atomic commitment protocol (ACP), a specialized type of consensus protocol
+
+Why not 2PC (http://stackoverflow.com/questions/37297766/best-practices-of-distributed-transactionsjava)
+
+* Some problems of 2PC comes from the fact that the coordinator is a single point of failure. If it is down then
+  the system is unavailable, if there is a network partitioning and the coordinator happens to be in other partition
+  than clients and resources then the system is also unavailable.
+* Another problem of the algorithm is its *blocking nature*: once a resource has sent an agreement message to the coordinator,
+  it will block until a commit or rollback is received. As a result the system can't use all the potential of the hardware it uses.
+* it's blocking - it does not progress during the failure
+
+In context of consesus: *2PC is safe but not live*
+
+For 2PC can't be reach a safe decision when someone crashes/time-outs. Having only one participant
+down it means no-one can proceed.
+
+* 2PC originated in year 1979 (Gray)
+* 3PC in year 1981 (Stonebraker)
+* Paxos in year 1998 (Lamport)
+
+* http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
+* http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
+*
+--
+
+== 3PC
+
+image:{images}/cap/3pc.png[role="noborder"]
+
+[NOTE.speaker]
+--
+As it was known about 2PC that's safe but not live. Goal was creating consensus protocol
+to be live (never block on node failures).
+
+3PC is live but it is not safe. 3PC has issue with network partitions where
+data correctness is not assured.
+
+The protocol expects that node can't be just unreachable but living. When it stop
+to respond it's expected to be dead.
+
+3PC splits commit/abort to two phases.
+* let to know to all participants what was the outcome
+* when all participants knows the outcome then commit (only that time)
+
+The base difference to 2PC is that in case of failure of participant or TM
+protocol defines further execution for the system. When TM is not available
+then after timeout participants can continue to work depending the phase they are in.
+After the TM or participant is back, recovery process restore the system.
+
+* if one of the participants receives *preCommit*, they all can *commit*
+* if none received *preCommit*, they all can *abort*
+
+* https://roxanageambasu.github.io/ds-class//assets/lectures/lecture16.pdf
+* http://planet.jboss.org/post/2pc_or_3pc
+* http://the-paper-trail.org/blog/consensus-protocols-three-phase-commit
+* https://cseweb.ucsd.edu/classes/wi17/cse291-d/applications/ln/lecture8.html
+--
+
+
+== Distributed commitment
+
+* 2PC
+* 3PC
+* Paxos
+
+[NOTE.speaker]
+--
+ * http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit
+ * https://www.quora.com/Distributed-Systems-What-is-a-simple-explanation-of-the-Paxos-algorithm
+ * http://dl.acm.org/citation.cfm?id=1132867
+--
+
+== _Distributed_ transactions
+
+* Percolator's transactions
+* RAMP transactions
+* (Google Spanner)
+* Compensating (SAGA) transactions
+
+[NOTE.speaker]
+--
+For Perclator and RAMP (and Spanner) We talk about transactions which is capable to work multiple records and provide
+atomic commit with them.
+For BASE we talk about eventual consistency where atomic commit is relaxed whole-over.
+
+* If you want Serializable Isolation level then you should take a look on the http://research.google.com/pubs/pub36726.html[Percolator's transactions].
+  The Percolator's transactions are quite known in the industry and have been used in the https://aws.amazon.com/blogs/aws/dynamodb-transaction-library/[Amazon's DynamoDB transaction library], in the https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/[CockroachDB database]
+  and in the Google's Pecolator system itself. http://rystsov.info/2016/03/02/cross-shard-txs.html[A step-by-step visualization] of the Percolator's transactions may help you to understand it.
+* If you expect contention and can deal with Read Committed isolation level then http://www.bailis.org/papers/ramp-sigmod2014.pdf[RAMP transactions by Peter Bailis] may suit you.
+  I also created http://rystsov.info/2016/04/07/ramp.html[a step-by-step RAMP visualization].
+* The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas paper]
+  but became more actual with the raise of distributed systems.
+
+_source StackOverflow_: http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510[how-to-manage-transactions-over-multiple-databases]
+
+*HAT* for Highly Available Transactions
+* the paper comes with isolation/consistency analysis and introduces RAMP transactions
+
+*Google Spanner*
+* It is a distributed relational database that can distribute and store data in Google's BigTable storage
+  system in multiple data centers. Spanner meets ACID (of course, it supports transaction) and supports SQL.
+  Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
+* Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
+
+*SAGA*
+* trade-off: `atomicity` for `availability` (stated by Caitie in his GOTO 2015 presentation)
+* I personally do not totally agree with it, I like the point of view of Martin Kleppmann
+  from his presentation at Strange Loop 2015 where he defines `atomicity` as `abortability`. That's what Saga
+  is designed for - being able to compensate a.k.a abort the unit of work as a whole.
+  Saga then has rather trade-off of `isolation` for `availability`.
+
+*RAMP*
+* based on paper from Peter Bailis and others (UC Berkeley and University of Sydney)
+* does not provide ACID guarantees but the goal is to achieve atomic reads of multiple items
+* each partition maintains version history for items, it's consisted from tuple like `(item, value, timestamp, metadata)`
+* RAMP uses 2 phase commit but without exclusive locking
+* three versions of the protocol like `RAMP-Fast`, `RAMP-Small`, `RAMP-Hybrid`
+** metadata contains 'dependency' - in this context it means what other items are part of the atomic update,
+   for example we want update item 'X' and 'Y'. Item 'X' is set to value '1' and 'Y' to '2'. When we read 'Y'
+   DB returns value with timestamp and dependency. We can now compare if getting 'X' and 'Y' has the same timestamp
+   which is important if 'X' and 'Y' was part of the same transaction - which we found out by checking metadata dependency information.
+** if there is a discrepancy we ask for the value with the smaller timestamp again to get updated value
+* you really need to read a nice concise summary from Jon Haddad - RAMP Made easy
+
+* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
+* https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
+* https://www.youtube.com/watch?v=53DVkaW5Fb0
+* https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015, Applying the Saga Pattern, Caitie McCaffrey)
+* https://www.youtube.com/watch?v=5ZjhNTM8XU8 ("Transactions: myths, surprises and opportunities" by Martin Kleppmann)
+* https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
+* http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
+* https://dzone.com/articles/spanner-globally-distributed
+* http://rustyrazorblade.com/2015/11/ramp-made-easy (Jon Haddad, RAMP Made easy)
+* http://rustyrazorblade.com/2015/11/ramp-made-easy-part-2
+* https://www.infoq.com/presentations/spanner-distributed-google
 --
 
 
@@ -795,70 +916,6 @@ BASE is a way how to get a distributed transaction (transaction over multiple re
 * http://highscalability.com/blog/2013/5/1/myth-eric-brewer-on-why-banks-are-base-not-acid-availability.html
 --
 
-== _Distributed_ transactions
-
-* Percolator's transactions
-* RAMP transactions
-* (Google Spanner)
-* Compensating (SAGA) transactions
-
-[NOTE.speaker]
---
-For Perclator and RAMP (and Spanner) We talk about transactions which is capable to work multiple records and provide
-atomic commit with them.
-For BASE we talk about eventual consistency where atomic commit is relaxed whole-over.
-
-* If you want Serializable Isolation level then you should take a look on the http://research.google.com/pubs/pub36726.html[Percolator's transactions].
-  The Percolator's transactions are quite known in the industry and have been used in the https://aws.amazon.com/blogs/aws/dynamodb-transaction-library/[Amazon's DynamoDB transaction library], in the https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/[CockroachDB database]
-  and in the Google's Pecolator system itself. http://rystsov.info/2016/03/02/cross-shard-txs.html[A step-by-step visualization] of the Percolator's transactions may help you to understand it.
-* If you expect contention and can deal with Read Committed isolation level then http://www.bailis.org/papers/ramp-sigmod2014.pdf[RAMP transactions by Peter Bailis] may suit you.
-  I also created http://rystsov.info/2016/04/07/ramp.html[a step-by-step RAMP visualization].
-* The third approach is to use compensating transactions also known as the saga pattern. It was described in the late 80s in the http://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf[Sagas paper]
-  but became more actual with the raise of distributed systems.
-
-_source: StackOverflow_ http://stackoverflow.com/questions/36357429/how-to-manage-transactions-over-multiple-databases/36710510[how-to-manage-transactions-over-multiple-databases]
-
-*HAT* for Highly Available Transactions
-* the paper comes with isolation/consistency analysis and introduces RAMP transactions
-
-*Google Spanner*
-* It is a distributed relational database that can distribute and store data in Google's BigTable storage
-  system in multiple data centers. Spanner meets ACID (of course, it supports transaction) and supports SQL.
-  Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
-* Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
-
-*SAGA*
-* trade-off: `atomicity` for `availability` (stated by Caitie in his GOTO 2015 presentation)
-* I personally do not totally agree with it, I like the point of view of Martin Kleppmann
-  from his presentation at Strange Loop 2015 where he defines `atomicity` as `abortability`. That's what Saga
-  is designed for - being able to compensate a.k.a abort the unit of work as a whole.
-  Saga then has rather trade-off of `isolation` for `availability`.
-
-*RAMP*
-* based on paper from Peter Bailis and others (UC Berkeley and University of Sydney)
-* does not provide ACID guarantees but the goal is to achieve atoic reads of multiple items
-* each partition maintains version history for items, it's consisted from tuple like `(item, value, timestamp, metadata)`
-* RAMP uses 2 phase commit but without exclusive locking
-* three versions of the protocol like `RAMP-Fast`, `RAMP-Small`, `RAMP-Hybrid`
-** metadata contains 'dependency' - in this context it means what other items are part of the atomic update,
-   for example we want update item 'X' and 'Y'. Item 'X' is set to value '1' and 'Y' to '2'. When we read 'Y'
-   DB returns value with timestamp and dependency. We can now compare if getting 'X' and 'Y' has the same timestamp
-   which is important if 'X' and 'Y' was part of the same transaction - which we found out by checking metadata dependency information.
-** if there is a discrepancy we ask for the value with the smaller timestamp again to get updated value
-* you really need to read a nice concise summary from Jon Haddad - RAMP Made easy
-
-* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
-* https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
-* https://www.youtube.com/watch?v=53DVkaW5Fb0
-* https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015, Applying the Saga Pattern, Caitie McCaffrey)
-* https://www.youtube.com/watch?v=5ZjhNTM8XU8 ("Transactions: myths, surprises and opportunities" by Martin Kleppmann)
-* https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
-* http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
-* https://dzone.com/articles/spanner-globally-distributed
-* http://rustyrazorblade.com/2015/11/ramp-made-easy (Jon Haddad, RAMP Made easy)
-* http://rustyrazorblade.com/2015/11/ramp-made-easy-part-2
-* https://www.infoq.com/presentations/spanner-distributed-google
---
 
 == MSA and consistency
 
