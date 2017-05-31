@@ -451,6 +451,7 @@ Let's revise the *CAP* acronym once again
   ** CAP talks about total availability
 
 Saying this implies that `CA` and `CP/AP` are not about the same face of a distributed system:
+
 * `CA` is a specification of the operating range: you specify that the system does not work well under partition or,
   more precisely, that partitions are outside the operating range of the system.
 * `CP` or `AP` describes the behavior: what happens if there is a partition.
@@ -535,13 +536,11 @@ Causal consistency (https://www.quora.com/Distributed-Systems-What-is-a-causal-c
   A common scenario where causality is important, but often isn’t provided,
   is comments on social network posts, which sometimes appear out of order.
 **  e.g.
-    ```
-    [Removes boss from friends list]
-    [Posts]: “My boss is the worst, I need a new job!”
-    ```
-    If these two actions occur in the wrong order, then my post will not have been hidden
-    from my boss as intended. Bad news bears. Good news is that with causal consistency me myself can
-    see the changes in good order ;-)
+... `[Removes boss from friends list]`
+... `[Posts]: “My boss is the worst, I need a new job!`
+** If these two actions occur in the wrong order, then my post will not have been hidden
+   from my boss as intended. Bad news bears. Good news is that with causal consistency me myself can
+   see the changes in good order ;-)
 
 * http://lass.cs.umass.edu/~shenoy/courses/spring05/lectures/Lec15.pdf
 * http://www.bailis.org/blog/understanding-weak-isolation-is-a-serious-problem
