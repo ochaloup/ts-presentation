@@ -608,6 +608,7 @@ whole history of value changes and you can work with it.
 * https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html (Please stop calling databases CP or AP, Martin Kleppmann)
 * http://guide.couchdb.org/draft/consistency.html (Eventual Consistency, CouchDB)
 * https://www.youtube.com/watch?v=H0i_bXKwujQ (Building Scalable Stateful Services, Caitie McCaffrey, GOTO 2015 [cp vs. ap])
+* https://www.youtube.com/watch?v=0UTOLRTwOX0 (Distributed Sagas: A Protocol for Coordinating Microservices, Caitie McCaffrey, JOTB17)
 --
 
 == CALM, ACID 2.0, CRDT
