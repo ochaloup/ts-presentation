@@ -586,6 +586,7 @@ There are two topics to talk about
 * http://the-paper-trail.org/blog/consensus-protocols-paxos
 * https://loonytek.com/2015/10/18/leader-election-and-log-replication-in-raft-part-1
 * http://blog.nahurst.com/visual-guide-to-nosql-systems
+* http://blog.thislongrun.com/2015/03/the-confusing-cap-and-acid-wording.html
 --
 
 
@@ -737,6 +738,30 @@ stronger transaction abilities.
 * http://www.methodsandtools.com/archive/acidnosql.html
 --
 
+== Google Spanner
+
+
+[NOTE.speaker]
+--
+* It is a distributed relational database that can distribute and store data in Google's BigTable storage
+  system in multiple data centers. Spanner meets ACID (of course, it supports transaction) and supports SQL.
+  Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
+* Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
+
+* Spanner uses pesimistic locking
+* Spanner upstream "implementation" is CocroachDB
+
+* The point I understood from the paper is that serializibility is ensured by 2PC (and two phase locking),
+  lineriazibility is possible because of TrueTime.
+* Commit of transaction is delayed to be at the end of delta time window where
+  time uncertainty resides. When committed at the end we know there was no other txn interleaving with data
+  and lineriazibility is ensured.
+
+
+* https://research.google.com/pubs/pub45855.html (Spanner, TrueTime and the CAP Theorem)
+* https://research.google.com/archive/spanner.html (Spanner: Google's Globally-Distributed Database)
+* https://www.cockroachlabs.com/blog/living-without-atomic-clocks
+--
 
 == 2PC
 
@@ -839,12 +864,11 @@ After the TM or participant is back, recovery process restore the system.
 
 * Percolator's transactions
 * RAMP transactions
-* (Google Spanner)
 * Compensating (SAGA) transactions
 
 [NOTE.speaker]
 --
-For Perclator and RAMP (and Spanner) We talk about transactions which is capable to work multiple records and provide
+For Perclator and RAMP - we talk about transactions which is capable to work multiple records and provide
 atomic commit with them.
 For BASE we talk about eventual consistency where atomic commit is relaxed whole-over.
 
@@ -860,12 +884,6 @@ _source StackOverflow_: http://stackoverflow.com/questions/36357429/how-to-manag
 
 *HAT* for Highly Available Transactions
 * the paper comes with isolation/consistency analysis and introduces RAMP transactions
-
-*Google Spanner*
-* It is a distributed relational database that can distribute and store data in Google's BigTable storage
-  system in multiple data centers. Spanner meets ACID (of course, it supports transaction) and supports SQL.
-  Currently, F1, Google's advertisement platform, uses Spanner. Gmail and Google Search will also use it soon.
-* Spanner is interesting by usage *TrueTime API*: TrueTime gets time information from GPS and the atomic clock
 
 *SAGA*
 * trade-off: `atomicity` for `availability` (stated by Caitie in his GOTO 2015 presentation)
