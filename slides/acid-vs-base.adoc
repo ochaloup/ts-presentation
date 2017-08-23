@@ -267,6 +267,10 @@ of Peter Bailis paper _HAT, not CAP: Introducing Highly Available Transactions_.
   discussed in previous slide. The part on the right side belongs to the distributed
   world that we talk about in a while.
 
+Atul Adya: isolation levels
+
+image:{images}/cap/adya-transaction-level-ordering.png[role="noborder"]
+
 [cols = "2"]
 |===
 
@@ -551,7 +555,10 @@ Causal consistency (https://www.quora.com/Distributed-Systems-What-is-a-causal-c
 
 == CAP - *CP*
 
-http://thesecretlivesofdata.com/raft
+* it prefers consistency over availability
+* if network partion occurs then part with majority can work,
+  part with minority is stuck
+** expects some consensus protocol being run in the underlaying
 
 [NOTE.speaker]
 --
@@ -569,6 +576,19 @@ a façade of global serializability.
 If you don’t want to lose linearizability, you have to make sure you do
 all your reads and writes in one datacenter, which you may call the leader.
 
+* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
+* http://the-paper-trail.org/blog/consensus-protocols-paxos
+* https://loonytek.com/2015/10/18/leader-election-and-log-replication-in-raft-part-1
+* http://blog.nahurst.com/visual-guide-to-nosql-systems
+* http://blog.thislongrun.com/2015/03/the-confusing-cap-and-acid-wording.html
+--
+
+== Consensus protocol - Raft
+
+http://thesecretlivesofdata.com/raft
+
+[NOTE.speaker]
+--
 RAFT
 
 Raft is a consensus algorithm for implementing fault tolerant distributed systems
@@ -581,14 +601,9 @@ There are two topics to talk about
 * leader election
 * log replication
 
-* http://the-paper-trail.org/blog/distributed-systems-theory-for-the-distributed-systems-engineer
-* http://thesecretlivesofdata.com/raft
-* http://the-paper-trail.org/blog/consensus-protocols-paxos
-* https://loonytek.com/2015/10/18/leader-election-and-log-replication-in-raft-part-1
-* http://blog.nahurst.com/visual-guide-to-nosql-systems
-* http://blog.thislongrun.com/2015/03/the-confusing-cap-and-acid-wording.html
+* https://raft.github.io/raft.pdf (paper on Raft)
+* https://www.youtube.com/watch?v=JEpsBg0AO6o (Paxos lecture (Raft user study), John Ousterhout)
 --
-
 
 == CAP - *AP*
 
@@ -909,6 +924,8 @@ _source StackOverflow_: http://stackoverflow.com/questions/36357429/how-to-manag
 * https://www.linkedin.com/pulse/client-side-transactions-distributed-data-stores-denis-rystsov
 * https://www.youtube.com/watch?v=53DVkaW5Fb0
 * https://www.youtube.com/watch?v=xDuwrtwYHu8 (GOTO 2015, Applying the Saga Pattern, Caitie McCaffrey)
+* https://www.youtube.com/watch?v=0UTOLRTwOX0 (JOTB17, Distributed Sagas: A Protocol for Coordinating Microservices, Caitie McCaffrey)
+* https://www.youtube.com/watch?v=YPbGW3Fnmbc (DevoxxUK 17, Using sagas to maintain data consistency in a microservice architecture, Chris Richardson)
 * https://www.youtube.com/watch?v=5ZjhNTM8XU8 ("Transactions: myths, surprises and opportunities" by Martin Kleppmann)
 * https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf (Princeton University, 1987)
 * http://www.bailis.org/blog/scalable-atomic-visibility-with-ramp-transactions
