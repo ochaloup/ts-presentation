@@ -1,0 +1,159 @@
+:source-highlighter: highlight.js
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: fade
+
+:images: ./misc
+
+
+= Highly available transactions
+Peter Bailis
+
+[NOTE.speaker]
+--
+* http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions
+* http://arxiv.org/pdf/1302.0309.pdf
+
+* `okular /home/ochaloup/KnowledgeBase/Transactions/Bailis-HighlyAvailableTransactionsVirtuesandLimitations.pdf&`
+--
+
+
+== CAP theorem and ACID
+
+* ACID recap
+** atomicity
+** consistency
+** isolation
+** durability
+
+* CAP consistency is *not* ACID consistency
+* CAP consistency is rather ACID isolation
+
+[NOTE.speaker]
+--
+*Durability*::
+  means the time when disk does `fsync` (leave some deeper technical details
+  about disk writes aside). For transaction it means that data are written to some log
+  and when system crashes it will be available when started again (we can re-read
+  the log and restore data).
+*Atomicity*::
+  defines possibility to abort transaction and changes done by transaction
+  in the system will be reverted to state before the transaction starts.
+  Martin talks that it should be nicer to says `abortability`. +
+  _Atomicity_ is about handling failures when does depend when they come from (system crash,
+  network failures, some constraint was broken...). +
+  _Atomicity_ is *not* about concurrency. Rather _Isolation_ is about concurrency -
+  meaning parallel transaction works on the same piece of data.
+*Consistency*::
+  is to having the system in consistent state (moving from one to other one).
+  _Consistency_ is a point of view of an application in fact. +
+  _Consistency_ means fulfilling   invariants which could be defined in DB model
+  but they could be outside of it too.
+*Isolation*::
+  is about concurrency. In perspective of this presentation the _Isolation_
+  property is the most interesting. When talking about _ACID_ isolation it's meant
+  _Serializability_ to be obtained.
+
+* Although, at least by the ACID acronym, atomicity is not an “isolation”
+  property, atomicity properties also restrict the updates visible to other transactions.
+--
+
+== Highly available transactions (HAT)
+
+* composes models of transaction isolation (ACID) with transaction consistency (CAP)
+  under one "diagram"
+* classifies what of the transaction model is achievable in HA (high available)
+** Serializability, Snapshot Isolation and Repeatable Read isolation are not HAT-compliant
+** most other isolation levels are achievable with high availability
+
+[NOTE.speaker]
+--
+Snapshot Isolation and Repeatable Read isolation are not HAT-compliant
+because they require detecting conflicts between concurrent updates
+(as needed for preventing Lost Updates or Write Skew phenomena),
+which we show is unavailable.
+
+However, Read Committed isolation, transactional atomicity (Section 5.1.2),
+and many other consistency models from database and distributed systems are
+achievable via algorithms that rely on multi-versioning and limited client-side caching.
+
+For several guarantees, such as causal consistency with phantom prevention and ANSI Repeatable Read,
+we consider a modified form of high availability in which clients “stick to”
+(i.e., have affinity with) at least one server
+
+Adya's work the definition is based on: http://pmg.csail.mit.edu/papers/adya-phd.pdf (Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions, 1999)
+Berenson et al.: https://www.microsoft.com/en-us/research/publication/a-critique-of-ansi-sql-isolation-levels/ (A Critique of ANSI SQL Isolation Levels, 1995)
+--
+
+== Transaction diagram
+
+image:{images}/cap/isolation-levels-hat.png[role="noborder"]
+
+== Table to explain the diagram
+
+
+[cols = "1,4"]
+|===
+
+| HA
+| Read Uncommitted (RU), Read Committed (RC),
+  Monotonic Atomic View (MAV), Item
+  Cut Isolation (I-CI), Predicate Cut Isolation (P-CI),
+  Writes Follow Reads (WFR), Monotonic Reads (MR),
+  Monotonic Writes (MW)
+
+| Sticky
+| Read Your Writes (RYW), PRAM, Causal
+
+| Unavailable
+| Cursor Stability (CS)†, Snapshot Isolation (SI)†,
+  Repeatable Read (RR)†‡, One-Copy Serializability (1SR)†‡,
+  Recency⊕, Safe⊕, Regular⊕, Linearizability⊕, Strong 1SR†‡⊕
+
+|===
+
+[NOTE.speaker]
+--
+Summary of highly available, sticky available, and un-
+available models considered in this paper. Unavailable models are
+labeled by cause of unavailability: preventing lost update†,
+preventing write skew‡, and requiring recency guarantees⊕.
+--
+
+
+== Terms
+
+High availability::
+ * "always on"
+ * servers will not need to synchronously communicate with others
+ * allows operations on any replica
+Sticky availability::
+ * clients always contact the same logical replica
+ * whenever a client’s transactions is executed against a copy
+   of database state that reflects all of the client’s prior operations, it
+   eventually receives a response
+
+== Terms (2)
+
+Transactional availability::
+ * transactions: groups of multiple operations over multiple objects
+ * transaction has replica availability if it can contact
+   at least one replica for every item it attempts to access
+ * transactional avail ability if, given replica availability for every data item
+   in a transaction, the transaction eventually commits
+Sticky transactional availability::
+ * A system provides if, given sticky availability, a transaction eventually commits
+   or internally aborts
+
+[NOTE.speaker]
+--
+* the other availability mode (HA, SA) is considering single-object, single-operation availability
+--
+
+== See section 5.1: Achievable HAT Semantics
+
+[NOTE.speaker]
+--
+* a lot of the solutions is handled by passing some _cache_ on the client
+--

@@ -176,7 +176,14 @@ to handle with failures. It's up to you if concept of Saga is useful for you or 
 [NOTE.speaker]
 --
 * https://docs.axonframework.org/part2/sagas.html (Axon: Managing complex business transactions)
+* http://eventuate.io/howeventuateworks.html (Eventuate.io)
 * https://docs.particular.net/nservicebus/sagas (Particular Software : .NET/Windows, Sagas)
+* http://masstransit-project.com/MassTransit/advanced/courier (MassTransit: .NET)
+** https://stackoverflow.com/questions/13647423/nservicebus-vs-masstransit
+* http://rbmhtechnology.github.io/eventuate/overview.html (Eventuate on Scala)
+** https://inoio.de/blog/2015/11/18/reactive-systems-akka-persistence-and-eventuate
+* http://doc.akka.io/docs/akka/current/scala/persistence.html (Akka Persistence)
+* https://github.com/banq/jdonframework (JdonFramework is a java Reactive/Actor framework)
 --
 
 

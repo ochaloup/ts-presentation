@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="author" content="Peter Bailis"><title>Highly available transactions</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/redhat.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section class="title"><h1>Highly available transactions</h1><div class="preamble"><aside class="notes"><div class="ulist"><ul><li><p><a href="http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions" class="bare">http://www.bailis.org/blog/hat-not-cap-introducing-highly-available-transactions</a></p></li><li><p><a href="http://arxiv.org/pdf/1302.0309.pdf" class="bare">http://arxiv.org/pdf/1302.0309.pdf</a></p></li><li><p><code>okular /home/ochaloup/KnowledgeBase/Transactions/Bailis-HighlyAvailableTransactionsVirtuesandLimitations.pdf&amp;</code></p></li></ul></div></aside></div><p class="author"><small>Peter Bailis</small></p></section>
+<section id="_cap_theorem_and_acid"><h2>CAP theorem and ACID</h2><div class="ulist"><ul><li><p>ACID recap</p><div class="ulist"><ul><li><p>atomicity</p></li><li><p>consistency</p></li><li><p>isolation</p></li><li><p>durability</p></li></ul></div></li><li><p>CAP consistency is <strong>not</strong> ACID consistency</p></li><li><p>CAP consistency is rather ACID isolation</p></li></ul></div>
+<aside class="notes"><div class="dlist"><dl><dt class="hdlist1"><strong>Durability</strong></dt><dd><p>means the time when disk does <code>fsync</code> (leave some deeper technical details
+about disk writes aside). For transaction it means that data are written to some log
+and when system crashes it will be available when started again (we can re-read
+the log and restore data).</p></dd><dt class="hdlist1"><strong>Atomicity</strong></dt><dd><p>defines possibility to abort transaction and changes done by transaction
+in the system will be reverted to state before the transaction starts.
+Martin talks that it should be nicer to says <code>abortability</code>.<br>
+<em>Atomicity</em> is about handling failures when does depend when they come from (system crash,
+network failures, some constraint was broken&#8230;&#8203;).<br>
+<em>Atomicity</em> is <strong>not</strong> about concurrency. Rather <em>Isolation</em> is about concurrency -
+meaning parallel transaction works on the same piece of data.</p></dd><dt class="hdlist1"><strong>Consistency</strong></dt><dd><p>is to having the system in consistent state (moving from one to other one).
+<em>Consistency</em> is a point of view of an application in fact.<br>
+<em>Consistency</em> means fulfilling   invariants which could be defined in DB model
+but they could be outside of it too.</p></dd><dt class="hdlist1"><strong>Isolation</strong></dt><dd><p>is about concurrency. In perspective of this presentation the <em>Isolation</em>
+property is the most interesting. When talking about <em>ACID</em> isolation it&#8217;s meant
+<em>Serializability</em> to be obtained.</p><div class="ulist"><ul><li><p>Although, at least by the ACID acronym, atomicity is not an “isolation”
+property, atomicity properties also restrict the updates visible to other transactions.</p></li></ul></div></dd></dl></div></aside></section>
+<section id="_highly_available_transactions_hat"><h2>Highly available transactions (HAT)</h2><div class="ulist"><ul><li><p>composes models of transaction isolation (ACID) with transaction consistency (CAP)
+under one "diagram"</p></li><li><p>classifies what of the transaction model is achievable in HA (high available)</p><div class="ulist"><ul><li><p>Serializability, Snapshot Isolation and Repeatable Read isolation are not HAT-compliant</p></li><li><p>most other isolation levels are achievable with high availability</p></li></ul></div></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Snapshot Isolation and Repeatable Read isolation are not HAT-compliant
+because they require detecting conflicts between concurrent updates
+(as needed for preventing Lost Updates or Write Skew phenomena),
+which we show is unavailable.</p></div>
+<div class="paragraph"><p>However, Read Committed isolation, transactional atomicity (Section 5.1.2),
+and many other consistency models from database and distributed systems are
+achievable via algorithms that rely on multi-versioning and limited client-side caching.</p></div>
+<div class="paragraph"><p>For several guarantees, such as causal consistency with phantom prevention and ANSI Repeatable Read,
+we consider a modified form of high availability in which clients “stick to”
+(i.e., have affinity with) at least one server</p></div>
+<div class="paragraph"><p>Adya&#8217;s work the definition is based on: <a href="http://pmg.csail.mit.edu/papers/adya-phd.pdf" class="bare">http://pmg.csail.mit.edu/papers/adya-phd.pdf</a> (Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions, 1999)
+Berenson et al.: <a href="https://www.microsoft.com/en-us/research/publication/a-critique-of-ansi-sql-isolation-levels/" class="bare">https://www.microsoft.com/en-us/research/publication/a-critique-of-ansi-sql-isolation-levels/</a> (A Critique of ANSI SQL Isolation Levels, 1995)</p></div></aside></section>
+<section id="_transaction_diagram"><h2>Transaction diagram</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/cap/isolation-levels-hat.png" alt="isolation levels hat"></span></p></div></section>
+<section id="_table_to_explain_the_diagram"><h2>Table to explain the diagram</h2><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:20%"><col style="width:80%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">HA</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Read Uncommitted (RU), Read Committed (RC),
+  Monotonic Atomic View (MAV), Item
+  Cut Isolation (I-CI), Predicate Cut Isolation (P-CI),
+  Writes Follow Reads (WFR), Monotonic Reads (MR),
+  Monotonic Writes (MW)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Sticky</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Read Your Writes (RYW), PRAM, Causal</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Unavailable</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Cursor Stability (CS)†, Snapshot Isolation (SI)†,
+  Repeatable Read (RR)†‡, One-Copy Serializability (1SR)†‡,
+  Recency⊕, Safe⊕, Regular⊕, Linearizability⊕, Strong 1SR†‡⊕</p></td></tr></tbody></table>
+<aside class="notes"><div class="paragraph"><p>Summary of highly available, sticky available, and un-
+available models considered in this paper. Unavailable models are
+labeled by cause of unavailability: preventing lost update†,
+preventing write skew‡, and requiring recency guarantees⊕.</p></div></aside></section>
+<section id="_terms"><h2>Terms</h2><div class="dlist"><dl><dt class="hdlist1">High availability</dt><dd><div class="ulist"><ul><li><p>"always on"</p></li><li><p>servers will not need to synchronously communicate with others</p></li><li><p>allows operations on any replica</p></li></ul></div></dd><dt class="hdlist1">Sticky availability</dt><dd><div class="ulist"><ul><li><p>clients always contact the same logical replica</p></li><li><p>whenever a client’s transactions is executed against a copy
+of database state that reflects all of the client’s prior operations, it
+eventually receives a response</p></li></ul></div></dd></dl></div></section>
+<section id="_terms_2"><h2>Terms (2)</h2><div class="dlist"><dl><dt class="hdlist1">Transactional availability</dt><dd><div class="ulist"><ul><li><p>transactions: groups of multiple operations over multiple objects</p></li><li><p>transaction has replica availability if it can contact
+at least one replica for every item it attempts to access</p></li><li><p>transactional avail ability if, given replica availability for every data item
+in a transaction, the transaction eventually commits</p></li></ul></div></dd><dt class="hdlist1">Sticky transactional availability</dt><dd><div class="ulist"><ul><li><p>A system provides if, given sticky availability, a transaction eventually commits
+or internally aborts</p></li></ul></div></dd></dl></div>
+<aside class="notes"><div class="ulist"><ul><li><p>the other availability mode (HA, SA) is considering single-object, single-operation availability</p></li></ul></div></aside></section>
+<section id="_see_section_5_1_achievable_hat_semantics"><h2>See section 5.1: Achievable HAT Semantics</h2><aside class="notes"><div class="ulist"><ul><li><p>a lot of the solutions is handled by passing some <em>cache</em> on the client</p></li></ul></div></aside></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: false,
+  // Display a presentation progress bar
+  progress: true,
+  // Display the page number of the current slide
+  slideNumber: false,
+  // Push each slide change to the browser history
+  history: false,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'redhat',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'fade',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 960,
+  height: 700,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+  ]
+});</script></body></html>

@@ -3,7 +3,9 @@
 == Generate slides:
 
 ```
-SLIDES_FILE=
+cd $HOME/presentations/ts-presentation/slides
+# provide path to slide files without suffix '.adoc'
+SLIDES_FILE=$PWD/
 asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc
 asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc && firefox ${SLIDES_FILE}.html &
 ```
