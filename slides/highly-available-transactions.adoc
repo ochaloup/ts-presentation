@@ -156,4 +156,80 @@ Sticky transactional availability::
 [NOTE.speaker]
 --
 * a lot of the solutions is handled by passing some _cache_ on the client
+
+Read Uncommitted::
+ as PL-1, prohibiting dirty writes G0
+- writes to each object are totally ordered, corresponding to the order installed to a DB.
+In distributed database different replicas can receive writes in a different times
+but should handle concurrent updates in accordance of the total order.
+The read uncommitted is easily achieavable by marking each of the transaction's writes
+with the same timestamp (unique across transactions) and applying 'last write wins'.
+
+Read Committed::
+ as PL-2 - standard dbs uses either long duration exclusive locks and short duration
+read locks or multi-versioning.
+Transaction should not access uncommitted or intermediate versions of data items.
+This prohibits Dirty Writes (G0) and Dirty Reads (G1).
+We can provide read committed if each client never writes uncommitted data to shared copies of data.
+As naive solution client can buffer their writes until they commit, or alternatively
+the server will not send uncommitted values to readers.
+
+Repeatable Read::
+ - ANSI standard definition is achievable by HAT but properties labeled with RR
+spans a bit more in other definitions.
+Standar def - if txn reads the same data more than once, it sees the same value each time
+(preventing Fuzzy Reads (P2)). In this paper this property is called - `cut isolation`.
+If this property is hold over reads from discrete data items then it's `item cut isolation`
+and prevents Phantoms P3/A3.
+We can have a transactions store copy where we store all read data by the client from the
+database indexed by the txn id.
+
+Although, at least by the ACID acronym, atomicity is not an "isolation" property, atomicity
+properties also restrict the updates visible to other transactions.
+Isolation effect of atomicity is Monotonic Atomic View (MAV) isolation.
+Once some of the effects of transaction T1 are observed by another transaction T2,
+then all effects of T1 are observed by T2.
+MAV + cut isolaiton prevents Read Skew anomalies (Berenson, A5A). In Adya's hierarchy
+the MAV is below PL-2L but above Read Committed (PL-2). MAV disallows reading intermediate writes (G1b).
+MAV in one node DB is achievable by lightweight locking and/or local concurrency control over data.
+In distributed system replicas can store all versions ever written each data item. Replica can
+gossip info about versions and construct a lower bound on the versions that can be found on every replica
+(represented by a vector clock). Clients starts by choosing a read timestamp.
+
+Represented MAV algorithm here - Read Committed alg: Servers will not deliver their
+value to other readers until notified that the writes have been committed.
++ replicas wait to reveal new writes to readers untill alll of the replicas for the final writes
+in the transaction have received their perspective writes (are pending stable).
+See other details in paper (5.1.2).
+
+For session guarantee (all of a user's transactions submitted between log in and log out forms a session).
+
+Monotonic reads::
+subsequent reads in session to a given object "never return any previous value".
+
+Monotonic writes::
+each sessin's writes become visible in the order they were submitted.
+
+Writes Follow Reads::
+if a session observes an effect of transaction T1 and subsequently commits
+  transaction T2, then another session can only observe effects of T2 if it can also observe
+  effects of the T1. -> not achievable by HA but possible for sticky HA
+
+Sticky HA permits three additionally guarantees
+
+Read your writes::
+client reads a given data item after updating it, the read returns
+  the updated value (or a value that overwrote the previously written value)
+
+PRAM (pipelined random access memory)::
+illusion of serialization within each session
+  combines monotonic reads, monotonic writes and read your writes
+
+Casual consistency::
+combines PRAM with writes-follow-reads, it's Adya's PL-2L.
+
+Casual consistency::
+is achievable for sticky hight availability with algorithms similar to MAV
+  where only revealing new writes to clients when their (respective model-specific) dependencies
+  have been revealed.
 --
