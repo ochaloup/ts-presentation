@@ -4,7 +4,12 @@ target/
 .forge_settings
 .project
 .settings/
+.metadata
 .checkstyle
 .classpath
 # some testing stuff
 test.adoc
+
+# somthing ruby
+*.lock
+.bundle/
