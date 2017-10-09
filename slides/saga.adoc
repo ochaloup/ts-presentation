@@ -41,6 +41,11 @@ image:{images}/saga/2pc.png[role="noborder", .stretch]
 * https://developer.jboss.org/wiki/TwoPhaseCommit2PC
 --
 
+== Drawbaks of 2PC (MSA world)
+
+* scaling
+* tightly coupling data
+
 == Saga transaction
 
 * Saga paper (H. Garcia-Molina, K. Salem;  1987)
