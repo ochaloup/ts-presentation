@@ -2,7 +2,7 @@
 
 == Generate slides:
 
-```
+```bash
 cd $HOME/presentations/ts-presentation/slides
 # provide path to slide files without suffix '.adoc'
 SLIDES_FILE=$PWD/
@@ -10,11 +10,17 @@ asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc
 asciidoctor -T ./asciidoctor-reveal.js/templates/slim ${SLIDES_FILE}.adoc && firefox ${SLIDES_FILE}.html &
 ```
 
+== Generate slides on T50:
+
+```bash
+bundle exec asciidoctor-revealjs saga.adoc && firefox saga.html
+```
+
 == [red]*OUTDATED:* After generation actions
 
 * TODO: how to do proper hook for asciidoc or how to create my own temlate?
 
-```
+```bash
 sed -i 's|<body>|<body>\n           <img id="logo" src="reveal.js/lib/img/redhat-color-small.png" />|' ${SLIDES_FILE}.html
 sed -i 's|\(<code[^>]*\)class="\([^>]*>\)|\1 class="stretch \2|' ${SLIDES_FILE}.html
 sed -i 's|<code>|<code class="stretch">|' ${SLIDES_FILE}.html

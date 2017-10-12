@@ -1,83 +1,82 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="author" content="Ondra Chaloupka / ochaloup@redhat.com"><title>Saga transactions</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/redhat.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Saga transactions</h1><p class="author"><small>Ondra Chaloupka / ochaloup@redhat.com</small></p></section><section><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/wfly_narayana.png" alt="wfly narayana"></span></p></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Saga transactions</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/redhat.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Saga transactions</h1><div class="preamble"><div class="paragraph"><p>Ondra Chaloupka / <a href="mailto:ochaloup@redhat.com">ochaloup@redhat.com</a></p></div></div></section>
+<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/wfly_narayana.png" alt="wfly narayana"></span></p></div>
 <aside class="notes"><div class="ulist"><ul><li><p>Red Hat (<a href="https://developers.redhat.com" class="bare">https://developers.redhat.com</a>)</p></li><li><p>Wild Fly (<a href="http://wildfly.io" class="bare">http://wildfly.io</a>)</p></li><li><p>Naryana (<a href="http://narayana.io" class="bare">http://narayana.io</a>)</p></li></ul></div></aside></section>
-<section id="_a_saga_transaction"><h2>A saga transaction</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/wtf2.jpg" alt="wtf2"></span></p></div></section>
-<section id="_a_transaction"><h2>A transaction</h2><div class="ulist"><ul><li><p>An atomic unit of the work where everything or nothing is finished.</p></li><li><p><span class="red">A</span> <span class="blue">C</span> <span class="green">I</span> <span class="blue">D</span> (Atomicity, Consistency, Isolation, Durability)</p></li></ul></div></section>
-<section id="_distributed_transaction_2pc"><h2>Distributed transaction (2PC)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/2pc.png" alt="2pc" width=".stretch"></span></p></div></section>
-<section id="_saga_transaction"><h2>Saga transaction</h2><div class="ulist"><ul><li><p>Saga paper from 1987</p></li></ul></div>
-<aside class="notes"><div class="ulist"><ul><li><p><a href="https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf" class="bare">https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf</a> (Princeton University, 1987)</p></li><li><p><a href="https://www.youtube.com/watch?v=0UTOLRTwOX0" class="bare">https://www.youtube.com/watch?v=0UTOLRTwOX0</a> (JOTB17, Distributed Sagas: A Protocol for Coordinating Microservices, Caitie McCaffrey)</p></li></ul></div></aside></section>
-<section id="_saga_transaction_2"><h2>Saga transaction</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/saga.png" alt="saga" width=".stretch"></span></p></div>
-<aside class="notes"><div class="paragraph"><p>I would like start the whole talk by introducing concept of long lived transaction.</p></div>
-<div class="paragraph"><p>Standard ACID transaction is expected to be a short amount of work done in short time.
+<section id="_saga_transactions"><h2>Saga (transactions)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/wtf-pleasant.jpg" alt="wtf pleasant"></span></p></div>
+<aside class="notes"><div class="ulist"><ul><li><p>Sagas</p></li><li><p>Saga transactions</p></li><li><p>Business Activities</p></li><li><p>Long running actions</p></li></ul></div></aside></section>
+<section id="_an_acid_transaction"><h2>An ACID transaction</h2><div class="ulist"><ul><li><p>One logical unit of work</p><div class="ulist"><ul><li><p>everything or nothing happens</p></li><li><p>usually in regards of a data manipulation</p></li></ul></div></li><li><p>Protecting shared resources from multiple users</p></li><li><p>ACID properties guaranteed</p></li></ul></div></section>
+<section id="_distributed_transaction_2pc"><h2>Distributed transaction: 2PC</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/2pc.png" alt="2pc" width=".stretch"></span></p></div></section>
+<section id="_acid_transactions_assuming"><h2>ACID transactions: assuming</h2><div class="ulist"><ul><li><p>closely coupled environment</p><div class="ulist"><ul><li><p>harder to scale</p></li><li><p>tight data coupling</p></li></ul></div></li><li><p>short duration</p><div class="ulist"><ul><li><p>locking reduces parallelism</p></li></ul></div></li></ul></div></section>
+<section id="_microservice_architecture_expecting"><h2>Microservice architecture: expecting</h2><div class="ulist"><ul><li><p>loosely coupling</p></li><li><p>scaling</p></li><li><p>long duration for transaction</p></li></ul></div></section>
+<section id="_sagas"><h2>Sagas</h2><div class="ulist"><ul><li><p>Relaxing ACID properties</p></li><li><p>Eventual consistency</p></li><li><p>Saga paper (H. Garcia-Molina, K. Salem;  1987)</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Original paper talks about Saga as a solution for long-lived database transactions.
+We can use it for distributed environment too for not using two phase commit (a.k.a. locks).</p></div>
+<div class="paragraph"><p>A Saga consists of a sequence of operations, each could work with a resource.
+Changes made by the operation on the particular resource are visible to the outer
+world immediately. We can see it as a just group of operations (a.k.a local transactions)
+which are executed one by one group by the Saga.
+A Saga guarantees that either all operations succeed or all the work is undone
+by compensating actions. The compensating actions are not generically provided
+by a coordinator framework, instead, they have undone actions defined in business
+logic by the application programmer.</p></div>
+<div class="paragraph"><p>Other names</p></div>
+<div class="ulist"><ul><li><p>Saga action, Saga transactions</p></li><li><p>Compensating transactions, compensation transaction</p></li><li><p>long running actions, long lived transactions</p></li><li><p><a href="https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf" class="bare">https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf</a> (Princeton University, 1987)</p></li><li><p><a href="http://jbossts.blogspot.cz/2017/06/sagas-and-how-they-differ-from-two.html" class="bare">http://jbossts.blogspot.cz/2017/06/sagas-and-how-they-differ-from-two.html</a></p></li><li><p><a href="http://microservices.io/patterns/data/saga.html" class="bare">http://microservices.io/patterns/data/saga.html</a></p></li><li><p><a href="https://www.youtube.com/watch?v=0UTOLRTwOX0" class="bare">https://www.youtube.com/watch?v=0UTOLRTwOX0</a> (JOTB17, Distributed Sagas: A Protocol for Coordinating Microservices, Caitie McCaffrey)</p></li><li><p><a href="http://docs.oasis-open.org/ws-tx/wstx-wsba-1.1-spec-os/wstx-wsba-1.1-spec-os.html" class="bare">http://docs.oasis-open.org/ws-tx/wstx-wsba-1.1-spec-os/wstx-wsba-1.1-spec-os.html</a> (Web Services Business Activity, 2007)
+*</p></li></ul></div></aside></section>
+<section id="_sagas_2"><h2>Sagas (2)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/saga_confirm.png" alt="saga confirm" width=".stretch"></span></p></div>
+<div class="ulist"><ul><li><p>consists of a sequence of autonomous operations, each immediatelly visible to outer world</p></li><li><p>responsibility of failures handling to developer (handlers)</p></li><li><p>transaction manager is responsible for calling handlers</p></li></ul></div></section>
+<section id="_sagas_3"><h2>Sagas (3)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/saga_compensate.png" alt="saga compensate" width=".stretch"></span></p></div>
+<div class="ulist"><ul><li><p>compensation handler defined by developer, called by transaction manager</p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Standard ACID transaction is expected to be a short amount of work done in short time.
 This expectation is based on the fact that ACID transaction holds resources (locks)
-and prevents other concurrent transaction using the same data to proceed (mainly when the
-both of them hit writing the same record, reading concurrently could be somehow solved by MVCC - Snapshot isolation).</p></div>
-<div class="paragraph"><p>What if we want to have long transaction spans request over network (WS, REST) combined with insertion to a database.
+and prevents other concurrent transaction using the same data to proceed.</p></div>
+<div class="paragraph"><p>What if we want to have long transaction spans request over network (WS, REST)
+combined with insertion to a database.
 What if we consider popular example of reserving a flight, taxi to a hotel and the hotel,
-which we would like to be a single operation in high level point of view - I mean when I book a hotel from some date,
-I need to be sure that the flight for that date is booked too and having taxi on particular date being prepared
-for me. Confirmation of the hotel could take "long" time and during that time I need to hold reservation
-for the flight. When booking fails I need to cancel the flight reservation too. At this particular example
-it&#8217;s suitable to hold resources (locks) as it could block other reservation to happen.</p></div>
-<div class="paragraph"><p>This is really popular example in many articles and it is in fact real for many use cases.
-But what I thing is important here is the fact that it points to the fact that
-holding resources/locks (for long time) could be a bad fit which not permitting concurrent operation to proceed.
-This is something with current systems which manages big amount of data and processing many operations in parallel
-has to fight with.</p></div>
-<div class="paragraph"><p>Trend of holding locks is represented by well-known two phase commit protocol where
-each resource - each participant of the transaction (it could be a database, WS/REST call, JMS&#8230;&#8203;)
-starts its own local transaction and that local transaction holds resources of particular system
-(it holds locks on the resource, implementation depends system - in example of DB as mentioned
-there is MVCC which does not lock for concurrent reads). The resource is hold during the whole time
-of processing until commit is called on the local transaction.
-When thinking about two phase commit from point of insertion of some data to a database we can imagine to be like</p></div>
-<div class="olist arabic"><ol class="arabic"><li><p>application inserts data to database</p></li><li><p>that starts a global <code>2PC</code> transaction managed by a transaction manager (e.g. Narayana)</p></li><li><p>that started a local database transaction which (could) holds some locks and prevent other insertion (or possibly reads)
-being done on the influenced record by other operations (transactions) started later</p></li><li><p>application sends a message to JMS queue</p></li><li><p>the database local transaction is still active and locks are held</p></li><li><p>application ends its business logic</p></li><li><p>transaction manager starts two phase commit</p></li><li><p>transaction manager asks the database if it can prepare</p></li><li><p>the database responses 'yes' and stores the state of the local transaction durably
-(until now the crash of the database means losing information about the local transaction)</p></li><li><p>transaction manager asks other participants if they can prepare (this time it asks the JMS broker)</p></li><li><p>the database still locks the data influenced by the data insertion</p></li><li><p>transaction manager directs the database to commit, database releases the locks now</p></li><li><p>interestingly here we have a time windows when an global consistency is not fulfilled.
-defined in different way ACID consistency is fine as there is no contradiction of consistency
-constraints required by database but isolation in ACID way of thinking stretched over the whole
-global transaction is not valid in fact. This is just pointing to fact that <code>2PC</code> provides ACID atomicity
-but not the ACID isolation</p></li><li><p>transaction manager commits other participants and global transaction ends</p></li></ol></div>
-<div class="paragraph"><p>This example shows how the <code>2PC</code> holds resources which leads to the fact that resources
-itself holds locks as part of its local transactions.</p></div>
-<div class="paragraph"><p>How to not holding lock and permit higher transaction throughput? The answer could be Saga.
-Even we didn&#8217;t define it so far we can say it comes with idea of splitting this big
-transaction to small ones where each local transaction is finished as soon as possible
-and the set of the already finished transactions defines a work of unit. This breaks
-ACID isolation right at the place but Saga provides handling to grant atomicity.</p></div>
-<div class="paragraph"><p>The Saga defines unit of work work that could be aborted and we relax isolation.</p></div>
-<div class="paragraph"><p>As I tried to indicate the issue is the same - let through be higher, do not hold/lock.</p></div>
-<div class="ulist"><ul><li><p><a href="http://stackoverflow.com/questions/4639740/how-acid-is-the-two-phase-commit-protocol" class="bare">http://stackoverflow.com/questions/4639740/how-acid-is-the-two-phase-commit-protocol</a></p></li></ul></div></aside></section>
-<section id="_saga"><h2>Saga</h2><aside class="notes"><div class="paragraph"><p>The concept of the original paper talks about single node database but it could
-be applied to distributed transactions (as was already shown).</p></div>
-<div class="paragraph"><p>Saga could be classified as <code>Base</code> transaction (at least from my understanding)
-as it does not lock resources a.k.a locks and letting data of resources being available
-for other transactions to work with.</p></div>
-<div class="paragraph"><p>TODO: <em>add description of Saga here</em></p></div>
-<div class="paragraph"><p>As you could see the transaction handling introduced by Saga requires the application to
-define compensation actions or define actions as idempotent (you can repeat operation on the
-resource multiple times and you will get the same result - operation being repeated not leading to a different outcome).</p></div>
-<div class="paragraph"><p>Still you can handle all the data integrity yourself in your application and design your system architecture
-to handle with failures. It&#8217;s up to you if concept of Saga is useful for you or not.</p></div>
-<div class="ulist"><ul><li><p><a href="https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf" class="bare">https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf</a> (Sagas, Priceton University, 1987)</p></li><li><p><a href="http://queue.acm.org/detail.cfm?id=1394128" class="bare">http://queue.acm.org/detail.cfm?id=1394128</a> (Base: An Acid Alternative, base transactions)</p></li><li><p><a href="https://www.atomikos.com/Blog/ACAPSolutionProvingBrewerWrong" class="bare">https://www.atomikos.com/Blog/ACAPSolutionProvingBrewerWrong</a> (A CAP Solution (Proving Brewer Wrong) aka CQRS)</p></li></ul></div></aside></section>
-<section id="_saga_distributed_implemenation"><h2>Saga: distributed implemenation</h2><div class="ulist"><ul><li><p>state store</p></li><li><p>routing slip</p></li><li><p>process manager</p></li></ul></div>
-<aside class="notes"><div class="dlist"><dl><dt class="hdlist1"><strong>State store</strong></dt><dd><p>State store corresponds with transaction manager object store (as Narayana implements it
-and as it&#8217;s easily to be understand). State is saved in a storage (either in local disk
-or in some distributed environment). This storage has to be available during recovery.</p></dd><dt class="hdlist1"><strong>Routing slip</strong></dt><dd><p>The state corresponding with the saga state is send from one service to other. For example
-we want to add to one account and remove from other account, each in different service.
-Thus information that the Saga contains this two operations is sent in the message to the
-first service. It adds to one account and sends information that the Saga consists from two
-operations, where one is fulfilled by 'me'. If the second service fails to remove from the account,
-it sends a message with saga context to an error queue where the first service listen on
-and it handle compensations.</p></dd><dt class="hdlist1"><strong>Process manager</strong></dt><dd><p>It&#8217;s what we label here as event driven transactions. There some messaging system where
-process manager listen on. The services could be informed about needs of add/remove to/from account
-from some service bus, queue or just async call but they send information about outcome to the msg system
-where process manager listen and it can manage compensation handling.</p><div class="ulist"><ul><li><p><a href="https://dzone.com/articles/transactions-in-microservices" class="bare">https://dzone.com/articles/transactions-in-microservices</a></p></li></ul></div></dd></dl></div></aside></section>
-<section id="_narayana_compensating_transactions"><h2>Narayana compensating transactions</h2><aside class="notes"><div class="ulist"><ul><li><p><a href="https://developer.jboss.org/wiki/CompensatingTransactionsWhenACIDIsTooMuch" class="bare">https://developer.jboss.org/wiki/CompensatingTransactionsWhenACIDIsTooMuch</a> (Narayana: Compensating Transactions: When ACID is too much)</p></li></ul></div></aside></section>
-<section id="_atomicos_tcc"><h2>Atomicos TCC</h2><aside class="notes"><div class="ulist"><ul><li><p><a href="https://www.atomikos.com/Main/DownloadPublications?article=TransactionsForSOA-WhitePaper.pdf" class="bare">https://www.atomikos.com/Main/DownloadPublications?article=TransactionsForSOA-WhitePaper.pdf</a> (Atomicos: Composite	Transactions for SOA)</p></li><li><p><a href="https://www.infoq.com/presentations/Transactions-HTTP-REST" class="bare">https://www.infoq.com/presentations/Transactions-HTTP-REST</a> (Atomicos: Transactions for the REST of Us, presentation</p></li></ul></div></aside></section>
-<section id="_event_driven_transactions"><h2>Event driven transactions</h2><aside class="notes"><div class="ulist"><ul><li><p><a href="https://docs.axonframework.org/part2/sagas.html" class="bare">https://docs.axonframework.org/part2/sagas.html</a> (Axon: Managing complex business transactions)</p></li><li><p><a href="https://docs.particular.net/nservicebus/sagas" class="bare">https://docs.particular.net/nservicebus/sagas</a> (Particular Software : .NET/Windows, Sagas)</p></li></ul></div></aside></section>
-<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/cajk.jpg" alt="cajk" height="300"></span></p></div>
-<div class="ulist"><ul><li><p><a href="https://www.cs.cornell.edu/andru/cs711/2002fa/reading/sagas.pdf">Sagas, Priceton University, 1987</a></p></li></ul></div>
-<aside class="notes"><div class="paragraph"><p>Resources to consider</p></div></aside></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+which we would like to be a single operation in high level point of view - I mean
+when I book a hotel from some date,
+I need to be sure that the flight for that date is booked too and having taxi
+on particular date being prepared for me. Confirmation of the hotel could take "long"
+time and during that time I need to hold reservation for the flight. When booking fails
+I need to cancel the flight reservation too. At this particular example
+it&#8217;s suitable to hold resources (locks) as it could block other reservation to happen.</p></div></aside></section>
+<section><section id="_narayana_lra"><h2>Narayana LRA</h2><div class="listingblock stretch"><div class="content"><pre class="highlight"><code class="java language-java">@Inject
+private AlohaService alohaService;
+
+@Inject
+private LRAClientAPI lraClient;
+
+@GET
+@Path("/hello")
+@LRA(value = LRA.Type.REQUIRED)
+public List&lt;String&gt; hello() {
+    alohaService.aloha(lraClient.getCurrent())
+}
+
+@POST
+@PUT("/complete")
+@Complete
+public Response completeWork(@HeaderParam(LRAClient.LRA_HTTP_HEADER) String lraId) {
+    String txId = LRAClient.getLRAId(lraId);
+    System.out.printf("ActivityController completing %s%n", txId);
+    return Response.ok().build();
+}
+
+@POST
+@Path("/compensate")
+@Compensate
+public Response compensateWork(@HeaderParam(LRAClient.LRA_HTTP_HEADER) String lraId) {
+    String txId = LRAClient.getLRAId(lraId);
+    System.out.printf("ActivityController compensating %s%n", txId);
+    return Response.ok().build();
+}</code></pre></div></div></section><section id="_narayana_lra_2" data-transition="slide"><h2>Narayana LRA</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/msa_calls.png" alt="msa calls"></span></p></div>
+<div class="ulist"><ul><li><p>LRA: Long Running Actions</p></li><li><p>transaction context over REST</p></li></ul></div>
+<aside class="notes"><div class="ulist"><ul><li><p><a href="https://developer.jboss.org/wiki/CompensatingTransactionsWhenACIDIsTooMuch" class="bare">https://developer.jboss.org/wiki/CompensatingTransactionsWhenACIDIsTooMuch</a> (Narayana: Compensating Transactions: When ACID is too much)</p></li></ul></div></aside></section></section>
+<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/microprofile.jpg" alt="microprofile" width="50%"></span></p></div>
+<div class="ulist"><ul><li><p>Java EE stack for microservices</p></li><li><p><a href="https://github.com/jbosstm/microprofile-sandbox/blob/0009-LRA/proposals/0009-LRA/0009-LRA.md">LRA specification proposal, https://github.com/jbosstm/microprofile-sandbox</a></p></li><li><p><a href="https://groups.google.com/forum/#!msg/microprofile/CJirjFkM9Do/TrApz-fBDQAJ">Microprofile Google group, http://bit.ly/transactions-microprofile</a></p></li></ul></div>
+<aside class="notes"><div class="paragraph"><p>Event driven transactions</p></div>
+<div class="ulist"><ul><li><p><a href="https://docs.axonframework.org/part2/sagas.html" class="bare">https://docs.axonframework.org/part2/sagas.html</a> (Axon: Managing complex business transactions)</p></li><li><p><a href="http://eventuate.io" class="bare">http://eventuate.io</a> (Solving distributed data management problems in a microservice architecture)</p></li><li><p><a href="https://docs.particular.net/nservicebus/sagas" class="bare">https://docs.particular.net/nservicebus/sagas</a> (Particular Software : .NET/Windows, Sagas)</p></li></ul></div>
+<div class="paragraph"><p>Atomicos TCC</p></div>
+<div class="ulist"><ul><li><p><a href="https://www.atomikos.com/Main/DownloadPublications?article=TransactionsForSOA-WhitePaper.pdf" class="bare">https://www.atomikos.com/Main/DownloadPublications?article=TransactionsForSOA-WhitePaper.pdf</a> (Atomicos: Composite	Transactions for SOA)</p></li><li><p><a href="https://www.infoq.com/presentations/Transactions-HTTP-REST" class="bare">https://www.infoq.com/presentations/Transactions-HTTP-REST</a> (Atomicos: Transactions for the REST of Us, presentation)</p></li></ul></div></aside></section>
+<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/entertain/cajk.jpg" alt="cajk" height="300"></span></p></div></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
 Reveal.initialize({
   // Display controls in the bottom right corner
   controls: false,
@@ -150,7 +149,7 @@ Reveal.initialize({
       { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
       { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
       { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-      
+      { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
       { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
       { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
   ]
