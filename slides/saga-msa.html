@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Saga transactions</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="reveal.js/css/theme/redhat.css" id="theme"><link href="reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );</script></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Saga transactions</h1><div class="preamble"><div class="paragraph"><p>Ondra Chaloupka / <a href="mailto:ochaloup@redhat.com">ochaloup@redhat.com</a></p></div></div></section>
+<section><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/wfly_narayana.png" alt="wfly narayana"></span></p></div>
+<aside class="notes"><div class="ulist"><ul><li><p>Red Hat (<a href="https://developers.redhat.com" class="bare">https://developers.redhat.com</a>)</p></li><li><p>Wild Fly (<a href="http://wildfly.io" class="bare">http://wildfly.io</a>)</p></li><li><p>Naryana (<a href="http://narayana.io" class="bare">http://narayana.io</a>)</p></li></ul></div></aside></section>
+<section id="_sagas"><h2>Sagas</h2><div class="ulist"><ul><li><p>Transactional model for long living transaction</p></li><li><p>Saga paper (H. Garcia-Molina, K. Salem;  1987)</p></li><li><p>Relaxing ACID properties</p></li><li><p>Eventual consistent</p></li></ul></div></section>
+<section id="_acid_vs_saga"><h2>ACID vs. Saga</h2><div class="ulist"><ul><li><p>One logical unit of work, everything or nothing happens</p></li><li><p>ACID properties is a transaction guarantees</p><div class="ulist"><ul><li><p>Protecting shared resources from multiple users</p></li><li><p>closely coupled environment</p></li><li><p>short duration</p></li></ul></div></li><li><p>Saga</p><div class="ulist"><ul><li><p>loosely coupled</p></li><li><p>long duration</p></li></ul></div></li></ul></div></section>
+<section id="_sagas_2"><h2>Sagas (#2)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/saga_confirm.png" alt="saga confirm" width=".stretch"></span></p></div>
+<div class="ulist"><ul><li><p>consists of a sequence of autonomous operations, each immediatelly visible to outer world</p></li><li><p>responsibility of failures handling to developer (handlers)</p></li><li><p>transaction manager is responsible for calling handlers</p></li></ul></div></section>
+<section id="_sagas_3"><h2>Sagas (#3)</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/saga_compensate.png" alt="saga compensate" width=".stretch"></span></p></div>
+<div class="ulist"><ul><li><p>compensation handler defined by developer, called by transaction manager</p></li></ul></div></section>
+<section id="_narayana_lra"><h2>Narayana LRA</h2><div class="ulist"><ul><li><p>LRA: Long Running Actions</p></li><li><p>Saga implementation for REST calls</p></li><li><p>based on the MicroProfile stack (JAX-RS, CDI)</p></li><li><p><a href="https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA">LRA specification - microprofile proposal</a></p></li></ul></div></section>
+<section id="_demo"><h2>Demo</h2><div class="paragraph"><p><span class="image noborder"><img src="./misc/saga/msa_calls.png" alt="msa calls" width=".stretch"></span></p></div></section>
+<section id="_summary"><h2>Summary</h2><div class="ulist"><ul><li><p>Narayana LRA - implementation of Saga for REST calls</p></li><li><p>better fit for MSA than ACID transactions</p></li><li><p>a tool that can help in desiging the application</p><div class="ulist"><ul><li><p>MSA principles should be preserved</p></li></ul></div></li></ul></div></section>
+<section id="_sources"><h2>Sources</h2><div class="ulist"><ul><li><p><a href="https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA" class="bare">https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA</a></p></li><li><p><a href="https://github.com/jbosstm/narayana/tree/master/rts/lra" class="bare">https://github.com/jbosstm/narayana/tree/master/rts/lra</a></p></li><li><p><a href="https://github.com/ochaloup/helloworld-msa/tree/lra" class="bare">https://github.com/ochaloup/helloworld-msa/tree/lra</a></p></li></ul></div></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: false,
+  // Display a presentation progress bar
+  progress: true,
+  // Display the page number of the current slide
+  slideNumber: false,
+  // Push each slide change to the browser history
+  history: false,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'redhat',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'fade',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 960,
+  height: 700,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+      { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+  ]
+});</script></body></html>

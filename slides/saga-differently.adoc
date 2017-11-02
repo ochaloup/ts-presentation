@@ -1,0 +1,39 @@
+:source-highlighter: highlightjs
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: fade
+
+:images: ./misc
+
+
+= Saga transactions
+
+Ondra Chaloupka / ochaloup@redhat.com
+
+== !
+
+image:{images}/saga/wfly_narayana.png[role="noborder"]
+
+* microservices, microservices, microservices - even my grandma program microservices
+* how the microservice looks likes - data is close to the service, usually local
+  data storage at the microservice
+* what if we want to make some atomic action (something happens or nothing happens)
+  which works over boundaries of single microservice
+* ok, microservice boundaries are wrongly defined... but there is a niche where
+  such 'thing' is needed, then what about transactions?
+* will you tell me somebody what is a transaction?
+* logical unit of work whole done or nothing done at all
+* seems good, no ?
+* step aside - I talk about JTA transaction, do you know that?
+* what is ACID
+* what is 2PC
+* locks are everywhere - no scaling
+* Saga saves us - maybe
+* how that works
+* what is Narayana LRA
+* and demo
+
+== !
+
+image:{images}/entertain/cajk.jpg[role="noborder", , height="300"]

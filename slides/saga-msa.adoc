@@ -1,0 +1,84 @@
+:source-highlighter: highlightjs
+:revealjs_theme: redhat
+:revealjs_controls: false
+:revealjs_center: true
+:revealjs_transition: fade
+
+:images: ./misc
+
+
+= Saga transactions
+
+Ondra Chaloupka / ochaloup@redhat.com
+
+== !
+
+image:{images}/saga/wfly_narayana.png[role="noborder"]
+
+[NOTE.speaker]
+--
+* Red Hat (https://developers.redhat.com)
+* Wild Fly (http://wildfly.io)
+* Naryana (http://narayana.io)
+--
+
+== Sagas
+
+* Transactional model for long living transaction
+* Saga paper (H. Garcia-Molina, K. Salem;  1987)
+* Relaxing ACID properties
+* Eventual consistent
+
+
+== ACID vs. Saga
+
+* One logical unit of work, everything or nothing happens
+
+* ACID properties is a transaction guarantees
+** Protecting shared resources from multiple users
+** closely coupled environment
+** short duration
+
+* Saga
+** loosely coupled
+** long duration
+
+
+== Sagas (#2)
+
+image:{images}/saga/saga_confirm.png[role="noborder", .stretch]
+
+* consists of a sequence of autonomous operations, each immediatelly visible to outer world
+* responsibility of failures handling to developer (handlers)
+* transaction manager is responsible for calling handlers
+
+
+== Sagas (#3)
+
+image:{images}/saga/saga_compensate.png[role="noborder", .stretch]
+
+* compensation handler defined by developer, called by transaction manager
+
+== Narayana LRA
+
+* LRA: Long Running Actions
+* Saga implementation for REST calls
+* based on the MicroProfile stack (JAX-RS, CDI)
+* https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA[LRA specification - microprofile proposal]
+
+== Demo
+
+image:{images}/saga/msa_calls.png[role="noborder", .stretch]
+
+== Summary
+
+* Narayana LRA - implementation of Saga for REST calls
+* better fit for MSA than ACID transactions
+* a tool that can help in desiging the application
+** MSA principles should be preserved
+
+== Sources
+
+* https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA
+* https://github.com/jbosstm/narayana/tree/master/rts/lra
+* https://github.com/ochaloup/helloworld-msa/tree/lra
