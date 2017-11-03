@@ -63,8 +63,8 @@ image:{images}/saga/saga_compensate.png[role="noborder", .stretch]
 
 * LRA: Long Running Actions
 * Saga implementation for REST calls
-* based on the MicroProfile stack (JAX-RS, CDI)
-* https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA[LRA specification - microprofile proposal]
+* based on the Eclipse MicroProfile stack (JAX-RS, CDI)
+* https://github.com/eclipse/microprofile-sandbox/tree/master/proposals/0009-LRA[LRA specification - MicroProfile proposal]
 
 == Demo
 
@@ -73,12 +73,12 @@ image:{images}/saga/msa_calls.png[role="noborder", .stretch]
 == Summary
 
 * Narayana LRA - implementation of Saga for REST calls
-* better fit for MSA than ACID transactions
+* a better fit for MSA than ACID transactions
 * a tool that can help in desiging the application
 ** MSA principles should be preserved
 
 == Sources
 
-* https://github.com/jbosstm/microprofile-sandbox/tree/master/proposals/0009-LRA
+* https://github.com/eclipse/microprofile-sandbox/tree/master/proposals/0009-LRA
 * https://github.com/jbosstm/narayana/tree/master/rts/lra
 * https://github.com/ochaloup/helloworld-msa/tree/lra
