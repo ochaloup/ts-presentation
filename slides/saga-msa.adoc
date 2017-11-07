@@ -70,6 +70,16 @@ image:{images}/saga/saga_compensate.png[role="noborder", .stretch]
 
 image:{images}/saga/msa_calls.png[role="noborder", .stretch]
 
+[NOTE.speaker]
+--
+To get logs for the particular services:
+
+* `oc logs -f `oc get pods | grep ^ola | grep Running | awk '{ print $1 }'``
+* `oc logs -f `oc get pods | grep ^hola | grep Running | awk '{ print $1 }'``
+* `oc logs -f `oc get pods | grep ^aloha | grep Running | awk '{ print $1 }'``
+* `oc logs -f `oc get pods | grep ^bonjour | grep Running | awk '{ print $1 }'``
+--
+
 == Summary
 
 * Narayana LRA - implementation of Saga for REST calls

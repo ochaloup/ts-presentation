@@ -7,7 +7,7 @@
 :images: ./misc
 
 
-= Saga transactions
+= Transactions over REST for microservices
 
 Ondra Chaloupka / ochaloup@redhat.com
 
@@ -22,51 +22,108 @@ image:{images}/saga/wfly_narayana.png[role="noborder"]
 * Naryana (http://narayana.io)
 --
 
-== Saga (transactions)
+== !
 
-image:{images}/entertain/wtf2.jpg[role="noborder"]
+image:{images}/saga/narayana_logo.png[role="noborder"]
+
+* earlier *Arjuna*, renamed to *Narayana*
+
+* *JTA* implementation in JBoss/WildFly
+* *JTS* distributed transaction over IIOP
+* webservice transactions (*WS-AT/WS-BA*)
+* *STM* proof-of-concept for Vert.x
+* *saga* transactions over REST
 
 [NOTE.speaker]
 --
 * Sagas
 * Saga transactions
-* Business Activities
-* Long running actions
+* Business Activities (BA)
+* Long running actions (LRA)
+* Long Living transactions (LLT)
 --
 
-== Saga transactions: agenda
+== Agenda
 
-* a "normal" transaction
-* a distributed transaction
-** transactions and microservices
-* saga transactions
-* Narayana and saga transactions
+* microservices
+* distributed transactions and two-phase commit
+* saga
+* Narayana Long Running Actions
 
-== A transaction
+== Microservice
 
-* An atomic unit of the work where everything or nothing is finished
-** usually in regards of a data manipulation
-* Protecting shared resources from multiple users
-* A notion of a global consensus
-* Guarantees ACID properties
+TODO: ...
+
+image:{images}/entertain/wtf2.jpg[role="noborder"]
+
+== Microservice architecture
+
+image:{images}/saga/posta-msa.png[role="noborder", .stretch]
+
+(_credit: Christian Posta, http://blog.christianposta.com_)
+
+[NOTE.speaker]
+--
+* Martin Fowler: https://martinfowler.com/articles/microservices.html
+* Burr Sutter: https://www.youtube.com/watch?v=35_yWad7IiQ
+* Christian Posta: http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data
+--
+
+== Distributed transactions
+
+image:{images}/saga/posta-msa-with-wfly.png[role="noborder", .stretch]
 
 == An ACID transaction
+
+* An atomic unit of the work where everything or nothing is finished
+** usually in regards of data manipulation
+* Protecting shared resources from multiple users
+* A notion of a global consensus
+* ACID properties guaranteed
+
+== !
+
+image:{images}/saga/test-tubes.png[role="noborder"]
 
 * [red]#A#&#144;tomicity
 * [orange]#C#&#144;onsistency
 * [green]#I#&#144;solation
 * [blue]#D#&#144;urability
 
-== Distributed transaction: 2PC
+[NOTE.speaker]
+--
+*Atomicity*::
+  "all or nothing", all operations in a transaction succeed or every operation is rolled back
+*Consistency*::
+  on the completion of a transaction, the database is structurally sound
+  that covers e.g. preserve foreign keys, uniqueness defined by schema etc.
+*Isolation*::
+  transactions do not contend with one another. Contentious access to data is moderated by the database
+  so that transactions appear to run sequentially.
+*Durability*::
+  the results of applying a transaction are permanent, even in the presence of failures
+
+* Martin Kleppmann: https://www.youtube.com/watch?v=5ZjhNTM8XU8
+--
+
+== Distributed vs. XA transaction
+
+* distributed transaction runs over multiple services
+* XA transaction joins operations over multiple resources
+
+== XA transaction: 2PC
 
 image:{images}/saga/2pc.png[role="noborder", .stretch]
 
 [NOTE.speaker]
 --
-* distributed transaction coordinates non-homogenous participants
+* XA transaction coordinates non-homogenous participants
 * scaling troubles in distributed environment
 * https://developer.jboss.org/wiki/TwoPhaseCommit2PC
 --
+
+== Distributed transactions
+
 
 
 == Distributed transactions: assuming
