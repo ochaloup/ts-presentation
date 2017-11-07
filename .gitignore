@@ -13,3 +13,6 @@ test.adoc
 # somthing ruby
 *.lock
 .bundle/
+
+# no widlfy directories if exists
+wildfly-1*/
