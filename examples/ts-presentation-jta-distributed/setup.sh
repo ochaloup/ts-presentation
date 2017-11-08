@@ -31,3 +31,7 @@ fi
 "${JBOSS_HOME_1}/bin/add-user.sh" -a -u admin123 -p Password1! --silent
 "${JBOSS_HOME_2}/bin/add-user.sh" -a -u admin123 -p Password1! --silent
 
+
+docker run -p 5432:5432 -d 786c677bec44
+mvn clean install; cp target/wfly-client.war ../wildfly-11.0.0.Final-client/standalone/deployments/
+mvn clean install; cp target/wfly-server.jar ../wildfly-11.0.0.Final-server/standalone/deployments/

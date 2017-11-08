@@ -39,6 +39,8 @@ public class TransactionEJB {
 
         em.persist(employee);
         sendMessage("Hello");
+
+        // throw new RuntimeException("Don't panic! The answer is 42.");
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
