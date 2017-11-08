@@ -22,30 +22,22 @@ public class TransactionEJB {
     private EntityManager em;
 
     @Resource(mappedName = "java:/JmsXA")
-    ConnectionFactory connFactory;
+    ConnectionFactory cf;
 
-    @Resource(mappedName = "java:jboss/jms/queue/exampleQueue")
+    @Resource(mappedName = "java:/jms/queue/example")
     private Queue queueExample;
-
-    @Resource(mappedName = "java:/JmsXA")
-    private ConnectionFactory cf;
 
     private Connection connection;
     private MessageProducer publisher;
     private Session session;
 
     public void doTransaction() throws XAException {
+        System.out.println("Do transactional work now...");
 
-        SimplePOJO p = new SimplePOJO();
-        p.setKey(new java.util.Date().toString());
-        p.setValue(new java.util.Date().toString());
+        SimpleEntity employee= (SimpleEntity) em.find(SimpleEntity.class, "1");
+        employee.setValue(employee.getValue() + 1);
 
-        // 2PC
-        // Save a record on a DB and send a JMS message using XA Connection
-        // factory
-        // HornetQ will raise XAException in the prepare() phase
-         
-        em.persist(p);
+        em.persist(employee);
         sendMessage("Hello");
     }
 
@@ -89,5 +81,4 @@ public class TransactionEJB {
                 }
         }
     }
-
 }

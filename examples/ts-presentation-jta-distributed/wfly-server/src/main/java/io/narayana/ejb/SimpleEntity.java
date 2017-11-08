@@ -3,15 +3,17 @@ package io.narayana.ejb;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class SimplePOJO {
+@Table(name = "simple_entity")
+public class SimpleEntity {
 
     @Id 
     @Column(name="id")
     private String key;
 
-    private String value;
+    private int value;
 
     public String getKey() {
         return key;
@@ -23,14 +25,14 @@ public class SimplePOJO {
 
     @Override
     public String toString() {
-        return "SimplePOJO [key=" + key + ", value=" + value + "]";
+        return String.format("SimplePOJO [key=%s, value=%d]", key, value);
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

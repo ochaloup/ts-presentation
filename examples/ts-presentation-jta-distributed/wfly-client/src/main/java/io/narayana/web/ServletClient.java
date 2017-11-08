@@ -22,9 +22,10 @@ public class ServletClient extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         
+        String[] ids = request.getParameterMap().get("id");
+        
         try {
-            caller.call();
+            caller.call(ids != null ? ids[0] : "1");
         } catch (Throwable e) {
             e.printStackTrace();
         }

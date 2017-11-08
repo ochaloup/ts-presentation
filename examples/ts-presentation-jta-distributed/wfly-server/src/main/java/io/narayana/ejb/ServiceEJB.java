@@ -4,6 +4,8 @@ import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.transaction.xa.XAException;
+
+import io.narayana.ejb.remote.Service;
  
 @Stateless
 @Remote(Service.class)

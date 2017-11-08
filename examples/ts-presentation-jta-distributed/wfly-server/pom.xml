@@ -87,6 +87,9 @@
                 <configuration>
                     <ejbVersion>3.2</ejbVersion>
             		<generateClient>true</generateClient>
+			        <clientIncludes>
+			            <clientInclude>io/narayana/ejb/remote/**</clientInclude>
+			        </clientIncludes>
                 </configuration>
             </plugin>
         </plugins>

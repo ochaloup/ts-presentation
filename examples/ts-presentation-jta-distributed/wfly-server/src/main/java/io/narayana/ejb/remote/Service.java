@@ -1,4 +1,4 @@
-package io.narayana.ejb;
+package io.narayana.ejb.remote;
 
 import javax.ejb.Remote;
 import javax.transaction.xa.XAException;
