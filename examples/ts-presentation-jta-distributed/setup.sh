@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -ex
+
 function unzipTo {
   local TEMP=`mktemp`
   unzip -d "${TEMP}" "${1}"
@@ -31,7 +33,23 @@ fi
 "${JBOSS_HOME_1}/bin/add-user.sh" -a -u admin123 -p Password1! --silent
 "${JBOSS_HOME_2}/bin/add-user.sh" -a -u admin123 -p Password1! --silent
 
+cp standalone-full-client.xml "${JBOSS_HOME_1}/standalone/configuration/"
+cp standalone-full-server.xml "${JBOSS_HOME_2}/standalone/configuration/"
 
-docker run -p 5432:5432 -d 786c677bec44
-mvn clean install; cp target/wfly-client.war ../wildfly-11.0.0.Final-client/standalone/deployments/
-mvn clean install; cp target/wfly-server.jar ../wildfly-11.0.0.Final-server/standalone/deployments/
+cp postgresql*.jar "${JBOSS_HOME_1}/standalone/deployments/postgresql-driver.jar"
+cp postgresql*.jar "${JBOSS_HOME_2}/standalone/deployments/postgresql-driver.jar"
+
+cd docker
+docker build -t postgresql-ts-presentation-jta-dist .
+docker run -p 5432:5432 -d --rm postgresql-ts-presentation-jta-dist
+docker run -p 5433:5432 -d --rm postgresql-ts-presentation-jta-dist
+
+cd wfly-client
+mvn clean install; cp target/wfly-client.war "${JBOSS_HOME_1}/standalone/deployments/"
+cd wfly-server
+mvn clean install; cp target/wfly-server.jar "${JBOSS_HOME_2}/standalone/deployments/"
+
+cd "${JBOSS_HOME_1}/"
+./bin/standalone.sh -c standalone-full-client.xml &
+./bin/standalone.sh -c standalone-full-server.xml -Djboss.socket.binding.port-offset=100 &
+
