@@ -41,8 +41,8 @@ cp postgresql*.jar "${JBOSS_HOME_2}/standalone/deployments/postgresql-driver.jar
 
 cd dockerfile
 docker build -t postgresql-ts-presentation-jta-dist .
-docker run -p 5432:5432 -d -rm postgresql-ts-presentation-jta-dist
-docker run -p 5433:5432 -d -rm postgresql-ts-presentation-jta-dist
+docker run -p 5432:5432 -d --rm postgresql-ts-presentation-jta-dist
+docker run -p 5433:5432 -d --rm postgresql-ts-presentation-jta-dist
 cd -
 
 cd wfly-client
@@ -56,5 +56,18 @@ cd "${JBOSS_HOME_1}/"
 ./bin/standalone.sh -c standalone-full-client.xml &
 cd "${JBOSS_HOME_2}/"
 ./bin/standalone.sh -c standalone-full-server.xml -Djboss.socket.binding.port-offset=100 &
-cd-
+cd -
+
+echo "Waiting for 20 seconds"
+sleep 20
+
+echo "\n\n\nSERVER_1: ${JBOSS_HOME_1}\n#################################\n"
+tail -n 10 ${JBOSS_HOME_1}/standalone/log/server.log
+echo "\n\n\nSERVER_2: ${JBOSS_HOME_2}\n#################################\n"
+tail -n 10 ${JBOSS_HOME_2}/standalone/log/server.log
+
+echo "\n\n\nRunning servers:\n"
+jobs
+
+curl -I -X GET http://localhost:8080/wfly-client/client
 
