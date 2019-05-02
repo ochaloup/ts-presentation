@@ -36,10 +36,13 @@ public class BeanWithCdiAnnotationTestCase {
     public static Archive<?> deploy() {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, DEPLOYMENT + ".jar")
                 .addPackage("org.jboss.qa.tspresentation.utils")
+                .addPackage("org.jboss.qa.tspresentation.cdi")
+                .addPackage("org.jboss.qa.tspresentation.exception")
                 .addClass(ProjectProperties.class)
                 .addClass(BeanWithCdiAnnotation.class)
                 .addClass(JBossTestEntity.class)
-                .addAsManifestResource("beans.xml");
+                .addAsManifestResource("beans.xml")
+                .addAsManifestResource("jta-ds-persistence.xml", "persistence.xml");
         return jar;
     }
 
@@ -53,16 +56,7 @@ public class BeanWithCdiAnnotationTestCase {
 
     @Test
     public void commitAsTransactionNotSupported() throws Exception {
-        try {
-            ejbBean.transactionNotSupported(id, value);
-            Assert.fail("the test method is expected to throw runtime exception to get things rolled back in case");
-        } catch (RuntimeException re) {
-            // this is expected and it's ok
-        }
-
-        String result = jdbcBean.getSingle(JBossTestEntity.TABLE_NAME, id, JBossTestEntity.NAME_COLUMN_NAME);
-        Assert.assertEquals("expecting data was saved as @Transactional attribute defined that there is no transaction happening",
-            value, result);
+    	ejbBean.transactionNotSupported(id, value);
     }
     
     @Test

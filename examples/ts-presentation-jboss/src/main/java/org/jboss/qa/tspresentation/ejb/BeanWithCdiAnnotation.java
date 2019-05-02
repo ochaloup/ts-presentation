@@ -3,11 +3,17 @@ package org.jboss.qa.tspresentation.ejb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.sql.DataSource;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
+
+import org.jboss.qa.tspresentation.cdi.ExceptionWorkerCdiBean;
 import org.jboss.qa.tspresentation.jpa.JBossTestEntity;
 import org.jboss.qa.tspresentation.utils.ProjectProperties;
 import org.slf4j.Logger;
@@ -20,11 +26,19 @@ public class BeanWithCdiAnnotation {
     @Resource(lookup = ProjectProperties.XA_DATASOURCE_JNDI)
     DataSource datasource;
 
-    @Transactional(value = TxType.NOT_SUPPORTED)
-    public void transactionNotSupported(int id, String value) {
-        insert(id, value);
+    @Resource(lookup = "java:/TransactionManager")
+    TransactionManager tm;
 
-        throw new RuntimeException("I wan't to get rollback here!");
+    @Inject
+    ExceptionWorkerCdiBean cdi;
+
+    public void transactionNotSupported(int id, String value) {
+    	try {
+			System.out.println(">>>> " + tm.getTransaction().toString());
+		} catch (SystemException e1) {
+			e1.printStackTrace();
+		}
+    	cdi.doNotRollback();
     }
 
     @Transactional(value = TxType.REQUIRES_NEW)

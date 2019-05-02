@@ -5,7 +5,10 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.transaction.UserTransaction;
 
 import org.jboss.qa.tspresentation.exception.ApplicationException;
@@ -38,10 +41,19 @@ public class ExceptionWorkerCdiBean {
      * Note: java:/comp/UserTransaction works only in EJB (as it's component namespace)
      *       for lookup  in CDI it's needed to be used global JNDI name.
      */
-    @Resource(lookup = "java:jboss/UserTransaction")
-    private UserTransaction utx;
+    /* @Resource(lookup = "java:jboss/UserTransaction")
+    private UserTransaction utx; */
 
+    @Resource(lookup = "java:/TransactionManager")
+    TransactionManager tm;
+
+    @Transactional(value = TxType.REQUIRES_NEW)
     public int doNotRollback() {
+    	try {
+			System.out.println(">>>> " + tm.getTransaction().toString());
+		} catch (SystemException e1) {
+			e1.printStackTrace();
+		}
         JBossTestEntity entity = new JBossTestEntity("some-name");
         em.persist(entity);
 
