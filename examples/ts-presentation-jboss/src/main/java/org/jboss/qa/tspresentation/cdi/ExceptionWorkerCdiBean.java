@@ -1,10 +1,12 @@
 package org.jboss.qa.tspresentation.cdi;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import javax.transaction.UserTransaction;
 
 import org.jboss.qa.tspresentation.exception.ApplicationException;
 import org.jboss.qa.tspresentation.exception.ApplicationRollbackException;
@@ -24,6 +26,20 @@ public class ExceptionWorkerCdiBean {
 
     @Inject
     private ExceptionThrowerCdi exceptionThrower;
+
+    /*
+     * Injection of the 'utx' is permitted in @Transactional CDI bean.
+     * But if the 'utx' is called in the @Transactional method
+     * then IllegalStateException is thrown. E.g. on 'utx.getStatus() he stacktrace is:
+     *   at org.wildfly.transaction.client.LocalUserTransaction.checkTransactionStateAvailability(LocalUserTransaction.java:112)
+     *   at org.wildfly.transaction.client.LocalUserTransaction.getStatus(LocalUserTransaction.java:67)
+     *   at org.jboss.qa.tspresentation.cdi.ExceptionWorkerCdiBean.doNotRollback(ExceptionWorkerCdiBean.java:36)
+     *   ...
+     * Note: java:/comp/UserTransaction works only in EJB (as it's component namespace)
+     *       for lookup  in CDI it's needed to be used global JNDI name.
+     */
+    @Resource(lookup = "java:jboss/UserTransaction")
+    private UserTransaction utx;
 
     public int doNotRollback() {
         JBossTestEntity entity = new JBossTestEntity("some-name");
